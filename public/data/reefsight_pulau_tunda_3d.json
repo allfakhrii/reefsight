@@ -1,0 +1,3374 @@
+{
+ "meta": {
+  "project": "REEFSIGHT",
+  "legacy_project": "ASIK",
+  "version": "2.0.0",
+  "region": "Pulau Tunda, Banten",
+  "data_status": "SIMULATED",
+  "disclaimer": "Habitat, biodiversitas, dan riwayat pemeliharaan adalah data simulasi untuk demo. Posisi titik ditata ulang melingkar di luar garis pantai perkiraan; koordinat awal tersimpan di original_coordinates. Jarak (Haversine) dihitung dari koordinat titik. Kedalaman belum tersedia.",
+  "coordinate_system": "WGS 84",
+  "distance_method": "Haversine (R = 6371008.8 m)",
+  "ring_placement": "12 titik berjarak sama sepanjang kontur ±400 m di luar garis pantai perkiraan (sketsa dari tangkapan layar peta)"
+ },
+ "stations": [
+  {
+   "station_id": "RFS-STA-001",
+   "prototype_id": "RFS-PROT-001",
+   "legacy_id": "ASIK-01",
+   "position_label": "Barat",
+   "coordinates": {
+    "latitude": -5.81197,
+    "longitude": 106.250685,
+    "datum": "WGS 84",
+    "status": "Ditata ulang melingkar (simulasi, ±400 m dari pantai)"
+   },
+   "original_coordinates": {
+    "latitude": -5.810605,
+    "longitude": 106.253949,
+    "note": "Koordinat awal dari tabel sebelum penataan ulang melingkar"
+   },
+   "depth_m": null,
+   "depth_status": "Not Available",
+   "depth_simulated_m": 10,
+   "nearest_prototype": {
+    "station_id": "RFS-STA-012",
+    "prototype_id": "RFS-PROT-012",
+    "distance_m": 878,
+    "distance_status": "Calculated",
+    "method": "Haversine"
+   },
+   "distances_to_others": [
+    {
+     "station_id": "RFS-STA-012",
+     "distance_m": 878,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-002",
+     "distance_m": 879,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-003",
+     "distance_m": 1831,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-011",
+     "distance_m": 1851,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-004",
+     "distance_m": 2803,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-010",
+     "distance_m": 2835,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-005",
+     "distance_m": 3770,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-009",
+     "distance_m": 3803,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-008",
+     "distance_m": 4718,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-006",
+     "distance_m": 4729,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-007",
+     "distance_m": 5257,
+     "distance_status": "Calculated"
+    }
+   ],
+   "scene": {
+    "position": [
+     -27.4801,
+     0,
+     -0.5862
+    ],
+    "unit": "1 unit = 100 m",
+    "rotation_deg": 0,
+    "scale": 2.8,
+    "seed": 50114178
+   },
+   "prototype": {
+    "prototype_id": "RFS-PROT-001",
+    "model": "echovision-prototype-v1",
+    "model_ref": "echovision_prototype_3d.json",
+    "bom_components": 16,
+    "unit_budget_rp": 2500000,
+    "deployment_status": "SIMULATED (not deployed)"
+   },
+   "habitat": {
+    "type": "Reef Slope",
+    "dominant_substrate": "Carbonate rock slope",
+    "growth_forms": [
+     "Acropora Branching",
+     "Acropora Tabulate",
+     "Coral Massive",
+     "Coral Encrusting",
+     "Coral Foliose"
+    ],
+    "condition": "Simulated (Degraded)",
+    "description": "Simulasi lereng terumbu dengan karang meja dan lembaran yang melebar mengikuti arah cahaya.",
+    "associated_marine_organisms": [
+     "Surgeonfish",
+     "Angelfish",
+     "Butterflyfish"
+    ],
+    "note": "Seluruh habitat ini hasil acak untuk visualisasi prototype, bukan hasil survei atau identifikasi habitat aktual Pulau Tunda.",
+    "label": "SIMULATED HABITAT",
+    "data_status": "SIMULATED"
+   },
+   "biodiversity": {
+    "data_status": "SIMULATED BIODIVERSITY",
+    "fish_groups": [
+     {
+      "key": "damsel",
+      "count": 14
+     },
+     {
+      "key": "butterfly",
+      "count": 3
+     },
+     {
+      "key": "angel",
+      "count": 1
+     },
+     {
+      "key": "parrot",
+      "count": 2
+     },
+     {
+      "key": "surgeon",
+      "count": 5
+     },
+     {
+      "key": "clown",
+      "count": 0
+     },
+     {
+      "key": "grouper",
+      "count": 0
+     }
+    ],
+    "coral_composition": [
+     {
+      "form": "Acropora Branching",
+      "count": 2
+     },
+     {
+      "form": "Acropora Tabulate",
+      "count": 5
+     },
+     {
+      "form": "Coral Massive",
+      "count": 5
+     },
+     {
+      "form": "Coral Encrusting",
+      "count": 3
+     },
+     {
+      "form": "Coral Foliose",
+      "count": 6
+     },
+     {
+      "form": "Coral Submassive",
+      "count": 0
+     },
+     {
+      "form": "Coral Branching",
+      "count": 0
+     }
+    ],
+    "density": {
+     "fish": "high",
+     "coral": "high"
+    }
+   },
+   "maintenance_history": [
+    {
+     "maintenance_id": "RFS-MNT-001-01",
+     "station_id": "RFS-STA-001",
+     "prototype_id": "RFS-PROT-001",
+     "activity_type": "Installation",
+     "activity_date": "2026-04-17",
+     "maintenance_description": "Pemasangan prototype di titik pantau (simulasi).",
+     "device_condition": "Operational",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator D",
+     "notes": "Catatan fiktif untuk uji tampilan.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-001-02",
+     "station_id": "RFS-STA-001",
+     "prototype_id": "RFS-PROT-001",
+     "activity_type": "Waterproof Enclosure Inspection",
+     "activity_date": "2026-05-05",
+     "maintenance_description": "Pemeriksaan seal, O-ring, dan gland box IP67 (simulasi).",
+     "device_condition": "Minor Seal Wear",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator D",
+     "notes": "Catatan fiktif untuk uji tampilan.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-001-03",
+     "station_id": "RFS-STA-001",
+     "prototype_id": "RFS-PROT-001",
+     "activity_type": "Component Replacement",
+     "activity_date": "2026-06-03",
+     "maintenance_description": "Penggantian komponen contoh, misalnya O-ring (simulasi).",
+     "device_condition": "Operational (Part Replaced)",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator C",
+     "notes": "Tidak mewakili kegiatan nyata.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-001-04",
+     "station_id": "RFS-STA-001",
+     "prototype_id": "RFS-PROT-001",
+     "activity_type": "Maintenance",
+     "activity_date": "2026-08-25",
+     "maintenance_description": "Perawatan umum dan pengencangan bracket (simulasi).",
+     "device_condition": "Operational",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator C",
+     "notes": "Contoh status untuk simulasi alur kerja.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-001-05",
+     "station_id": "RFS-STA-001",
+     "prototype_id": "RFS-PROT-001",
+     "activity_type": "Routine Inspection",
+     "activity_date": "2026-12-03",
+     "maintenance_description": "Inspeksi rutin terjadwal (simulasi).",
+     "device_condition": "Pending Inspection",
+     "maintenance_status": "Scheduled (Simulated)",
+     "technician_operator": "SIMULATED Operator",
+     "notes": "Jadwal contoh untuk demo.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    }
+   ],
+   "data_status": "SIMULATED"
+  },
+  {
+   "station_id": "RFS-STA-002",
+   "prototype_id": "RFS-PROT-002",
+   "legacy_id": "ASIK-02",
+   "position_label": "Barat Laut",
+   "coordinates": {
+    "latitude": -5.807877,
+    "longitude": 106.257482,
+    "datum": "WGS 84",
+    "status": "Ditata ulang melingkar (simulasi, ±400 m dari pantai)"
+   },
+   "original_coordinates": {
+    "latitude": -5.807861,
+    "longitude": 106.264466,
+    "note": "Koordinat awal dari tabel sebelum penataan ulang melingkar"
+   },
+   "depth_m": null,
+   "depth_status": "Not Available",
+   "depth_simulated_m": 2,
+   "nearest_prototype": {
+    "station_id": "RFS-STA-001",
+    "prototype_id": "RFS-PROT-001",
+    "distance_m": 879,
+    "distance_status": "Calculated",
+    "method": "Haversine"
+   },
+   "distances_to_others": [
+    {
+     "station_id": "RFS-STA-001",
+     "distance_m": 879,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-012",
+     "distance_m": 882,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-003",
+     "distance_m": 990,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-011",
+     "distance_m": 1484,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-004",
+     "distance_m": 1979,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-010",
+     "distance_m": 2362,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-005",
+     "distance_m": 2964,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-009",
+     "distance_m": 3256,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-006",
+     "distance_m": 3942,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-008",
+     "distance_m": 4098,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-007",
+     "distance_m": 4540,
+     "distance_status": "Calculated"
+    }
+   ],
+   "scene": {
+    "position": [
+     -19.9531,
+     0,
+     -5.113
+    ],
+    "unit": "1 unit = 100 m",
+    "rotation_deg": 0,
+    "scale": 2.8,
+    "seed": 82066247
+   },
+   "prototype": {
+    "prototype_id": "RFS-PROT-002",
+    "model": "echovision-prototype-v1",
+    "model_ref": "echovision_prototype_3d.json",
+    "bom_components": 16,
+    "unit_budget_rp": 2500000,
+    "deployment_status": "SIMULATED (not deployed)"
+   },
+   "habitat": {
+    "type": "Reef Flat",
+    "dominant_substrate": "Shallow carbonate pavement",
+    "growth_forms": [
+     "Coral Massive",
+     "Coral Submassive",
+     "Coral Branching"
+    ],
+    "condition": "Simulated (Fair)",
+    "description": "Simulasi dataran terumbu dangkal dengan koloni bercabang dan masif yang tersebar.",
+    "associated_marine_organisms": [
+     "Parrotfish",
+     "Damselfish",
+     "Surgeonfish"
+    ],
+    "note": "Seluruh habitat ini hasil acak untuk visualisasi prototype, bukan hasil survei atau identifikasi habitat aktual Pulau Tunda.",
+    "label": "SIMULATED HABITAT",
+    "data_status": "SIMULATED"
+   },
+   "biodiversity": {
+    "data_status": "SIMULATED BIODIVERSITY",
+    "fish_groups": [
+     {
+      "key": "damsel",
+      "count": 12
+     },
+     {
+      "key": "butterfly",
+      "count": 2
+     },
+     {
+      "key": "angel",
+      "count": 1
+     },
+     {
+      "key": "parrot",
+      "count": 3
+     },
+     {
+      "key": "surgeon",
+      "count": 4
+     },
+     {
+      "key": "clown",
+      "count": 0
+     },
+     {
+      "key": "grouper",
+      "count": 0
+     }
+    ],
+    "coral_composition": [
+     {
+      "form": "Acropora Branching",
+      "count": 0
+     },
+     {
+      "form": "Acropora Tabulate",
+      "count": 0
+     },
+     {
+      "form": "Coral Massive",
+      "count": 4
+     },
+     {
+      "form": "Coral Encrusting",
+      "count": 0
+     },
+     {
+      "form": "Coral Foliose",
+      "count": 0
+     },
+     {
+      "form": "Coral Submassive",
+      "count": 3
+     },
+     {
+      "form": "Coral Branching",
+      "count": 7
+     }
+    ],
+    "density": {
+     "fish": "high",
+     "coral": "medium"
+    }
+   },
+   "maintenance_history": [
+    {
+     "maintenance_id": "RFS-MNT-002-01",
+     "station_id": "RFS-STA-002",
+     "prototype_id": "RFS-PROT-002",
+     "activity_type": "Installation",
+     "activity_date": "2026-04-27",
+     "maintenance_description": "Pemasangan prototype di titik pantau (simulasi).",
+     "device_condition": "Operational",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator B",
+     "notes": "Contoh status untuk simulasi alur kerja.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-002-02",
+     "station_id": "RFS-STA-002",
+     "prototype_id": "RFS-PROT-002",
+     "activity_type": "Sensor Calibration",
+     "activity_date": "2026-06-24",
+     "maintenance_description": "Kalibrasi sensor suhu dan tekanan (simulasi).",
+     "device_condition": "Operational",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator A",
+     "notes": "Tidak mewakili kegiatan nyata.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-002-03",
+     "station_id": "RFS-STA-002",
+     "prototype_id": "RFS-PROT-002",
+     "activity_type": "Cleaning",
+     "activity_date": "2026-07-12",
+     "maintenance_description": "Pembersihan biofouling pada kubah kamera dan sensor (simulasi).",
+     "device_condition": "Biofouling Removed",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator C",
+     "notes": "Data contoh untuk demo.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-002-04",
+     "station_id": "RFS-STA-002",
+     "prototype_id": "RFS-PROT-002",
+     "activity_type": "Component Replacement",
+     "activity_date": "2026-09-24",
+     "maintenance_description": "Penggantian komponen contoh, misalnya O-ring (simulasi).",
+     "device_condition": "Operational (Part Replaced)",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator D",
+     "notes": "Tidak mewakili kegiatan nyata.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-002-05",
+     "station_id": "RFS-STA-002",
+     "prototype_id": "RFS-PROT-002",
+     "activity_type": "Routine Inspection",
+     "activity_date": "2026-10-03",
+     "maintenance_description": "Inspeksi visual rutin struktur dan mooring (simulasi).",
+     "device_condition": "Operational",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator A",
+     "notes": "Catatan fiktif untuk uji tampilan.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-002-06",
+     "station_id": "RFS-STA-002",
+     "prototype_id": "RFS-PROT-002",
+     "activity_type": "Routine Inspection",
+     "activity_date": "2026-12-19",
+     "maintenance_description": "Inspeksi rutin terjadwal (simulasi).",
+     "device_condition": "Pending Inspection",
+     "maintenance_status": "Scheduled (Simulated)",
+     "technician_operator": "SIMULATED Operator",
+     "notes": "Jadwal contoh untuk demo.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    }
+   ],
+   "data_status": "SIMULATED"
+  },
+  {
+   "station_id": "RFS-STA-003",
+   "prototype_id": "RFS-PROT-003",
+   "legacy_id": "ASIK-03",
+   "position_label": "Utara-Barat Laut",
+   "coordinates": {
+    "latitude": -5.806642,
+    "longitude": 106.266343,
+    "datum": "WGS 84",
+    "status": "Ditata ulang melingkar (simulasi, ±400 m dari pantai)"
+   },
+   "original_coordinates": {
+    "latitude": -5.8058,
+    "longitude": 106.276,
+    "note": "Koordinat awal dari tabel sebelum penataan ulang melingkar"
+   },
+   "depth_m": null,
+   "depth_status": "Not Available",
+   "depth_simulated_m": 5,
+   "nearest_prototype": {
+    "station_id": "RFS-STA-004",
+    "prototype_id": "RFS-PROT-004",
+    "distance_m": 989,
+    "distance_status": "Calculated",
+    "method": "Haversine"
+   },
+   "distances_to_others": [
+    {
+     "station_id": "RFS-STA-004",
+     "distance_m": 989,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-002",
+     "distance_m": 990,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-011",
+     "distance_m": 1255,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-012",
+     "distance_m": 1403,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-010",
+     "distance_m": 1770,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-001",
+     "distance_m": 1831,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-005",
+     "distance_m": 1976,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-009",
+     "distance_m": 2500,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-006",
+     "distance_m": 2959,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-008",
+     "distance_m": 3240,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-007",
+     "distance_m": 3595,
+     "distance_status": "Calculated"
+    }
+   ],
+   "scene": {
+    "position": [
+     -10.1405,
+     0,
+     -6.4789
+    ],
+    "unit": "1 unit = 100 m",
+    "rotation_deg": 0,
+    "scale": 2.8,
+    "seed": 27913540
+   },
+   "prototype": {
+    "prototype_id": "RFS-PROT-003",
+    "model": "echovision-prototype-v1",
+    "model_ref": "echovision_prototype_3d.json",
+    "bom_components": 16,
+    "unit_budget_rp": 2500000,
+    "deployment_status": "SIMULATED (not deployed)"
+   },
+   "habitat": {
+    "type": "Mixed Coral Habitat",
+    "dominant_substrate": "Mixed coral, sand and rubble",
+    "growth_forms": [
+     "Acropora Branching",
+     "Acropora Tabulate",
+     "Coral Massive",
+     "Coral Encrusting",
+     "Coral Foliose",
+     "Coral Submassive",
+     "Coral Branching"
+    ],
+    "condition": "Simulated (Good)",
+    "description": "Simulasi mozaik koloni karang, pasir, dan patahan karang dengan kepadatan sedang.",
+    "associated_marine_organisms": [
+     "Damselfish",
+     "Parrotfish",
+     "Angelfish"
+    ],
+    "note": "Seluruh habitat ini hasil acak untuk visualisasi prototype, bukan hasil survei atau identifikasi habitat aktual Pulau Tunda.",
+    "label": "SIMULATED HABITAT",
+    "data_status": "SIMULATED"
+   },
+   "biodiversity": {
+    "data_status": "SIMULATED BIODIVERSITY",
+    "fish_groups": [
+     {
+      "key": "damsel",
+      "count": 11
+     },
+     {
+      "key": "butterfly",
+      "count": 2
+     },
+     {
+      "key": "angel",
+      "count": 2
+     },
+     {
+      "key": "parrot",
+      "count": 2
+     },
+     {
+      "key": "surgeon",
+      "count": 3
+     },
+     {
+      "key": "clown",
+      "count": 2
+     },
+     {
+      "key": "grouper",
+      "count": 1
+     }
+    ],
+    "coral_composition": [
+     {
+      "form": "Acropora Branching",
+      "count": 3
+     },
+     {
+      "form": "Acropora Tabulate",
+      "count": 3
+     },
+     {
+      "form": "Coral Massive",
+      "count": 7
+     },
+     {
+      "form": "Coral Encrusting",
+      "count": 3
+     },
+     {
+      "form": "Coral Foliose",
+      "count": 2
+     },
+     {
+      "form": "Coral Submassive",
+      "count": 2
+     },
+     {
+      "form": "Coral Branching",
+      "count": 6
+     }
+    ],
+    "density": {
+     "fish": "high",
+     "coral": "high"
+    }
+   },
+   "maintenance_history": [
+    {
+     "maintenance_id": "RFS-MNT-003-01",
+     "station_id": "RFS-STA-003",
+     "prototype_id": "RFS-PROT-003",
+     "activity_type": "Installation",
+     "activity_date": "2026-04-26",
+     "maintenance_description": "Pemasangan prototype di titik pantau (simulasi).",
+     "device_condition": "Operational",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator C",
+     "notes": "Tidak mewakili kegiatan nyata.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-003-02",
+     "station_id": "RFS-STA-003",
+     "prototype_id": "RFS-PROT-003",
+     "activity_type": "Battery Inspection",
+     "activity_date": "2026-06-16",
+     "maintenance_description": "Pengecekan tegangan baterai dan controller (simulasi).",
+     "device_condition": "Battery Voltage Lower Than Expected",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator D",
+     "notes": "Catatan fiktif untuk uji tampilan.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-003-03",
+     "station_id": "RFS-STA-003",
+     "prototype_id": "RFS-PROT-003",
+     "activity_type": "Maintenance",
+     "activity_date": "2026-07-11",
+     "maintenance_description": "Perawatan umum dan pengencangan bracket (simulasi).",
+     "device_condition": "Operational",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator B",
+     "notes": "Contoh status untuk simulasi alur kerja.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-003-04",
+     "station_id": "RFS-STA-003",
+     "prototype_id": "RFS-PROT-003",
+     "activity_type": "Component Replacement",
+     "activity_date": "2026-08-23",
+     "maintenance_description": "Penggantian komponen contoh, misalnya O-ring (simulasi).",
+     "device_condition": "Operational (Part Replaced)",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator D",
+     "notes": "Data contoh untuk demo.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-003-05",
+     "station_id": "RFS-STA-003",
+     "prototype_id": "RFS-PROT-003",
+     "activity_type": "Sensor Calibration",
+     "activity_date": "2026-09-13",
+     "maintenance_description": "Kalibrasi sensor suhu dan tekanan (simulasi).",
+     "device_condition": "Operational",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator C",
+     "notes": "Data contoh untuk demo.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-003-06",
+     "station_id": "RFS-STA-003",
+     "prototype_id": "RFS-PROT-003",
+     "activity_type": "Routine Inspection",
+     "activity_date": "2026-12-08",
+     "maintenance_description": "Inspeksi rutin terjadwal (simulasi).",
+     "device_condition": "Pending Inspection",
+     "maintenance_status": "Scheduled (Simulated)",
+     "technician_operator": "SIMULATED Operator",
+     "notes": "Jadwal contoh untuk demo.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    }
+   ],
+   "data_status": "SIMULATED"
+  },
+  {
+   "station_id": "RFS-STA-004",
+   "prototype_id": "RFS-PROT-004",
+   "legacy_id": "ASIK-04",
+   "position_label": "Utara",
+   "coordinates": {
+    "latitude": -5.805767,
+    "longitude": 106.275243,
+    "datum": "WGS 84",
+    "status": "Ditata ulang melingkar (simulasi, ±400 m dari pantai)"
+   },
+   "original_coordinates": {
+    "latitude": -5.808671,
+    "longitude": 106.290591,
+    "note": "Koordinat awal dari tabel sebelum penataan ulang melingkar"
+   },
+   "depth_m": null,
+   "depth_status": "Not Available",
+   "depth_simulated_m": 14,
+   "nearest_prototype": {
+    "station_id": "RFS-STA-005",
+    "prototype_id": "RFS-PROT-005",
+    "distance_m": 989,
+    "distance_status": "Calculated",
+    "method": "Haversine"
+   },
+   "distances_to_others": [
+    {
+     "station_id": "RFS-STA-005",
+     "distance_m": 989,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-003",
+     "distance_m": 989,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-010",
+     "distance_m": 1586,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-011",
+     "distance_m": 1675,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-009",
+     "distance_m": 1927,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-006",
+     "distance_m": 1976,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-002",
+     "distance_m": 1979,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-012",
+     "distance_m": 2246,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-008",
+     "distance_m": 2453,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-007",
+     "distance_m": 2665,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-001",
+     "distance_m": 2803,
+     "distance_status": "Calculated"
+    }
+   ],
+   "scene": {
+    "position": [
+     -0.2846,
+     0,
+     -7.4467
+    ],
+    "unit": "1 unit = 100 m",
+    "rotation_deg": 0,
+    "scale": 2.8,
+    "seed": 34475358
+   },
+   "prototype": {
+    "prototype_id": "RFS-PROT-004",
+    "model": "echovision-prototype-v1",
+    "model_ref": "echovision_prototype_3d.json",
+    "bom_components": 16,
+    "unit_budget_rp": 2500000,
+    "deployment_status": "SIMULATED (not deployed)"
+   },
+   "habitat": {
+    "type": "Reef Slope",
+    "dominant_substrate": "Carbonate rock slope",
+    "growth_forms": [
+     "Acropora Branching",
+     "Acropora Tabulate",
+     "Coral Massive",
+     "Coral Encrusting",
+     "Coral Foliose"
+    ],
+    "condition": "Simulated (Good)",
+    "description": "Simulasi lereng terumbu dengan karang meja dan lembaran yang melebar mengikuti arah cahaya.",
+    "associated_marine_organisms": [
+     "Surgeonfish",
+     "Angelfish",
+     "Butterflyfish"
+    ],
+    "note": "Seluruh habitat ini hasil acak untuk visualisasi prototype, bukan hasil survei atau identifikasi habitat aktual Pulau Tunda.",
+    "label": "SIMULATED HABITAT",
+    "data_status": "SIMULATED"
+   },
+   "biodiversity": {
+    "data_status": "SIMULATED BIODIVERSITY",
+    "fish_groups": [
+     {
+      "key": "damsel",
+      "count": 16
+     },
+     {
+      "key": "butterfly",
+      "count": 3
+     },
+     {
+      "key": "angel",
+      "count": 1
+     },
+     {
+      "key": "parrot",
+      "count": 2
+     },
+     {
+      "key": "surgeon",
+      "count": 4
+     },
+     {
+      "key": "clown",
+      "count": 0
+     },
+     {
+      "key": "grouper",
+      "count": 1
+     }
+    ],
+    "coral_composition": [
+     {
+      "form": "Acropora Branching",
+      "count": 2
+     },
+     {
+      "form": "Acropora Tabulate",
+      "count": 11
+     },
+     {
+      "form": "Coral Massive",
+      "count": 8
+     },
+     {
+      "form": "Coral Encrusting",
+      "count": 2
+     },
+     {
+      "form": "Coral Foliose",
+      "count": 4
+     },
+     {
+      "form": "Coral Submassive",
+      "count": 0
+     },
+     {
+      "form": "Coral Branching",
+      "count": 0
+     }
+    ],
+    "density": {
+     "fish": "high",
+     "coral": "high"
+    }
+   },
+   "maintenance_history": [
+    {
+     "maintenance_id": "RFS-MNT-004-01",
+     "station_id": "RFS-STA-004",
+     "prototype_id": "RFS-PROT-004",
+     "activity_type": "Installation",
+     "activity_date": "2026-05-23",
+     "maintenance_description": "Pemasangan prototype di titik pantau (simulasi).",
+     "device_condition": "Operational",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator C",
+     "notes": "Data contoh untuk demo.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-004-02",
+     "station_id": "RFS-STA-004",
+     "prototype_id": "RFS-PROT-004",
+     "activity_type": "Waterproof Enclosure Inspection",
+     "activity_date": "2026-06-26",
+     "maintenance_description": "Pemeriksaan seal, O-ring, dan gland box IP67 (simulasi).",
+     "device_condition": "Minor Seal Wear",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator B",
+     "notes": "Tidak mewakili kegiatan nyata.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-004-03",
+     "station_id": "RFS-STA-004",
+     "prototype_id": "RFS-PROT-004",
+     "activity_type": "Battery Inspection",
+     "activity_date": "2026-08-10",
+     "maintenance_description": "Pengecekan tegangan baterai dan controller (simulasi).",
+     "device_condition": "Battery Voltage Lower Than Expected",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator B",
+     "notes": "Contoh status untuk simulasi alur kerja.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-004-04",
+     "station_id": "RFS-STA-004",
+     "prototype_id": "RFS-PROT-004",
+     "activity_type": "Sensor Calibration",
+     "activity_date": "2026-09-04",
+     "maintenance_description": "Kalibrasi sensor suhu dan tekanan (simulasi).",
+     "device_condition": "Operational",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator A",
+     "notes": "Data contoh untuk demo.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-004-05",
+     "station_id": "RFS-STA-004",
+     "prototype_id": "RFS-PROT-004",
+     "activity_type": "Maintenance",
+     "activity_date": "2026-10-26",
+     "maintenance_description": "Perawatan umum dan pengencangan bracket (simulasi).",
+     "device_condition": "Operational",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator D",
+     "notes": "Contoh status untuk simulasi alur kerja.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-004-06",
+     "station_id": "RFS-STA-004",
+     "prototype_id": "RFS-PROT-004",
+     "activity_type": "Cleaning",
+     "activity_date": "2026-10-16",
+     "maintenance_description": "Pembersihan biofouling pada kubah kamera dan sensor (simulasi).",
+     "device_condition": "Biofouling Removed",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator D",
+     "notes": "Catatan fiktif untuk uji tampilan.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-004-07",
+     "station_id": "RFS-STA-004",
+     "prototype_id": "RFS-PROT-004",
+     "activity_type": "Device Retrieval",
+     "activity_date": "2026-10-25",
+     "maintenance_description": "Pengangkatan perangkat untuk pemeriksaan di darat (simulasi).",
+     "device_condition": "Retrieved",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator A",
+     "notes": "Catatan fiktif untuk uji tampilan.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-004-08",
+     "station_id": "RFS-STA-004",
+     "prototype_id": "RFS-PROT-004",
+     "activity_type": "Installation (re-deployment)",
+     "activity_date": "2026-10-15",
+     "maintenance_description": "Pemasangan prototype di titik pantau (simulasi).",
+     "device_condition": "Operational",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator C",
+     "notes": "Contoh status untuk simulasi alur kerja.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-004-09",
+     "station_id": "RFS-STA-004",
+     "prototype_id": "RFS-PROT-004",
+     "activity_type": "Routine Inspection",
+     "activity_date": "2026-12-14",
+     "maintenance_description": "Inspeksi rutin terjadwal (simulasi).",
+     "device_condition": "Pending Inspection",
+     "maintenance_status": "Scheduled (Simulated)",
+     "technician_operator": "SIMULATED Operator",
+     "notes": "Jadwal contoh untuk demo.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    }
+   ],
+   "data_status": "SIMULATED"
+  },
+  {
+   "station_id": "RFS-STA-005",
+   "prototype_id": "RFS-PROT-005",
+   "legacy_id": "ASIK-05",
+   "position_label": "Utara-Timur Laut",
+   "coordinates": {
+    "latitude": -5.805722,
+    "longitude": 106.284184,
+    "datum": "WGS 84",
+    "status": "Ditata ulang melingkar (simulasi, ±400 m dari pantai)"
+   },
+   "original_coordinates": {
+    "latitude": -5.811365,
+    "longitude": 106.29665,
+    "note": "Koordinat awal dari tabel sebelum penataan ulang melingkar"
+   },
+   "depth_m": null,
+   "depth_status": "Not Available",
+   "depth_simulated_m": 7,
+   "nearest_prototype": {
+    "station_id": "RFS-STA-004",
+    "prototype_id": "RFS-PROT-004",
+    "distance_m": 989,
+    "distance_status": "Calculated",
+    "method": "Haversine"
+   },
+   "distances_to_others": [
+    {
+     "station_id": "RFS-STA-004",
+     "distance_m": 989,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-006",
+     "distance_m": 989,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-009",
+     "distance_m": 1678,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-007",
+     "distance_m": 1752,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-008",
+     "distance_m": 1787,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-010",
+     "distance_m": 1888,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-003",
+     "distance_m": 1976,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-011",
+     "distance_m": 2399,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-002",
+     "distance_m": 2964,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-012",
+     "distance_m": 3145,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-001",
+     "distance_m": 3770,
+     "distance_status": "Calculated"
+    }
+   ],
+   "scene": {
+    "position": [
+     9.6167,
+     0,
+     -7.4965
+    ],
+    "unit": "1 unit = 100 m",
+    "rotation_deg": 0,
+    "scale": 2.8,
+    "seed": 75248733
+   },
+   "prototype": {
+    "prototype_id": "RFS-PROT-005",
+    "model": "echovision-prototype-v1",
+    "model_ref": "echovision_prototype_3d.json",
+    "bom_components": 16,
+    "unit_budget_rp": 2500000,
+    "deployment_status": "SIMULATED (not deployed)"
+   },
+   "habitat": {
+    "type": "Coral Rubble",
+    "dominant_substrate": "Coral rubble",
+    "growth_forms": [
+     "Coral Encrusting",
+     "Coral Submassive",
+     "Coral Branching"
+    ],
+    "condition": "Simulated (Good)",
+    "description": "Simulasi area patahan karang dengan koloni kecil yang baru menempel.",
+    "associated_marine_organisms": [
+     "Damselfish",
+     "Surgeonfish"
+    ],
+    "note": "Seluruh habitat ini hasil acak untuk visualisasi prototype, bukan hasil survei atau identifikasi habitat aktual Pulau Tunda.",
+    "label": "SIMULATED HABITAT",
+    "data_status": "SIMULATED"
+   },
+   "biodiversity": {
+    "data_status": "SIMULATED BIODIVERSITY",
+    "fish_groups": [
+     {
+      "key": "damsel",
+      "count": 3
+     },
+     {
+      "key": "butterfly",
+      "count": 1
+     },
+     {
+      "key": "angel",
+      "count": 0
+     },
+     {
+      "key": "parrot",
+      "count": 1
+     },
+     {
+      "key": "surgeon",
+      "count": 1
+     },
+     {
+      "key": "clown",
+      "count": 0
+     },
+     {
+      "key": "grouper",
+      "count": 0
+     }
+    ],
+    "coral_composition": [
+     {
+      "form": "Acropora Branching",
+      "count": 0
+     },
+     {
+      "form": "Acropora Tabulate",
+      "count": 0
+     },
+     {
+      "form": "Coral Massive",
+      "count": 0
+     },
+     {
+      "form": "Coral Encrusting",
+      "count": 5
+     },
+     {
+      "form": "Coral Foliose",
+      "count": 0
+     },
+     {
+      "form": "Coral Submassive",
+      "count": 2
+     },
+     {
+      "form": "Coral Branching",
+      "count": 1
+     }
+    ],
+    "density": {
+     "fish": "low",
+     "coral": "medium"
+    }
+   },
+   "maintenance_history": [
+    {
+     "maintenance_id": "RFS-MNT-005-01",
+     "station_id": "RFS-STA-005",
+     "prototype_id": "RFS-PROT-005",
+     "activity_type": "Installation",
+     "activity_date": "2026-04-08",
+     "maintenance_description": "Pemasangan prototype di titik pantau (simulasi).",
+     "device_condition": "Operational",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator A",
+     "notes": "Tidak mewakili kegiatan nyata.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-005-02",
+     "station_id": "RFS-STA-005",
+     "prototype_id": "RFS-PROT-005",
+     "activity_type": "Sensor Calibration",
+     "activity_date": "2026-05-25",
+     "maintenance_description": "Kalibrasi sensor suhu dan tekanan (simulasi).",
+     "device_condition": "Operational",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator B",
+     "notes": "Catatan fiktif untuk uji tampilan.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-005-03",
+     "station_id": "RFS-STA-005",
+     "prototype_id": "RFS-PROT-005",
+     "activity_type": "Maintenance",
+     "activity_date": "2026-06-19",
+     "maintenance_description": "Perawatan umum dan pengencangan bracket (simulasi).",
+     "device_condition": "Operational",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator A",
+     "notes": "Tidak mewakili kegiatan nyata.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-005-04",
+     "station_id": "RFS-STA-005",
+     "prototype_id": "RFS-PROT-005",
+     "activity_type": "Waterproof Enclosure Inspection",
+     "activity_date": "2026-08-26",
+     "maintenance_description": "Pemeriksaan seal, O-ring, dan gland box IP67 (simulasi).",
+     "device_condition": "Minor Seal Wear",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator D",
+     "notes": "Contoh status untuk simulasi alur kerja.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-005-05",
+     "station_id": "RFS-STA-005",
+     "prototype_id": "RFS-PROT-005",
+     "activity_type": "Routine Inspection",
+     "activity_date": "2026-12-15",
+     "maintenance_description": "Inspeksi rutin terjadwal (simulasi).",
+     "device_condition": "Pending Inspection",
+     "maintenance_status": "Scheduled (Simulated)",
+     "technician_operator": "SIMULATED Operator",
+     "notes": "Jadwal contoh untuk demo.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    }
+   ],
+   "data_status": "SIMULATED"
+  },
+  {
+   "station_id": "RFS-STA-006",
+   "prototype_id": "RFS-PROT-006",
+   "legacy_id": "ASIK-06",
+   "position_label": "Timur Laut",
+   "coordinates": {
+    "latitude": -5.80655,
+    "longitude": 106.293089,
+    "datum": "WGS 84",
+    "status": "Ditata ulang melingkar (simulasi, ±400 m dari pantai)"
+   },
+   "original_coordinates": {
+    "latitude": -5.8145,
+    "longitude": 106.294,
+    "note": "Koordinat awal dari tabel sebelum penataan ulang melingkar"
+   },
+   "depth_m": null,
+   "depth_status": "Not Available",
+   "depth_simulated_m": 6,
+   "nearest_prototype": {
+    "station_id": "RFS-STA-007",
+    "prototype_id": "RFS-PROT-007",
+    "distance_m": 919,
+    "distance_status": "Calculated",
+    "method": "Haversine"
+   },
+   "distances_to_others": [
+    {
+     "station_id": "RFS-STA-007",
+     "distance_m": 919,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-005",
+     "distance_m": 989,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-008",
+     "distance_m": 1429,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-009",
+     "distance_m": 1884,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-004",
+     "distance_m": 1976,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-010",
+     "distance_m": 2500,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-003",
+     "distance_m": 2959,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-011",
+     "distance_m": 3222,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-002",
+     "distance_m": 3942,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-012",
+     "distance_m": 4056,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-001",
+     "distance_m": 4729,
+     "distance_status": "Calculated"
+    }
+   ],
+   "scene": {
+    "position": [
+     19.4781,
+     0,
+     -6.5807
+    ],
+    "unit": "1 unit = 100 m",
+    "rotation_deg": 0,
+    "scale": 2.8,
+    "seed": 38301648
+   },
+   "prototype": {
+    "prototype_id": "RFS-PROT-006",
+    "model": "echovision-prototype-v1",
+    "model_ref": "echovision_prototype_3d.json",
+    "bom_components": 16,
+    "unit_budget_rp": 2500000,
+    "deployment_status": "SIMULATED (not deployed)"
+   },
+   "habitat": {
+    "type": "Sandy Bottom",
+    "dominant_substrate": "Sand",
+    "growth_forms": [
+     "Coral Massive"
+    ],
+    "condition": "Simulated (Fair)",
+    "description": "Simulasi dasar berpasir dengan riak halus dan karang yang sangat jarang.",
+    "associated_marine_organisms": [
+     "Surgeonfish",
+     "Parrotfish"
+    ],
+    "note": "Seluruh habitat ini hasil acak untuk visualisasi prototype, bukan hasil survei atau identifikasi habitat aktual Pulau Tunda.",
+    "label": "SIMULATED HABITAT",
+    "data_status": "SIMULATED"
+   },
+   "biodiversity": {
+    "data_status": "SIMULATED BIODIVERSITY",
+    "fish_groups": [
+     {
+      "key": "damsel",
+      "count": 3
+     },
+     {
+      "key": "butterfly",
+      "count": 0
+     },
+     {
+      "key": "angel",
+      "count": 0
+     },
+     {
+      "key": "parrot",
+      "count": 2
+     },
+     {
+      "key": "surgeon",
+      "count": 3
+     },
+     {
+      "key": "clown",
+      "count": 0
+     },
+     {
+      "key": "grouper",
+      "count": 0
+     }
+    ],
+    "coral_composition": [
+     {
+      "form": "Acropora Branching",
+      "count": 0
+     },
+     {
+      "form": "Acropora Tabulate",
+      "count": 0
+     },
+     {
+      "form": "Coral Massive",
+      "count": 3
+     },
+     {
+      "form": "Coral Encrusting",
+      "count": 0
+     },
+     {
+      "form": "Coral Foliose",
+      "count": 0
+     },
+     {
+      "form": "Coral Submassive",
+      "count": 0
+     },
+     {
+      "form": "Coral Branching",
+      "count": 0
+     }
+    ],
+    "density": {
+     "fish": "medium",
+     "coral": "low"
+    }
+   },
+   "maintenance_history": [
+    {
+     "maintenance_id": "RFS-MNT-006-01",
+     "station_id": "RFS-STA-006",
+     "prototype_id": "RFS-PROT-006",
+     "activity_type": "Installation",
+     "activity_date": "2026-04-20",
+     "maintenance_description": "Pemasangan prototype di titik pantau (simulasi).",
+     "device_condition": "Operational",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator D",
+     "notes": "Catatan fiktif untuk uji tampilan.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-006-02",
+     "station_id": "RFS-STA-006",
+     "prototype_id": "RFS-PROT-006",
+     "activity_type": "Maintenance",
+     "activity_date": "2026-06-20",
+     "maintenance_description": "Perawatan umum dan pengencangan bracket (simulasi).",
+     "device_condition": "Operational",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator A",
+     "notes": "Contoh status untuk simulasi alur kerja.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-006-03",
+     "station_id": "RFS-STA-006",
+     "prototype_id": "RFS-PROT-006",
+     "activity_type": "Waterproof Enclosure Inspection",
+     "activity_date": "2026-07-12",
+     "maintenance_description": "Pemeriksaan seal, O-ring, dan gland box IP67 (simulasi).",
+     "device_condition": "Minor Seal Wear",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator A",
+     "notes": "Data contoh untuk demo.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-006-04",
+     "station_id": "RFS-STA-006",
+     "prototype_id": "RFS-PROT-006",
+     "activity_type": "Component Replacement",
+     "activity_date": "2026-08-09",
+     "maintenance_description": "Penggantian komponen contoh, misalnya O-ring (simulasi).",
+     "device_condition": "Operational (Part Replaced)",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator A",
+     "notes": "Data contoh untuk demo.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-006-05",
+     "station_id": "RFS-STA-006",
+     "prototype_id": "RFS-PROT-006",
+     "activity_type": "Routine Inspection",
+     "activity_date": "2026-12-20",
+     "maintenance_description": "Inspeksi rutin terjadwal (simulasi).",
+     "device_condition": "Pending Inspection",
+     "maintenance_status": "Scheduled (Simulated)",
+     "technician_operator": "SIMULATED Operator",
+     "notes": "Jadwal contoh untuk demo.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    }
+   ],
+   "data_status": "SIMULATED"
+  },
+  {
+   "station_id": "RFS-STA-007",
+   "prototype_id": "RFS-PROT-007",
+   "legacy_id": "ASIK-07",
+   "position_label": "Timur",
+   "coordinates": {
+    "latitude": -5.813069,
+    "longitude": 106.29819,
+    "datum": "WGS 84",
+    "status": "Ditata ulang melingkar (simulasi, ±400 m dari pantai)"
+   },
+   "original_coordinates": {
+    "latitude": -5.816812,
+    "longitude": 106.288616,
+    "note": "Koordinat awal dari tabel sebelum penataan ulang melingkar"
+   },
+   "depth_m": null,
+   "depth_status": "Not Available",
+   "depth_simulated_m": 6,
+   "nearest_prototype": {
+    "station_id": "RFS-STA-006",
+    "prototype_id": "RFS-PROT-006",
+    "distance_m": 919,
+    "distance_status": "Calculated",
+    "method": "Haversine"
+   },
+   "distances_to_others": [
+    {
+     "station_id": "RFS-STA-006",
+     "distance_m": 919,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-008",
+     "distance_m": 931,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-005",
+     "distance_m": 1752,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-009",
+     "distance_m": 1801,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-004",
+     "distance_m": 2665,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-010",
+     "distance_m": 2680,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-011",
+     "distance_m": 3568,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-003",
+     "distance_m": 3595,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-012",
+     "distance_m": 4498,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-002",
+     "distance_m": 4540,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-001",
+     "distance_m": 5257,
+     "distance_status": "Calculated"
+    }
+   ],
+   "scene": {
+    "position": [
+     25.1269,
+     0,
+     0.6293
+    ],
+    "unit": "1 unit = 100 m",
+    "rotation_deg": 0,
+    "scale": 2.8,
+    "seed": 67428131
+   },
+   "prototype": {
+    "prototype_id": "RFS-PROT-007",
+    "model": "echovision-prototype-v1",
+    "model_ref": "echovision_prototype_3d.json",
+    "bom_components": 16,
+    "unit_budget_rp": 2500000,
+    "deployment_status": "SIMULATED (not deployed)"
+   },
+   "habitat": {
+    "type": "Mixed Coral Habitat",
+    "dominant_substrate": "Mixed coral, sand and rubble",
+    "growth_forms": [
+     "Acropora Branching",
+     "Acropora Tabulate",
+     "Coral Massive",
+     "Coral Encrusting",
+     "Coral Foliose",
+     "Coral Submassive",
+     "Coral Branching"
+    ],
+    "condition": "Simulated (Good)",
+    "description": "Simulasi mozaik koloni karang, pasir, dan patahan karang dengan kepadatan sedang.",
+    "associated_marine_organisms": [
+     "Damselfish",
+     "Parrotfish",
+     "Angelfish"
+    ],
+    "note": "Seluruh habitat ini hasil acak untuk visualisasi prototype, bukan hasil survei atau identifikasi habitat aktual Pulau Tunda.",
+    "label": "SIMULATED HABITAT",
+    "data_status": "SIMULATED"
+   },
+   "biodiversity": {
+    "data_status": "SIMULATED BIODIVERSITY",
+    "fish_groups": [
+     {
+      "key": "damsel",
+      "count": 8
+     },
+     {
+      "key": "butterfly",
+      "count": 4
+     },
+     {
+      "key": "angel",
+      "count": 2
+     },
+     {
+      "key": "parrot",
+      "count": 1
+     },
+     {
+      "key": "surgeon",
+      "count": 4
+     },
+     {
+      "key": "clown",
+      "count": 1
+     },
+     {
+      "key": "grouper",
+      "count": 0
+     }
+    ],
+    "coral_composition": [
+     {
+      "form": "Acropora Branching",
+      "count": 4
+     },
+     {
+      "form": "Acropora Tabulate",
+      "count": 2
+     },
+     {
+      "form": "Coral Massive",
+      "count": 3
+     },
+     {
+      "form": "Coral Encrusting",
+      "count": 3
+     },
+     {
+      "form": "Coral Foliose",
+      "count": 2
+     },
+     {
+      "form": "Coral Submassive",
+      "count": 4
+     },
+     {
+      "form": "Coral Branching",
+      "count": 3
+     }
+    ],
+    "density": {
+     "fish": "high",
+     "coral": "high"
+    }
+   },
+   "maintenance_history": [
+    {
+     "maintenance_id": "RFS-MNT-007-01",
+     "station_id": "RFS-STA-007",
+     "prototype_id": "RFS-PROT-007",
+     "activity_type": "Installation",
+     "activity_date": "2026-05-20",
+     "maintenance_description": "Pemasangan prototype di titik pantau (simulasi).",
+     "device_condition": "Operational",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator B",
+     "notes": "Catatan fiktif untuk uji tampilan.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-007-02",
+     "station_id": "RFS-STA-007",
+     "prototype_id": "RFS-PROT-007",
+     "activity_type": "Waterproof Enclosure Inspection",
+     "activity_date": "2026-07-03",
+     "maintenance_description": "Pemeriksaan seal, O-ring, dan gland box IP67 (simulasi).",
+     "device_condition": "Minor Seal Wear",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator D",
+     "notes": "Catatan fiktif untuk uji tampilan.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-007-03",
+     "station_id": "RFS-STA-007",
+     "prototype_id": "RFS-PROT-007",
+     "activity_type": "Sensor Calibration",
+     "activity_date": "2026-09-26",
+     "maintenance_description": "Kalibrasi sensor suhu dan tekanan (simulasi).",
+     "device_condition": "Operational",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator B",
+     "notes": "Contoh status untuk simulasi alur kerja.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-007-04",
+     "station_id": "RFS-STA-007",
+     "prototype_id": "RFS-PROT-007",
+     "activity_type": "Battery Inspection",
+     "activity_date": "2026-10-16",
+     "maintenance_description": "Pengecekan tegangan baterai dan controller (simulasi).",
+     "device_condition": "Battery Voltage Lower Than Expected",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator B",
+     "notes": "Tidak mewakili kegiatan nyata.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-007-05",
+     "station_id": "RFS-STA-007",
+     "prototype_id": "RFS-PROT-007",
+     "activity_type": "Routine Inspection",
+     "activity_date": "2026-12-11",
+     "maintenance_description": "Inspeksi rutin terjadwal (simulasi).",
+     "device_condition": "Pending Inspection",
+     "maintenance_status": "Scheduled (Simulated)",
+     "technician_operator": "SIMULATED Operator",
+     "notes": "Jadwal contoh untuk demo.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    }
+   ],
+   "data_status": "SIMULATED"
+  },
+  {
+   "station_id": "RFS-STA-008",
+   "prototype_id": "RFS-PROT-008",
+   "legacy_id": "ASIK-08",
+   "position_label": "Tenggara",
+   "coordinates": {
+    "latitude": -5.819393,
+    "longitude": 106.292676,
+    "datum": "WGS 84",
+    "status": "Ditata ulang melingkar (simulasi, ±400 m dari pantai)"
+   },
+   "original_coordinates": {
+    "latitude": -5.818,
+    "longitude": 106.275,
+    "note": "Koordinat awal dari tabel sebelum penataan ulang melingkar"
+   },
+   "depth_m": null,
+   "depth_status": "Not Available",
+   "depth_simulated_m": 7,
+   "nearest_prototype": {
+    "station_id": "RFS-STA-007",
+    "prototype_id": "RFS-PROT-007",
+    "distance_m": 931,
+    "distance_status": "Calculated",
+    "method": "Haversine"
+   },
+   "distances_to_others": [
+    {
+     "station_id": "RFS-STA-007",
+     "distance_m": 931,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-009",
+     "distance_m": 985,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-006",
+     "distance_m": 1429,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-005",
+     "distance_m": 1787,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-010",
+     "distance_m": 1957,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-004",
+     "distance_m": 2453,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-011",
+     "distance_m": 2922,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-003",
+     "distance_m": 3240,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-012",
+     "distance_m": 3898,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-002",
+     "distance_m": 4098,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-001",
+     "distance_m": 4718,
+     "distance_status": "Calculated"
+    }
+   ],
+   "scene": {
+    "position": [
+     19.0207,
+     0,
+     7.6237
+    ],
+    "unit": "1 unit = 100 m",
+    "rotation_deg": 0,
+    "scale": 2.8,
+    "seed": 71974651
+   },
+   "prototype": {
+    "prototype_id": "RFS-PROT-008",
+    "model": "echovision-prototype-v1",
+    "model_ref": "echovision_prototype_3d.json",
+    "bom_components": 16,
+    "unit_budget_rp": 2500000,
+    "deployment_status": "SIMULATED (not deployed)"
+   },
+   "habitat": {
+    "type": "Coral Reef",
+    "dominant_substrate": "Live coral on carbonate rock",
+    "growth_forms": [
+     "Acropora Branching",
+     "Acropora Tabulate",
+     "Coral Massive",
+     "Coral Encrusting",
+     "Coral Foliose",
+     "Coral Submassive",
+     "Coral Branching"
+    ],
+    "condition": "Simulated (Good)",
+    "description": "Simulasi hamparan karang keras dengan tutupan tinggi dan bentuk pertumbuhan beragam.",
+    "associated_marine_organisms": [
+     "Damselfish",
+     "Butterflyfish",
+     "Surgeonfish",
+     "Clownfish"
+    ],
+    "note": "Seluruh habitat ini hasil acak untuk visualisasi prototype, bukan hasil survei atau identifikasi habitat aktual Pulau Tunda.",
+    "label": "SIMULATED HABITAT",
+    "data_status": "SIMULATED"
+   },
+   "biodiversity": {
+    "data_status": "SIMULATED BIODIVERSITY",
+    "fish_groups": [
+     {
+      "key": "damsel",
+      "count": 16
+     },
+     {
+      "key": "butterfly",
+      "count": 3
+     },
+     {
+      "key": "angel",
+      "count": 1
+     },
+     {
+      "key": "parrot",
+      "count": 3
+     },
+     {
+      "key": "surgeon",
+      "count": 5
+     },
+     {
+      "key": "clown",
+      "count": 4
+     },
+     {
+      "key": "grouper",
+      "count": 0
+     }
+    ],
+    "coral_composition": [
+     {
+      "form": "Acropora Branching",
+      "count": 5
+     },
+     {
+      "form": "Acropora Tabulate",
+      "count": 5
+     },
+     {
+      "form": "Coral Massive",
+      "count": 6
+     },
+     {
+      "form": "Coral Encrusting",
+      "count": 2
+     },
+     {
+      "form": "Coral Foliose",
+      "count": 3
+     },
+     {
+      "form": "Coral Submassive",
+      "count": 1
+     },
+     {
+      "form": "Coral Branching",
+      "count": 4
+     }
+    ],
+    "density": {
+     "fish": "high",
+     "coral": "high"
+    }
+   },
+   "maintenance_history": [
+    {
+     "maintenance_id": "RFS-MNT-008-01",
+     "station_id": "RFS-STA-008",
+     "prototype_id": "RFS-PROT-008",
+     "activity_type": "Installation",
+     "activity_date": "2026-05-21",
+     "maintenance_description": "Pemasangan prototype di titik pantau (simulasi).",
+     "device_condition": "Operational",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator B",
+     "notes": "Catatan fiktif untuk uji tampilan.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-008-02",
+     "station_id": "RFS-STA-008",
+     "prototype_id": "RFS-PROT-008",
+     "activity_type": "Battery Inspection",
+     "activity_date": "2026-07-08",
+     "maintenance_description": "Pengecekan tegangan baterai dan controller (simulasi).",
+     "device_condition": "Battery Voltage Lower Than Expected",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator B",
+     "notes": "Data contoh untuk demo.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-008-03",
+     "station_id": "RFS-STA-008",
+     "prototype_id": "RFS-PROT-008",
+     "activity_type": "Component Replacement",
+     "activity_date": "2026-08-15",
+     "maintenance_description": "Penggantian komponen contoh, misalnya O-ring (simulasi).",
+     "device_condition": "Operational (Part Replaced)",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator A",
+     "notes": "Catatan fiktif untuk uji tampilan.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-008-04",
+     "station_id": "RFS-STA-008",
+     "prototype_id": "RFS-PROT-008",
+     "activity_type": "Sensor Calibration",
+     "activity_date": "2026-09-18",
+     "maintenance_description": "Kalibrasi sensor suhu dan tekanan (simulasi).",
+     "device_condition": "Operational",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator C",
+     "notes": "Data contoh untuk demo.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-008-05",
+     "station_id": "RFS-STA-008",
+     "prototype_id": "RFS-PROT-008",
+     "activity_type": "Routine Inspection",
+     "activity_date": "2026-12-11",
+     "maintenance_description": "Inspeksi rutin terjadwal (simulasi).",
+     "device_condition": "Pending Inspection",
+     "maintenance_status": "Scheduled (Simulated)",
+     "technician_operator": "SIMULATED Operator",
+     "notes": "Jadwal contoh untuk demo.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    }
+   ],
+   "data_status": "SIMULATED"
+  },
+  {
+   "station_id": "RFS-STA-009",
+   "prototype_id": "RFS-PROT-009",
+   "legacy_id": "ASIK-09",
+   "position_label": "Selatan-Tenggara",
+   "coordinates": {
+    "latitude": -5.820811,
+    "longitude": 106.28389,
+    "datum": "WGS 84",
+    "status": "Ditata ulang melingkar (simulasi, ±400 m dari pantai)"
+   },
+   "original_coordinates": {
+    "latitude": -5.815,
+    "longitude": 106.264,
+    "note": "Koordinat awal dari tabel sebelum penataan ulang melingkar"
+   },
+   "depth_m": null,
+   "depth_status": "Not Available",
+   "depth_simulated_m": 7,
+   "nearest_prototype": {
+    "station_id": "RFS-STA-008",
+    "prototype_id": "RFS-PROT-008",
+    "distance_m": 985,
+    "distance_status": "Calculated",
+    "method": "Haversine"
+   },
+   "distances_to_others": [
+    {
+     "station_id": "RFS-STA-008",
+     "distance_m": 985,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-010",
+     "distance_m": 987,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-005",
+     "distance_m": 1678,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-007",
+     "distance_m": 1801,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-006",
+     "distance_m": 1884,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-004",
+     "distance_m": 1927,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-011",
+     "distance_m": 1971,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-003",
+     "distance_m": 2500,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-012",
+     "distance_m": 2959,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-002",
+     "distance_m": 3256,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-001",
+     "distance_m": 3803,
+     "distance_status": "Calculated"
+    }
+   ],
+   "scene": {
+    "position": [
+     9.2911,
+     0,
+     9.192
+    ],
+    "unit": "1 unit = 100 m",
+    "rotation_deg": 0,
+    "scale": 2.8,
+    "seed": 68007983
+   },
+   "prototype": {
+    "prototype_id": "RFS-PROT-009",
+    "model": "echovision-prototype-v1",
+    "model_ref": "echovision_prototype_3d.json",
+    "bom_components": 16,
+    "unit_budget_rp": 2500000,
+    "deployment_status": "SIMULATED (not deployed)"
+   },
+   "habitat": {
+    "type": "Rocky Substrate",
+    "dominant_substrate": "Boulders and rock",
+    "growth_forms": [
+     "Coral Massive",
+     "Coral Encrusting",
+     "Coral Foliose"
+    ],
+    "condition": "Simulated (Degraded)",
+    "description": "Simulasi substrat berbatu dengan karang kerak dan masif menempel pada permukaan batu.",
+    "associated_marine_organisms": [
+     "Grouper",
+     "Damselfish",
+     "Butterflyfish"
+    ],
+    "note": "Seluruh habitat ini hasil acak untuk visualisasi prototype, bukan hasil survei atau identifikasi habitat aktual Pulau Tunda.",
+    "label": "SIMULATED HABITAT",
+    "data_status": "SIMULATED"
+   },
+   "biodiversity": {
+    "data_status": "SIMULATED BIODIVERSITY",
+    "fish_groups": [
+     {
+      "key": "damsel",
+      "count": 7
+     },
+     {
+      "key": "butterfly",
+      "count": 1
+     },
+     {
+      "key": "angel",
+      "count": 1
+     },
+     {
+      "key": "parrot",
+      "count": 0
+     },
+     {
+      "key": "surgeon",
+      "count": 2
+     },
+     {
+      "key": "clown",
+      "count": 1
+     },
+     {
+      "key": "grouper",
+      "count": 1
+     }
+    ],
+    "coral_composition": [
+     {
+      "form": "Acropora Branching",
+      "count": 0
+     },
+     {
+      "form": "Acropora Tabulate",
+      "count": 0
+     },
+     {
+      "form": "Coral Massive",
+      "count": 4
+     },
+     {
+      "form": "Coral Encrusting",
+      "count": 5
+     },
+     {
+      "form": "Coral Foliose",
+      "count": 3
+     },
+     {
+      "form": "Coral Submassive",
+      "count": 0
+     },
+     {
+      "form": "Coral Branching",
+      "count": 0
+     }
+    ],
+    "density": {
+     "fish": "medium",
+     "coral": "medium"
+    }
+   },
+   "maintenance_history": [
+    {
+     "maintenance_id": "RFS-MNT-009-01",
+     "station_id": "RFS-STA-009",
+     "prototype_id": "RFS-PROT-009",
+     "activity_type": "Installation",
+     "activity_date": "2026-04-16",
+     "maintenance_description": "Pemasangan prototype di titik pantau (simulasi).",
+     "device_condition": "Operational",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator D",
+     "notes": "Contoh status untuk simulasi alur kerja.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-009-02",
+     "station_id": "RFS-STA-009",
+     "prototype_id": "RFS-PROT-009",
+     "activity_type": "Sensor Calibration",
+     "activity_date": "2026-06-26",
+     "maintenance_description": "Kalibrasi sensor suhu dan tekanan (simulasi).",
+     "device_condition": "Operational",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator A",
+     "notes": "Tidak mewakili kegiatan nyata.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-009-03",
+     "station_id": "RFS-STA-009",
+     "prototype_id": "RFS-PROT-009",
+     "activity_type": "Maintenance",
+     "activity_date": "2026-07-20",
+     "maintenance_description": "Perawatan umum dan pengencangan bracket (simulasi).",
+     "device_condition": "Operational",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator C",
+     "notes": "Catatan fiktif untuk uji tampilan.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-009-04",
+     "station_id": "RFS-STA-009",
+     "prototype_id": "RFS-PROT-009",
+     "activity_type": "Waterproof Enclosure Inspection",
+     "activity_date": "2026-08-10",
+     "maintenance_description": "Pemeriksaan seal, O-ring, dan gland box IP67 (simulasi).",
+     "device_condition": "Minor Seal Wear",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator A",
+     "notes": "Tidak mewakili kegiatan nyata.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-009-05",
+     "station_id": "RFS-STA-009",
+     "prototype_id": "RFS-PROT-009",
+     "activity_type": "Device Retrieval",
+     "activity_date": "2026-10-26",
+     "maintenance_description": "Pengangkatan perangkat untuk pemeriksaan di darat (simulasi).",
+     "device_condition": "Retrieved",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator A",
+     "notes": "Tidak mewakili kegiatan nyata.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-009-06",
+     "station_id": "RFS-STA-009",
+     "prototype_id": "RFS-PROT-009",
+     "activity_type": "Installation (re-deployment)",
+     "activity_date": "2026-10-21",
+     "maintenance_description": "Pemasangan prototype di titik pantau (simulasi).",
+     "device_condition": "Operational",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator A",
+     "notes": "Data contoh untuk demo.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-009-07",
+     "station_id": "RFS-STA-009",
+     "prototype_id": "RFS-PROT-009",
+     "activity_type": "Routine Inspection",
+     "activity_date": "2026-12-20",
+     "maintenance_description": "Inspeksi rutin terjadwal (simulasi).",
+     "device_condition": "Pending Inspection",
+     "maintenance_status": "Scheduled (Simulated)",
+     "technician_operator": "SIMULATED Operator",
+     "notes": "Jadwal contoh untuk demo.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    }
+   ],
+   "data_status": "SIMULATED"
+  },
+  {
+   "station_id": "RFS-STA-010",
+   "prototype_id": "RFS-PROT-010",
+   "legacy_id": "ASIK-10",
+   "position_label": "Selatan",
+   "coordinates": {
+    "latitude": -5.82003,
+    "longitude": 106.274999,
+    "datum": "WGS 84",
+    "status": "Ditata ulang melingkar (simulasi, ±400 m dari pantai)"
+   },
+   "original_coordinates": {
+    "latitude": -5.812517,
+    "longitude": 106.259856,
+    "note": "Koordinat awal dari tabel sebelum penataan ulang melingkar"
+   },
+   "depth_m": null,
+   "depth_status": "Not Available",
+   "depth_simulated_m": 5,
+   "nearest_prototype": {
+    "station_id": "RFS-STA-009",
+    "prototype_id": "RFS-PROT-009",
+    "distance_m": 987,
+    "distance_status": "Calculated",
+    "method": "Haversine"
+   },
+   "distances_to_others": [
+    {
+     "station_id": "RFS-STA-009",
+     "distance_m": 987,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-011",
+     "distance_m": 990,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-004",
+     "distance_m": 1586,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-003",
+     "distance_m": 1770,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-005",
+     "distance_m": 1888,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-008",
+     "distance_m": 1957,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-012",
+     "distance_m": 1979,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-002",
+     "distance_m": 2362,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-006",
+     "distance_m": 2500,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-007",
+     "distance_m": 2680,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-001",
+     "distance_m": 2835,
+     "distance_status": "Calculated"
+    }
+   ],
+   "scene": {
+    "position": [
+     -0.5548,
+     0,
+     8.3282
+    ],
+    "unit": "1 unit = 100 m",
+    "rotation_deg": 0,
+    "scale": 2.8,
+    "seed": 40084055
+   },
+   "prototype": {
+    "prototype_id": "RFS-PROT-010",
+    "model": "echovision-prototype-v1",
+    "model_ref": "echovision_prototype_3d.json",
+    "bom_components": 16,
+    "unit_budget_rp": 2500000,
+    "deployment_status": "SIMULATED (not deployed)"
+   },
+   "habitat": {
+    "type": "Seagrass",
+    "dominant_substrate": "Sand with seagrass",
+    "growth_forms": [
+     "Coral Encrusting"
+    ],
+    "condition": "Simulated (Fair)",
+    "description": "Simulasi padang lamun di dasar berpasir; ikan herbivora merumput di sekitarnya.",
+    "associated_marine_organisms": [
+     "Parrotfish",
+     "Surgeonfish"
+    ],
+    "note": "Seluruh habitat ini hasil acak untuk visualisasi prototype, bukan hasil survei atau identifikasi habitat aktual Pulau Tunda.",
+    "label": "SIMULATED HABITAT",
+    "data_status": "SIMULATED"
+   },
+   "biodiversity": {
+    "data_status": "SIMULATED BIODIVERSITY",
+    "fish_groups": [
+     {
+      "key": "damsel",
+      "count": 0
+     },
+     {
+      "key": "butterfly",
+      "count": 0
+     },
+     {
+      "key": "angel",
+      "count": 0
+     },
+     {
+      "key": "parrot",
+      "count": 3
+     },
+     {
+      "key": "surgeon",
+      "count": 1
+     },
+     {
+      "key": "clown",
+      "count": 0
+     },
+     {
+      "key": "grouper",
+      "count": 0
+     }
+    ],
+    "coral_composition": [
+     {
+      "form": "Acropora Branching",
+      "count": 0
+     },
+     {
+      "form": "Acropora Tabulate",
+      "count": 0
+     },
+     {
+      "form": "Coral Massive",
+      "count": 0
+     },
+     {
+      "form": "Coral Encrusting",
+      "count": 2
+     },
+     {
+      "form": "Coral Foliose",
+      "count": 0
+     },
+     {
+      "form": "Coral Submassive",
+      "count": 0
+     },
+     {
+      "form": "Coral Branching",
+      "count": 0
+     }
+    ],
+    "density": {
+     "fish": "low",
+     "coral": "low"
+    }
+   },
+   "maintenance_history": [
+    {
+     "maintenance_id": "RFS-MNT-010-01",
+     "station_id": "RFS-STA-010",
+     "prototype_id": "RFS-PROT-010",
+     "activity_type": "Installation",
+     "activity_date": "2026-04-24",
+     "maintenance_description": "Pemasangan prototype di titik pantau (simulasi).",
+     "device_condition": "Operational",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator C",
+     "notes": "Catatan fiktif untuk uji tampilan.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-010-02",
+     "station_id": "RFS-STA-010",
+     "prototype_id": "RFS-PROT-010",
+     "activity_type": "Maintenance",
+     "activity_date": "2026-05-22",
+     "maintenance_description": "Perawatan umum dan pengencangan bracket (simulasi).",
+     "device_condition": "Operational",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator C",
+     "notes": "Data contoh untuk demo.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-010-03",
+     "station_id": "RFS-STA-010",
+     "prototype_id": "RFS-PROT-010",
+     "activity_type": "Waterproof Enclosure Inspection",
+     "activity_date": "2026-07-12",
+     "maintenance_description": "Pemeriksaan seal, O-ring, dan gland box IP67 (simulasi).",
+     "device_condition": "Minor Seal Wear",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator B",
+     "notes": "Catatan fiktif untuk uji tampilan.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-010-04",
+     "station_id": "RFS-STA-010",
+     "prototype_id": "RFS-PROT-010",
+     "activity_type": "Routine Inspection",
+     "activity_date": "2026-09-07",
+     "maintenance_description": "Inspeksi visual rutin struktur dan mooring (simulasi).",
+     "device_condition": "Operational",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator C",
+     "notes": "Tidak mewakili kegiatan nyata.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-010-05",
+     "station_id": "RFS-STA-010",
+     "prototype_id": "RFS-PROT-010",
+     "activity_type": "Sensor Calibration",
+     "activity_date": "2026-10-10",
+     "maintenance_description": "Kalibrasi sensor suhu dan tekanan (simulasi).",
+     "device_condition": "Operational",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator A",
+     "notes": "Contoh status untuk simulasi alur kerja.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-010-06",
+     "station_id": "RFS-STA-010",
+     "prototype_id": "RFS-PROT-010",
+     "activity_type": "Component Replacement",
+     "activity_date": "2026-10-26",
+     "maintenance_description": "Penggantian komponen contoh, misalnya O-ring (simulasi).",
+     "device_condition": "Operational (Part Replaced)",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator C",
+     "notes": "Contoh status untuk simulasi alur kerja.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-010-07",
+     "station_id": "RFS-STA-010",
+     "prototype_id": "RFS-PROT-010",
+     "activity_type": "Routine Inspection",
+     "activity_date": "2026-12-11",
+     "maintenance_description": "Inspeksi rutin terjadwal (simulasi).",
+     "device_condition": "Pending Inspection",
+     "maintenance_status": "Scheduled (Simulated)",
+     "technician_operator": "SIMULATED Operator",
+     "notes": "Jadwal contoh untuk demo.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    }
+   ],
+   "data_status": "SIMULATED"
+  },
+  {
+   "station_id": "RFS-STA-011",
+   "prototype_id": "RFS-PROT-011",
+   "legacy_id": "ASIK-11",
+   "position_label": "Selatan-Barat Daya",
+   "coordinates": {
+    "latitude": -5.817927,
+    "longitude": 106.266306,
+    "datum": "WGS 84",
+    "status": "Ditata ulang melingkar (simulasi, ±400 m dari pantai)"
+   },
+   "original_coordinates": {
+    "latitude": -5.815657,
+    "longitude": 106.275295,
+    "note": "Koordinat awal dari tabel sebelum penataan ulang melingkar"
+   },
+   "depth_m": null,
+   "depth_status": "Not Available",
+   "depth_simulated_m": 11,
+   "nearest_prototype": {
+    "station_id": "RFS-STA-012",
+    "prototype_id": "RFS-PROT-012",
+    "distance_m": 989,
+    "distance_status": "Calculated",
+    "method": "Haversine"
+   },
+   "distances_to_others": [
+    {
+     "station_id": "RFS-STA-012",
+     "distance_m": 989,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-010",
+     "distance_m": 990,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-003",
+     "distance_m": 1255,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-002",
+     "distance_m": 1484,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-004",
+     "distance_m": 1675,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-001",
+     "distance_m": 1851,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-009",
+     "distance_m": 1971,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-005",
+     "distance_m": 2399,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-008",
+     "distance_m": 2922,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-006",
+     "distance_m": 3222,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-007",
+     "distance_m": 3568,
+     "distance_status": "Calculated"
+    }
+   ],
+   "scene": {
+    "position": [
+     -10.1814,
+     0,
+     6.0023
+    ],
+    "unit": "1 unit = 100 m",
+    "rotation_deg": 0,
+    "scale": 2.8,
+    "seed": 46813404
+   },
+   "prototype": {
+    "prototype_id": "RFS-PROT-011",
+    "model": "echovision-prototype-v1",
+    "model_ref": "echovision_prototype_3d.json",
+    "bom_components": 16,
+    "unit_budget_rp": 2500000,
+    "deployment_status": "SIMULATED (not deployed)"
+   },
+   "habitat": {
+    "type": "Sandy Bottom",
+    "dominant_substrate": "Sand",
+    "growth_forms": [
+     "Coral Encrusting"
+    ],
+    "condition": "Simulated (Fair)",
+    "description": "Simulasi dasar berpasir dengan riak halus dan karang yang sangat jarang.",
+    "associated_marine_organisms": [
+     "Surgeonfish",
+     "Parrotfish"
+    ],
+    "note": "Seluruh habitat ini hasil acak untuk visualisasi prototype, bukan hasil survei atau identifikasi habitat aktual Pulau Tunda.",
+    "label": "SIMULATED HABITAT",
+    "data_status": "SIMULATED"
+   },
+   "biodiversity": {
+    "data_status": "SIMULATED BIODIVERSITY",
+    "fish_groups": [
+     {
+      "key": "damsel",
+      "count": 2
+     },
+     {
+      "key": "butterfly",
+      "count": 0
+     },
+     {
+      "key": "angel",
+      "count": 0
+     },
+     {
+      "key": "parrot",
+      "count": 1
+     },
+     {
+      "key": "surgeon",
+      "count": 1
+     },
+     {
+      "key": "clown",
+      "count": 0
+     },
+     {
+      "key": "grouper",
+      "count": 0
+     }
+    ],
+    "coral_composition": [
+     {
+      "form": "Acropora Branching",
+      "count": 0
+     },
+     {
+      "form": "Acropora Tabulate",
+      "count": 0
+     },
+     {
+      "form": "Coral Massive",
+      "count": 0
+     },
+     {
+      "form": "Coral Encrusting",
+      "count": 2
+     },
+     {
+      "form": "Coral Foliose",
+      "count": 0
+     },
+     {
+      "form": "Coral Submassive",
+      "count": 0
+     },
+     {
+      "form": "Coral Branching",
+      "count": 0
+     }
+    ],
+    "density": {
+     "fish": "low",
+     "coral": "low"
+    }
+   },
+   "maintenance_history": [
+    {
+     "maintenance_id": "RFS-MNT-011-01",
+     "station_id": "RFS-STA-011",
+     "prototype_id": "RFS-PROT-011",
+     "activity_type": "Installation",
+     "activity_date": "2026-05-08",
+     "maintenance_description": "Pemasangan prototype di titik pantau (simulasi).",
+     "device_condition": "Operational",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator A",
+     "notes": "Catatan fiktif untuk uji tampilan.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-011-02",
+     "station_id": "RFS-STA-011",
+     "prototype_id": "RFS-PROT-011",
+     "activity_type": "Battery Inspection",
+     "activity_date": "2026-06-07",
+     "maintenance_description": "Pengecekan tegangan baterai dan controller (simulasi).",
+     "device_condition": "Battery Voltage Lower Than Expected",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator C",
+     "notes": "Data contoh untuk demo.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-011-03",
+     "station_id": "RFS-STA-011",
+     "prototype_id": "RFS-PROT-011",
+     "activity_type": "Sensor Calibration",
+     "activity_date": "2026-08-07",
+     "maintenance_description": "Kalibrasi sensor suhu dan tekanan (simulasi).",
+     "device_condition": "Operational",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator D",
+     "notes": "Catatan fiktif untuk uji tampilan.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-011-04",
+     "station_id": "RFS-STA-011",
+     "prototype_id": "RFS-PROT-011",
+     "activity_type": "Maintenance",
+     "activity_date": "2026-09-10",
+     "maintenance_description": "Perawatan umum dan pengencangan bracket (simulasi).",
+     "device_condition": "Operational",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator A",
+     "notes": "Catatan fiktif untuk uji tampilan.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-011-05",
+     "station_id": "RFS-STA-011",
+     "prototype_id": "RFS-PROT-011",
+     "activity_type": "Waterproof Enclosure Inspection",
+     "activity_date": "2026-10-17",
+     "maintenance_description": "Pemeriksaan seal, O-ring, dan gland box IP67 (simulasi).",
+     "device_condition": "Minor Seal Wear",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator A",
+     "notes": "Tidak mewakili kegiatan nyata.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-011-06",
+     "station_id": "RFS-STA-011",
+     "prototype_id": "RFS-PROT-011",
+     "activity_type": "Component Replacement",
+     "activity_date": "2026-10-27",
+     "maintenance_description": "Penggantian komponen contoh, misalnya O-ring (simulasi).",
+     "device_condition": "Operational (Part Replaced)",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator C",
+     "notes": "Tidak mewakili kegiatan nyata.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-011-07",
+     "station_id": "RFS-STA-011",
+     "prototype_id": "RFS-PROT-011",
+     "activity_type": "Routine Inspection",
+     "activity_date": "2026-12-18",
+     "maintenance_description": "Inspeksi rutin terjadwal (simulasi).",
+     "device_condition": "Pending Inspection",
+     "maintenance_status": "Scheduled (Simulated)",
+     "technician_operator": "SIMULATED Operator",
+     "notes": "Jadwal contoh untuk demo.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    }
+   ],
+   "data_status": "SIMULATED"
+  },
+  {
+   "station_id": "RFS-STA-012",
+   "prototype_id": "RFS-PROT-012",
+   "legacy_id": "ASIK-12",
+   "position_label": "Barat-Barat Daya",
+   "coordinates": {
+    "latitude": -5.815805,
+    "longitude": 106.257622,
+    "datum": "WGS 84",
+    "status": "Ditata ulang melingkar (simulasi, ±400 m dari pantai)"
+   },
+   "original_coordinates": {
+    "latitude": -5.807669,
+    "longitude": 106.278476,
+    "note": "Koordinat awal dari tabel sebelum penataan ulang melingkar"
+   },
+   "depth_m": null,
+   "depth_status": "Not Available",
+   "depth_simulated_m": 5,
+   "nearest_prototype": {
+    "station_id": "RFS-STA-001",
+    "prototype_id": "RFS-PROT-001",
+    "distance_m": 878,
+    "distance_status": "Calculated",
+    "method": "Haversine"
+   },
+   "distances_to_others": [
+    {
+     "station_id": "RFS-STA-001",
+     "distance_m": 878,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-002",
+     "distance_m": 882,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-011",
+     "distance_m": 989,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-003",
+     "distance_m": 1403,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-010",
+     "distance_m": 1979,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-004",
+     "distance_m": 2246,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-009",
+     "distance_m": 2959,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-005",
+     "distance_m": 3145,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-008",
+     "distance_m": 3898,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-006",
+     "distance_m": 4056,
+     "distance_status": "Calculated"
+    },
+    {
+     "station_id": "RFS-STA-007",
+     "distance_m": 4498,
+     "distance_status": "Calculated"
+    }
+   ],
+   "scene": {
+    "position": [
+     -19.7981,
+     0,
+     3.6553
+    ],
+    "unit": "1 unit = 100 m",
+    "rotation_deg": 0,
+    "scale": 2.8,
+    "seed": 82323692
+   },
+   "prototype": {
+    "prototype_id": "RFS-PROT-012",
+    "model": "echovision-prototype-v1",
+    "model_ref": "echovision_prototype_3d.json",
+    "bom_components": 16,
+    "unit_budget_rp": 2500000,
+    "deployment_status": "SIMULATED (not deployed)"
+   },
+   "habitat": {
+    "type": "Coral Reef",
+    "dominant_substrate": "Live coral on carbonate rock",
+    "growth_forms": [
+     "Acropora Branching",
+     "Acropora Tabulate",
+     "Coral Massive",
+     "Coral Encrusting",
+     "Coral Foliose",
+     "Coral Submassive",
+     "Coral Branching"
+    ],
+    "condition": "Simulated (Degraded)",
+    "description": "Simulasi hamparan karang keras dengan tutupan tinggi dan bentuk pertumbuhan beragam.",
+    "associated_marine_organisms": [
+     "Damselfish",
+     "Butterflyfish",
+     "Surgeonfish",
+     "Clownfish"
+    ],
+    "note": "Seluruh habitat ini hasil acak untuk visualisasi prototype, bukan hasil survei atau identifikasi habitat aktual Pulau Tunda.",
+    "label": "SIMULATED HABITAT",
+    "data_status": "SIMULATED"
+   },
+   "biodiversity": {
+    "data_status": "SIMULATED BIODIVERSITY",
+    "fish_groups": [
+     {
+      "key": "damsel",
+      "count": 17
+     },
+     {
+      "key": "butterfly",
+      "count": 3
+     },
+     {
+      "key": "angel",
+      "count": 2
+     },
+     {
+      "key": "parrot",
+      "count": 3
+     },
+     {
+      "key": "surgeon",
+      "count": 3
+     },
+     {
+      "key": "clown",
+      "count": 4
+     },
+     {
+      "key": "grouper",
+      "count": 0
+     }
+    ],
+    "coral_composition": [
+     {
+      "form": "Acropora Branching",
+      "count": 9
+     },
+     {
+      "form": "Acropora Tabulate",
+      "count": 7
+     },
+     {
+      "form": "Coral Massive",
+      "count": 8
+     },
+     {
+      "form": "Coral Encrusting",
+      "count": 2
+     },
+     {
+      "form": "Coral Foliose",
+      "count": 2
+     },
+     {
+      "form": "Coral Submassive",
+      "count": 2
+     },
+     {
+      "form": "Coral Branching",
+      "count": 3
+     }
+    ],
+    "density": {
+     "fish": "high",
+     "coral": "high"
+    }
+   },
+   "maintenance_history": [
+    {
+     "maintenance_id": "RFS-MNT-012-01",
+     "station_id": "RFS-STA-012",
+     "prototype_id": "RFS-PROT-012",
+     "activity_type": "Installation",
+     "activity_date": "2026-05-20",
+     "maintenance_description": "Pemasangan prototype di titik pantau (simulasi).",
+     "device_condition": "Operational",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator D",
+     "notes": "Tidak mewakili kegiatan nyata.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-012-02",
+     "station_id": "RFS-STA-012",
+     "prototype_id": "RFS-PROT-012",
+     "activity_type": "Battery Inspection",
+     "activity_date": "2026-06-15",
+     "maintenance_description": "Pengecekan tegangan baterai dan controller (simulasi).",
+     "device_condition": "Battery Voltage Lower Than Expected",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator A",
+     "notes": "Contoh status untuk simulasi alur kerja.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-012-03",
+     "station_id": "RFS-STA-012",
+     "prototype_id": "RFS-PROT-012",
+     "activity_type": "Sensor Calibration",
+     "activity_date": "2026-08-19",
+     "maintenance_description": "Kalibrasi sensor suhu dan tekanan (simulasi).",
+     "device_condition": "Operational",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator A",
+     "notes": "Data contoh untuk demo.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-012-04",
+     "station_id": "RFS-STA-012",
+     "prototype_id": "RFS-PROT-012",
+     "activity_type": "Routine Inspection",
+     "activity_date": "2026-09-04",
+     "maintenance_description": "Inspeksi visual rutin struktur dan mooring (simulasi).",
+     "device_condition": "Operational",
+     "maintenance_status": "Completed (Simulated)",
+     "technician_operator": "SIMULATED Operator D",
+     "notes": "Catatan fiktif untuk uji tampilan.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    },
+    {
+     "maintenance_id": "RFS-MNT-012-05",
+     "station_id": "RFS-STA-012",
+     "prototype_id": "RFS-PROT-012",
+     "activity_type": "Routine Inspection",
+     "activity_date": "2026-12-20",
+     "maintenance_description": "Inspeksi rutin terjadwal (simulasi).",
+     "device_condition": "Pending Inspection",
+     "maintenance_status": "Scheduled (Simulated)",
+     "technician_operator": "SIMULATED Operator",
+     "notes": "Jadwal contoh untuk demo.",
+     "data_status": "SIMULATED MAINTENANCE HISTORY"
+    }
+   ],
+   "data_status": "SIMULATED"
+  }
+ ],
+ "catalog": {
+  "fish_groups": {
+   "butterfly": {
+    "common": "Butterflyfish",
+    "family": "Chaetodontidae",
+    "taxon_group": "Ikan karang (Chaetodontidae)",
+    "genera": [
+     "Chaetodon sp.",
+     "Heniochus sp."
+    ],
+    "note": "Tubuh pipih-oval dengan sirip dorsal dan anal berkembang; sering berpasangan di sekitar karang."
+   },
+   "angel": {
+    "common": "Angelfish",
+    "family": "Pomacanthidae",
+    "taxon_group": "Ikan karang (Pomacanthidae)",
+    "genera": [
+     "Pomacanthus sp.",
+     "Centropyge sp."
+    ],
+    "note": "Tubuh pipih dengan sirip dorsal dan anal khas; pola warna bergantung spesies."
+   },
+   "parrot": {
+    "common": "Parrotfish",
+    "family": "Scaridae",
+    "taxon_group": "Ikan herbivora bentik (Scaridae)",
+    "genera": [
+     "Scarus sp.",
+     "Chlorurus sp."
+    ],
+    "note": "Gigi menyatu seperti paruh untuk mengikis alga dari substrat."
+   },
+   "surgeon": {
+    "common": "Surgeonfish",
+    "family": "Acanthuridae",
+    "taxon_group": "Ikan herbivora (Acanthuridae)",
+    "genera": [
+     "Paracanthurus sp.",
+     "Ctenochaetus sp."
+    ],
+    "note": "Tubuh oval-pipih dengan duri di pangkal ekor; sering bergerombol merumput alga."
+   },
+   "damsel": {
+    "common": "Damselfish",
+    "family": "Pomacentridae",
+    "taxon_group": "Ikan karang kecil (Pomacentridae)",
+    "genera": [
+     "Chromis sp.",
+     "Dascyllus sp."
+    ],
+    "note": "Ikan kecil yang berkelompok dekat koloni karang dan berenang cepat."
+   },
+   "clown": {
+    "common": "Clownfish",
+    "family": "Amphiprioninae",
+    "taxon_group": "Ikan karang (Pomacentridae: Amphiprioninae)",
+    "genera": [
+     "Amphiprion sp."
+    ],
+    "note": "Berasosiasi dengan anemon laut; garis putih pada tubuh oranye."
+   },
+   "grouper": {
+    "common": "Grouper",
+    "family": "Epinephelinae",
+    "taxon_group": "Ikan predator (Serranidae: Epinephelinae)",
+    "genera": [
+     "Epinephelus sp.",
+     "Cephalopholis sp."
+    ],
+    "note": "Tubuh besar dan tebal dengan mulut lebar; jumlahnya dibatasi dalam visualisasi."
+   }
+  },
+  "coral_forms": {
+   "Acropora Branching": {
+    "description": "Koloni bercabang menyerupai tanduk dengan cabang berukuran bervariasi; pertumbuhan cepat di perairan jernih."
+   },
+   "Acropora Tabulate": {
+    "description": "Koloni melebar horizontal menyerupai meja dengan cabang pendek di bagian bawah."
+   },
+   "Coral Massive": {
+    "description": "Koloni menggumpal dan membulat dengan permukaan bertekstur; tumbuh lambat dan tahan lama."
+   },
+   "Coral Encrusting": {
+    "description": "Koloni menempel dan menyebar mengikuti kontur batuan atau substrat."
+   },
+   "Coral Foliose": {
+    "description": "Koloni berupa lembaran atau lipatan menyerupai daun yang tersusun berlapis."
+   },
+   "Coral Submassive": {
+    "description": "Koloni menggumpal dengan tonjolan pendek, kurang membulat dibanding bentuk masif."
+   },
+   "Coral Branching": {
+    "description": "Koloni bercabang dengan bentuk dan ketebalan cabang bervariasi."
+   }
+  },
+  "activity_types": [
+   "Installation",
+   "Routine Inspection",
+   "Sensor Calibration",
+   "Battery Inspection",
+   "Waterproof Enclosure Inspection",
+   "Cleaning",
+   "Component Replacement",
+   "Maintenance",
+   "Device Retrieval"
+  ]
+ }
+}
