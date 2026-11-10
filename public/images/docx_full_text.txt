@@ -1,0 +1,567 @@
+REEFSIGHT: Pengembangan Platform Kecerdasan Ekologis untuk Analisis Dinamika dan Tekanan Lingkungan Terumbu Karang di Pulau Tunda
+
+Ketika pengguna pertama kali membuka website REEFSIGHT, sistem akan langsung menampilkan Public Workspace sebagai halaman utama tanpa mengharuskan pengguna melakukan login. Public Workspace dapat diakses oleh siapa saja dan berfungsi sebagai pusat informasi mengenai ekosistem terumbu karang Pulau Tunda, teknologi REEFSIGHT, visualisasi prototipe 3D, peta penempatan prototipe, distribusi terumbu karang, analisis parameter lingkungan, proyeksi kondisi terumbu karang, serta dokumentasi dan publikasi penelitian. Sementara itu, akses login disediakan secara khusus bagi Administrator dan Tim Ekologi dan Riset melalui tombol Login pada bagian navigasi website. Administrator akan diarahkan ke Admin Workspace untuk mengelola sistem, akun pengguna, data, dan publikasi, sedangkan Tim Ekologi dan Riset akan diarahkan ke Research Workspace untuk melakukan pengumpulan, pengolahan, analisis, dan validasi data penelitian. Dengan pembagian tersebut, Public Workspace berperan sebagai ruang informasi yang terbuka bagi masyarakat, sedangkan Admin Workspace dan Research Workspace menjadi ruang kerja internal dengan hak akses yang disesuaikan berdasarkan peran masing-masing pengguna.
+
+Halaman Login1. Struktur pengguna baru REEFSIGHT
+
+Rekomendasi final: 3 kelompok pengguna
+
+01. Administrator
+
+Admin Workspace
+
+Pengelola dan pengendali seluruh sistem REEFSIGHT.
+
+02. Tim Ekologi dan Riset
+
+Research Workspace
+
+Gabungan Operator Lapangan, Peneliti Ekologi, dan Validator Data.
+
+03. Publik / Pengunjung
+
+Public Workspace
+
+Masyarakat, mitra, mahasiswa, dan peneliti yang mengakses informasi publik.
+
+2. Nama dan fungsi setiap laman
+
+A. Administrator — Admin Workspace
+
+Pengguna yang memiliki kendali terhadap pengelolaan platform.
+
+Fungsi utama:
+
+Mengelola akun Tim Ekologi dan Riset.
+
+Mengatur hak akses pengguna.
+
+Mengelola konfigurasi sistem dan integrasi data.
+
+Mengelola perangkat dan informasi prototype.
+
+Memantau proses pengumpulan, validasi, dan analisis data.
+
+Mengelola publikasi data.
+
+Melihat aktivitas dan riwayat perubahan sistem.
+
+Menu yang disarankan:
+
+Admin Dashboard
+
+User Management
+
+Prototype Management
+
+Data Management
+
+Publication Management
+
+Activity Logs (edit logbook)
+
+B. Tim Ekologi dan Riset — Research Workspace
+
+Nama yang saya rekomendasikan untuk user gabungan
+
+Ini merupakan satu laman internal yang digunakan oleh tim yang melakukan kegiatan lapangan, pengolahan data, penelitian, dan pemeriksaan kualitas data.
+
+Di dalamnya terdapat tiga fungsi kerja, bukan tiga jenis akun utama yang terpisah
+
+.
+
+Fungsi kerja
+
+Tanggung jawab
+
+Operator Lapangan
+
+Mengumpulkan data, mengoperasikan prototype, mengunggah citra, rekaman akustik, dan pengukuran lingkungan.
+
+Peneliti Ekologi
+
+Mengolah data, melakukan analisis bioakustik dan optik, menganalisis parameter lingkungan, serta menyusun analisis dinamika ekosistem.
+
+Validator Data
+
+Memeriksa kualitas, kelengkapan, konsistensi, dan kelayakan data sebelum digunakan atau dipublikasikan.
+
+Menu yang disarankan:
+
+Research Dashboard
+
+Field Data Collection
+
+Environmental Data
+
+Coral Distribution Analysis
+
+Ecological Dynamics
+
+Data Validation
+
+Research Logbook
+
+Scientific Reports
+
+Penting: ketiganya menggunakan satu portal dan satu sistem login, tetapi hak akses berdasarkan tugas tetap dipisahkan. Contohnya, Operator tidak otomatis bisa menyetujui validasi datanya sendiri.
+
+C. Publik / Pengunjung — Public Workspace
+
+Laman publik menjadi bagian yang sangat penting karena di sinilah hasil pengembangan REEFSIGHT dapat diperlihatkan dan dimanfaatkan oleh masyarakat, akademisi, maupun mitra konservasi.
+
+Publik tidak dapat mengakses data mentah atau data penelitian yang belum divalidasi. Mereka hanya melihat informasi yang sudah dibersihkan, diperiksa, dan disetujui untuk dipublikasikan.
+
+REEFSIGH - Public WorkspaceMAIN NAVIGATION
+
+01. Home
+
+Ecological EncyclopediaHalaman Home merupakan halaman utama yang berfungsi sebagai ensiklopedia ekologi untuk memperkenalkan ekosistem terumbu karang kepada pengunjung. Halaman ini menyajikan informasi mengenai pengertian dan fungsi ekologis terumbu karang, karakteristik habitat, keanekaragaman biota, bentuk pertumbuhan karang, serta kondisi ekosistem terumbu karang di Pulau Tunda. Informasi disajikan melalui kombinasi teks, foto, ilustrasi, dan visualisasi interaktif agar pengunjung dapat memahami karakteristik ekosistem yang menjadi fokus penelitian REEFSIGHT.
+
+02. Prototype Intelligence
+
+3D Hardware & Scenario
+
+Menu Prototype Intelligence merupakan halaman yang memperkenalkan teknologi dan rancangan prototipe REEFSIGHT melalui visualisasi perangkat keras dalam bentuk 3D. Pengunjung dapat mengeksplorasi komponen penyusun prototipe, seperti sensor akustik, kamera optik, unit pemrosesan, sistem penyimpanan, sumber daya, dan perangkat komunikasi. Setiap komponen dilengkapi informasi mengenai nama, fungsi, spesifikasi, serta perannya dalam proses pemantauan ekosistem. Selain itu, halaman ini menyediakan Scenario Simulation yang memungkinkan pengunjung melihat gambaran respons sistem dalam beberapa kondisi ekologis, seperti terumbu karang sehat, pemutihan karang, penurunan aktivitas ikan, dan degradasi terumbu karang. Simulasi tersebut digunakan sebagai demonstrasi konseptual dan dibedakan dari hasil pengukuran sensor secara nyata.
+
+03. Deployment Map
+
+Prototype LocationsMenu Deployment Map berfungsi untuk menampilkan peta lokasi penempatan prototipe REEFSIGHT di sekitar Pulau Tunda. Peta dirancang untuk memperlihatkan sekitar 8–12 titik penempatan prototipe yang direncanakan atau telah direalisasikan berdasarkan kebutuhan pemantauan ekosistem. Setiap titik dilengkapi informasi seperti identitas stasiun, koordinat geografis, kedalaman perairan, identitas prototipe, jenis perangkat, dan status penempatan. Pengunjung dapat memilih titik pada peta untuk melihat informasi lebih lanjut mengenai lokasi dan perangkat yang ditempatkan. Dengan demikian, halaman ini memberikan gambaran spasial mengenai rencana atau pelaksanaan distribusi perangkat pemantauan di wilayah penelitian.
+
+04. Coral Distribution
+
+ArcGIS InterpretationMenu Coral Distribution merupakan halaman WebGIS yang menyajikan hasil pengolahan dan interpretasi data spasial distribusi terumbu karang menggunakan ArcGIS. Halaman ini menampilkan peta sebaran terumbu karang di Pulau Tunda berdasarkan data hasil pemetaan dan klasifikasi yang tersedia. Pengunjung dapat mengeksplorasi lapisan peta, memilih tahun pengamatan, melihat atribut objek spasial, serta memperoleh informasi mengenai luas dan persebaran area terumbu karang. Halaman ini juga dapat dilengkapi analisis perbandingan antartahun melalui fitur Map Swipe dan Coral Change Analysis untuk mengidentifikasi perubahan distribusi atau luas area terumbu karang berdasarkan data yang tersedia. Seluruh informasi yang ditampilkan merupakan hasil interpretasi data spasial, bukan hasil proyeksi masa depan.   
+
+05. Coral Projection
+
+Future Modeling
+
+Menu Coral Projection berfungsi untuk menyajikan pemodelan proyeksi kondisi dan distribusi terumbu karang di Pulau Tunda pada periode mendatang. Halaman ini memungkinkan pengunjung mengeksplorasi gambaran perubahan kondisi terumbu karang dalam rentang waktu 5, 10, hingga 15 tahun berdasarkan model dan asumsi penelitian. Pemodelan dapat mempertimbangkan kondisi awal distribusi terumbu karang, perubahan parameter lingkungan, serta faktor ekologis lain yang memiliki keterkaitan dengan pertumbuhan dan kematian karang. Hasil proyeksi disajikan melalui peta, grafik, statistik perubahan luas atau tutupan karang, serta perbandingan antara kondisi aktual dan hasil pemodelan. Halaman ini bertujuan memberikan gambaran potensi perubahan ekosistem di masa depan dengan tetap memperhatikan keterbatasan data, asumsi, dan ketidakpastian model.
+
+06. Environmental Analytics
+
+SST & CHL-a
+
+Menu Environmental Analytics merupakan halaman analisis parameter lingkungan perairan yang berfokus pada Sea Surface Temperature (SST) dan Chlorophyll-a (CHL-a). Halaman ini menyajikan informasi spasial dan temporal mengenai distribusi suhu permukaan laut serta konsentrasi klorofil-a di sekitar Pulau Tunda. Data ditampilkan melalui peta tematik, grafik deret waktu, statistik, dan fitur pemilihan periode pengamatan. Pengunjung dapat membandingkan perubahan kedua parameter lingkungan tersebut berdasarkan waktu maupun lokasi pengamatan. Informasi ini digunakan sebagai data pendukung untuk memahami dinamika lingkungan perairan dan mengkaji keterkaitannya dengan kondisi ekosistem terumbu karang. Sumber data dan metode pengolahan ditampilkan agar asal-usul informasi dapat diketahui dengan jelas.
+
+07. Research Logbook
+
+Research & Conservation
+
+Menu Research Logbook merupakan halaman dokumentasi kegiatan penelitian dan konservasi yang dilaksanakan dalam pengembangan REEFSIGHT di Pulau Tunda. Halaman ini menyajikan catatan aktivitas lapangan, dokumentasi pengambilan data, pengamatan kondisi ekosistem, pemasangan atau pemeliharaan prototipe, kegiatan validasi, serta aktivitas konservasi yang berkaitan dengan penelitian. Informasi dapat disusun berdasarkan tanggal, lokasi, jenis kegiatan, dan tahapan penelitian sehingga pengunjung dapat mengikuti perkembangan kegiatan secara kronologis. Untuk menjaga kualitas informasi, hanya catatan kegiatan yang telah melalui proses pemeriksaan dan disetujui untuk publikasi yang dapat ditampilkan pada halaman ini.
+
+08. Publication Center
+
+Scientific Documents
+
+Menu Publication Center merupakan pusat dokumentasi dan publikasi ilmiah REEFSIGHT yang menyediakan berbagai dokumen pendukung penelitian. Konten yang ditampilkan dapat mencakup laporan penelitian, artikel ilmiah, dokumentasi teknis prototipe, ringkasan dataset, hasil analisis, serta dokumen lain yang relevan dengan pengembangan platform dan pemantauan ekosistem terumbu karang. Setiap dokumen dilengkapi informasi seperti judul, penulis atau penyusun, tahun publikasi, kategori dokumen, abstrak atau deskripsi singkat, serta informasi sitasi apabila tersedia. Pengunjung dapat membaca ringkasan, melihat dokumen, dan mengunduh berkas yang telah disetujui untuk dipublikasikan. Halaman ini menjadi sarana keterbukaan informasi sekaligus penyebarluasan hasil penelitian kepada masyarakat dan komunitas ilmiah.
+
+09. ERD & System Database ArchitectureERD & System Database Architecture merupakan halaman khusus yang menjelaskan rancangan basis data dan konektivitas seluruh workspace REEFSIGHT. Halaman ini penting karena sistem memiliki tiga kelompok pengguna utama, yaitu Administrator melalui Admin Workspace, Tim Ekologi dan Riset melalui Research Workspace, serta Publik/Pengunjung melalui Public Workspace. Fitur System Architecture Diagram digunakan untuk memperlihatkan hubungan ketiga workspace dengan server aplikasi, basis data, penyimpanan file, dan layanan WebGIS. Fitur Interactive ERD Viewer menampilkan diagram Entity Relationship Diagram yang dapat diperbesar dan dipilih sehingga pengunjung dapat melihat tabel, atribut, primary key, foreign key, dan hubungan antartabel. Fitur Database Table Explorer menjelaskan fungsi masing-masing tabel, sedangkan Relationship Explorer memperlihatkan hubungan antara tabel pengguna, stasiun, prototipe, data pengamatan, validasi, logbook, dan publikasi. Selain itu, tersedia Data Flow Diagram untuk memperlihatkan aliran data dari proses pengumpulan hingga publikasi, serta Workspace Connectivity untuk menjelaskan bagaimana ketiga workspace berinteraksi dengan basis data yang sama melalui hak akses berbeda. Halaman ini juga dapat dilengkapi Database Documentation untuk menjelaskan struktur tabel, tipe data, relasi, dan aturan pengelolaan informasi. Halaman ini berfungsi sebagai dokumentasi teknis agar pengunjung, akademisi, dan mitra yang berkepentingan dapat memahami bagaimana data REEFSIGHT disimpan, dihubungkan, dikelola, dan disajikan.FITUR PERINTILAN1. Coral & Marine Biodiversity Explorer — ensiklopedia interaktif
+
+Sangat direkomendasikan
+
+Ini salah satu fitur yang paling layak ditambahkan. Pengunjung tidak hanya melihat hamparan karang di peta, tetapi bisa mengeklik suatu lokasi dan mengenali organisme yang ditemukan di sana.
+
+A. Coral Species & Growth Form Database
+
+Buat katalog karang yang ditemukan di Pulau Tunda. Informasi setiap entri bisa meliputi:
+
+Nama ilmiah dan nama umum jika tersedia.
+
+Famili dan genus.
+
+Bentuk pertumbuhan (life form), misalnya branching, massive, foliose, encrusting, tabulate, dan submassive.
+
+Ciri morfologi dan foto identifikasi.
+
+Kedalaman ditemukannya.
+
+Lokasi atau stasiun pengamatan.
+
+Persentase tutupan atau kelimpahan jika tersedia.
+
+Kondisi koloni: sehat, memutih, patah, mati, atau tertutup alga.
+
+Faktor lingkungan yang relevan.
+
+Status data: hasil observasi, referensi literatur, atau identifikasi sementara.
+
+Catatan penting untuk Pulau Tunda: penelitian rekrutmen karang di Pulau Tunda menemukan tujuh bentuk pertumbuhan anakan karang, yaitu Acropora branching, Acropora encrusting, coral massive, coral branching, Acropora tabulate, coral foliose, dan Acropora submassive. Ini bisa menjadi data awal katalog, tetapi belum berarti ketujuh bentuk tersebut merupakan daftar lengkap spesies karang di Pulau Tunda.
+
+B. Coral Environmental Tolerance
+
+Ini menjawab ide kamu mengenai suhu ideal karang. Setiap entri karang bisa memiliki informasi toleransi lingkungan, Sebagai referensi umum, NOAA menyebut banyak karang pembentuk terumbu tumbuh optimal pada suhu sekitar 23–29°C. Namun, angka tersebut bukan batas ideal yang berlaku sama untuk semua spesies atau semua lokasi. Fitur yang lebih menarik adalah Coral Thermal Stress Indicator. Sistem membandingkan suhu aktual atau data satelit dengan kondisi suhu maksimum normal setempat (Maximum Monthly Mean/MMM). Jika suhu melampaui MMM sekitar 1°C, kondisi tersebut dapat menjadi indikasi stres panas. Durasi dan akumulasi panas juga perlu diperhitungkan melalui Degree Heating Weeks (DHW), bukan hanya melihat suhu pada satu hari.
+
+C. Reef Fish & Associated Biodiversity
+
+Ini justru bisa menjadi fitur unggulan REEFSIGHT: pengunjung dapat mengetahui ikan apa saja yang ditemukan di sekitar setiap stasiun terumbu karang.
+
+Informasi setiap ikan bisa mencakup:
+
+Nama lokal dan nama ilmiah.
+
+Foto atau ilustrasi.
+
+Famili dan kelompok ekologis.
+
+Ukuran atau kisaran panjang ikan jika tersedia.
+
+Jumlah individu yang teramati.
+
+Kedalaman dan stasiun pengamatan.
+
+Jenis makanan atau kelompok trofik.
+
+Hubungan ekologis dengan habitat terumbu karang.
+
+Kelompok ikan dapat dibedakan menjadi:
+
+Herbivora: pemakan alga.
+
+Karnivora: pemakan hewan lain.
+
+Omnivora: pemakan tumbuhan dan hewan.
+
+Planktivora: pemakan plankton.
+
+Koralivora: pemakan jaringan karang.
+
+Apakah sudah ada data ikan Pulau Tunda? Ada beberapa penelitian yang dapat dijadikan titik awal.
+
+Penelitian struktur komunitas ikan dan terumbu karang melaporkan 57 spesies ikan dari 17 famili. 
+
+Penelitian pada kedalaman perairan dangkal dan lereng terumbu melaporkan 69 spesies ikan di perairan dangkal dan 67 spesies di reef slope. 
+
+Penelitian hubungan ikan karang dengan komunitas bentik juga menemukan keterkaitan kelompok ikan tertentu dengan bentuk pertumbuhan karang. 
+
+D. Biodiversity Relationship Explorer
+
+Ini lebih menarik daripada sekadar ensiklopedia spesies.
+
+Pengunjung memilih satu bentuk pertumbuhan karang, kemudian sistem menampilkan kelompok ikan yang tercatat berasosiasi dengannya berdasarkan hasil pengamatan atau penelitian.
+
+Contohnya:
+
+Acropora branching → kelompok ikan yang ditemukan → jumlah individu → lokasi pengamatan.
+
+Kamu juga bisa membuat visualisasi hubungan antara:
+
+Bentuk pertumbuhan karang.
+
+Kelompok ikan.
+
+Kelimpahan ikan.
+
+Tutupan karang hidup.
+
+Kondisi bentik.
+
+Dengan begitu, REEFSIGHT tidak hanya menyajikan daftar keanekaragaman hayati, tetapi juga menunjukkan hubungan antara struktur habitat dan komunitas ikan.
+
+2. Reef Health & Ecological Assessment — penilaian kesehatan terumbu karangFitur ini berfungsi untuk menerjemahkan data penelitian menjadi informasi kondisi ekologi yang mudah dipahami.
+
+Informasi yang dapat ditampilkan:
+
+Indikator
+
+Output
+
+Live Coral Cover
+
+Persentase tutupan karang hidup
+
+Dead Coral
+
+Persentase karang mati
+
+Dead Coral with Algae
+
+Persentase karang mati beralga
+
+Coral Diversity
+
+Keanekaragaman karang
+
+Fish Diversity
+
+Keanekaragaman ikan
+
+Fish Abundance
+
+Kelimpahan ikan
+
+Coral Recruitment
+
+Kepadatan anakan karang
+
+Benthic Composition
+
+Komposisi substrat dasar
+
+Fitur tambahan yang menarik
+
+Reef Health Index: skor atau kategori kondisi ekosistem berdasarkan indikator yang dipilih dan metode yang dijelaskan.
+
+Reef Condition Timeline: grafik perubahan kondisi terumbu karang dari pengamatan tahun ke tahun.
+
+Ecological Station Comparison: membandingkan kondisi ekologi antarlokasi penelitian.
+
+Reef Degradation Indicator: menunjukkan lokasi dengan indikasi penurunan tutupan karang, peningkatan karang mati, atau perubahan komposisi bentik.
+
+Reef Recovery Indicator: menampilkan indikator pemulihan, misalnya peningkatan rekrutmen karang atau tutupan karang hidup pada pengamatan berikutnya.
+
+3. Eco-Tourism & Conservation Planner — rekomendasi lokasi wisata dan konservasi
+
+Potensi pengembangan unggulan
+
+Menurutku, ide ekowisata yang kamu sebutkan sangat potensial. Bahkan, fitur ini bisa menjadi salah satu keluaran praktis utama REEFSIGHT.
+
+A. Eco-Tourism Suitability Map
+
+Peta ini mengelompokkan lokasi menjadi:
+
+Potential Diving Spot — lokasi yang berpotensi untuk aktivitas diving.
+
+Potential Snorkeling Spot — lokasi yang berpotensi untuk snorkeling berdasarkan kedalaman, visibilitas, arus, dan kondisi habitat.
+
+Conservation Zone — lokasi yang diprioritaskan untuk perlindungan.
+
+Rehabilitation Zone — lokasi yang memerlukan pemulihan atau rehabilitasi.
+
+Research Zone — lokasi yang menjadi fokus pengamatan dan penelitian.
+
+Setiap titik lokasi memiliki informasi:
+
+Koordinat geografis.
+
+Kedalaman.
+
+Kondisi tutupan karang.
+
+Keanekaragaman ikan.
+
+Kondisi lingkungan.
+
+Tingkat tekanan aktivitas manusia.
+
+Rekomendasi aktivitas.
+
+Alasan lokasi direkomendasikan.
+
+B. Coral Rehabilitation Priority Map
+
+Ini berhubungan langsung dengan ide transplantasi karang yang kamu sampaikan.
+
+Sistem mengidentifikasi lokasi yang berpotensi menjadi prioritas rehabilitasi berdasarkan:
+
+Tutupan karang hidup.
+
+Persentase karang mati.
+
+Kondisi substrat.
+
+Kualitas perairan.
+
+Arus dan kedalaman.
+
+Potensi rekrutmen alami.
+
+Tekanan aktivitas manusia.
+
+Ketersediaan sumber koloni donor yang legal dan sesuai.
+
+Output-nya berupa peta prioritas:
+
+Kategori
+
+Makna
+
+Prioritas tinggi
+
+Memerlukan kajian dan tindakan rehabilitasi lebih lanjut
+
+Prioritas sedang
+
+Membutuhkan pemantauan dan evaluasi
+
+Prioritas rendah
+
+Kondisi relatif baik atau belum menjadi prioritas
+
+Penting: lokasi dengan tutupan karang rendah tidak otomatis cocok untuk transplantasi. Penyebab kerusakan, kondisi substrat, sedimentasi, kualitas air, dan faktor keberhasilan rehabilitasi harus diperiksa terlebih dahulu.
+
+C. Diving & Conservation Recommendation
+
+Pengunjung memilih aktivitas, kemudian sistem menampilkan lokasi yang sesuai berdasarkan kriteria penelitian.
+
+Contoh:
+
+Pilih Snorkeling → tampilkan lokasi yang memenuhi kriteria keselamatan dan kesesuaian habitat.
+
+Pilih Diving → tampilkan lokasi dengan kedalaman dan kondisi yang sesuai.
+
+Pilih Coral Conservation → tampilkan lokasi prioritas konservasi atau rehabilitasi.
+
+Pilih Research → tampilkan lokasi pengamatan dengan data ekologis yang tersedia.
+
+4. Ocean Environmental Intelligence — hubungan lingkungan dengan kondisi karang
+
+Di sini kita mengembangkan SST dan CHL-a yang sudah direncanakan, tetapi tidak berhenti pada tampilan peta parameter.
+
+Tambahkan beberapa fitur berikut:
+
+A. Coral Thermal Stress Monitoring
+
+Menampilkan suhu permukaan laut.
+
+Membandingkan suhu aktual dengan rata-rata historis.
+
+Menampilkan anomali suhu.
+
+Menghitung atau menampilkan indikator DHW jika data yang sesuai tersedia.
+
+Menampilkan lokasi yang berpotensi mengalami tekanan panas.
+
+B. Chlorophyll-a & Productivity Analysis
+
+Peta konsentrasi klorofil-a.
+
+Grafik perubahan CHL-a berdasarkan waktu.
+
+Perbandingan CHL-a dengan pengamatan ikan.
+
+Analisis hubungan CHL-a dengan kondisi ekosistem.
+
+Perlu diingat bahwa CHL-a bukan indikator langsung kesehatan karang. Konsentrasi klorofil-a perlu ditafsirkan bersama kondisi perairan, kedalaman, nutrien, dan karakteristik lokasi.
+
+C. Environmental-Ecological Correlation
+
+Ini bisa menjadi fitur analisis yang lebih ilmiah. Pengguna dapat memilih parameter lingkungan dan indikator ekologi, lalu melihat hubungan statistiknya.
+
+Contoh:
+
+SST terhadap tutupan karang hidup.
+
+Anomali suhu terhadap kejadian pemutihan.
+
+CHL-a terhadap kelimpahan ikan.
+
+Kekeruhan terhadap kondisi bentik.
+
+Kedalaman terhadap komposisi bentuk pertumbuhan karang.
+
+Hasilnya dapat berupa grafik korelasi, scatter plot, koefisien korelasi, dan penjelasan interpretasi. Hubungan statistik tidak boleh langsung dianggap sebagai hubungan sebab-akibat.
+
+D. Ocean Condition Profile
+
+Setiap stasiun mempunyai ringkasan kondisi perairan yang menggabungkan data SST, CHL-a, kedalaman, kekeruhan, dan parameter lain jika tersedia. Ini membantu pengguna memahami perbedaan karakteristik lingkungan antarlokasi.Fitur Ocean Environmental Intelligence sebaiknya dikembangkan sebagai modul analisis oseanografi yang mengintegrasikan data penginderaan jauh, WebGIS, grafik temporal, dan analisis statistik untuk memahami hubungan antara kondisi lingkungan perairan dengan ekosistem terumbu karang di Pulau Tunda, Kabupaten Serang, Banten. Modul ini tidak harus menggunakan visualisasi 3D atau JSON sebagai tampilan utama. Visualisasi yang lebih tepat adalah peta spasial 2D untuk menampilkan persebaran parameter lingkungan, grafik untuk memperlihatkan perubahan berdasarkan waktu, serta analisis statistik untuk mengidentifikasi hubungan antara parameter lingkungan dan indikator ekologi.
+
+Pada bagian Coral Thermal Stress Monitoring, sistem menampilkan distribusi Sea Surface Temperature (SST), membandingkan suhu aktual dengan rata-rata historis, serta menyajikan anomali suhu untuk mengidentifikasi wilayah yang berpotensi mengalami tekanan panas. Apabila data historis dan produk thermal stress yang sesuai tersedia, sistem juga dapat menampilkan indikator Degree Heating Weeks (DHW) sebagai informasi akumulasi tekanan panas yang berpotensi memengaruhi terumbu karang. Selanjutnya, bagian Chlorophyll-a & Productivity Analysis menyajikan peta konsentrasi klorofil-a, grafik perubahan konsentrasi berdasarkan waktu, serta perbandingan nilai CHL-a dengan hasil pengamatan ikan. Analisis ini digunakan untuk memahami karakteristik produktivitas perairan, dengan tetap memperhatikan bahwa klorofil-a bukan indikator langsung kesehatan karang karena konsentrasinya juga dipengaruhi oleh nutrien, kedalaman, kekeruhan, dan karakteristik lingkungan setempat.
+
+Bagian Environmental-Ecological Correlation dikembangkan sebagai fitur analisis ilmiah untuk mengetahui hubungan antara parameter lingkungan dan kondisi ekologi. Pengguna dapat memilih variabel lingkungan, seperti SST, anomali suhu, CHL-a, dan kekeruhan, kemudian membandingkannya dengan indikator ekologi, seperti tutupan karang hidup, kejadian pemutihan, kelimpahan ikan, dan komposisi bentuk pertumbuhan karang. Hasil analisis ditampilkan dalam bentuk scatter plot, garis regresi, koefisien korelasi Pearson atau Spearman, serta interpretasi statistik. Hasil tersebut digunakan untuk mengidentifikasi pola hubungan antarvariabel, bukan untuk langsung menyimpulkan hubungan sebab-akibat.
+
+Sementara itu, bagian Ocean Condition Profile menyajikan ringkasan karakteristik lingkungan pada setiap stasiun pengamatan di Pulau Tunda. Informasi yang ditampilkan mencakup suhu permukaan laut, konsentrasi klorofil-a, kedalaman, kekeruhan, salinitas, pH, dan dissolved oxygen apabila datanya tersedia. Setiap stasiun dapat dipilih melalui peta untuk menampilkan profil lingkungan beserta riwayat pengamatan dan kondisi ekologinya. Dengan demikian, pengguna dapat membandingkan karakteristik perairan antarlokasi dan memahami perbedaan kondisi lingkungan yang mungkin berkaitan dengan variasi ekosistem terumbu karang.
+
+Dari sisi teknis, modul ini sebaiknya menggunakan GeoTIFF atau NetCDF untuk data raster SST dan CHL-a, GeoJSON untuk lokasi stasiun dan batas wilayah penelitian, serta CSV atau MySQL untuk menyimpan data pengamatan dan deret waktu. Format JSON dapat digunakan sebagai perantara pertukaran data antara backend dan frontend melalui API, sedangkan visualisasi 3D dapat dikembangkan sebagai fitur tambahan apabila tersedia data batimetri dan koordinat spasial yang memadai. Dengan pendekatan tersebut, Ocean Environmental Intelligence tidak hanya menjadi halaman visualisasi parameter oseanografi, tetapi juga menjadi pusat analisis yang menghubungkan dinamika lingkungan perairan dengan kondisi ekosistem terumbu karang secara lebih terstruktur dan ilmiah.
+
+5. Acoustic & Underwater Intelligence — kecerdasan suara dan visual bawah laut
+
+Karena REEFSIGHT mengembangkan teknologi akustik dan optik, menurutku hasil keduanya harus diterjemahkan menjadi fitur yang dapat dipahami pengunjung.
+
+A. Underwater Soundscape Explorer
+
+Menampilkan rekaman suara bawah laut yang diperoleh dari hydrophone.
+
+Fitur:
+
+Pemutar rekaman suara bawah laut.
+
+Visualisasi waveform.
+
+Spektrogram frekuensi.
+
+Perbandingan rekaman antarstasiun.
+
+Perbandingan waktu pengamatan.
+
+Informasi tanggal, waktu, kedalaman, dan perangkat perekam.
+
+Pengunjung dapat melihat bagaimana karakteristik suara bawah laut berbeda pada lokasi dan waktu pengamatan yang berbeda.
+
+B. Acoustic Activity Comparison
+
+Membandingkan karakteristik soundscape antarstasiun atau periode waktu. Jika metode dan data mendukung, analisis dapat dikembangkan menjadi indeks akustik, misalnya Acoustic Complexity Index (ACI) atau Acoustic Diversity Index.
+
+Tetapi perlu digarisbawahi: suara bawah laut yang lebih kompleks tidak otomatis menunjukkan biodiversitas yang lebih tinggi. Interpretasinya harus mempertimbangkan sumber suara, kebisingan kapal, kondisi lingkungan, dan metode perekaman.
+
+C. Optical Reef Explorer
+
+Menampilkan dokumentasi foto dan video bawah laut dari kamera optik.
+
+Fitur yang bisa dikembangkan:
+
+Galeri foto karang per stasiun.
+
+Dokumentasi video bawah laut.
+
+Perbandingan foto antarperiode.
+
+Identifikasi bentuk pertumbuhan karang.
+
+Dokumentasi kondisi pemutihan dan kerusakan.
+
+Penandaan objek atau organisme pada foto.
+
+Jika nantinya tersedia dataset yang memadai, pengembangan dapat ditingkatkan menjadi deteksi objek atau klasifikasi karang berbasis AI.
+
+Poin penting: hydrophone, kamera optik, dan echosounder memiliki fungsi berbeda. Hydrophone merekam suara, kamera mendokumentasikan objek secara visual, sedangkan echosounder mengukur pantulan gelombang suara. Jangan menyatukan ketiganya seolah-olah menghasilkan jenis informasi yang sama.
+
+  
+
+INFORMATION
+
+About REEFSIGHTAbout REEFSIGHT merupakan halaman yang memperkenalkan identitas, latar belakang, tujuan, dan konsep pengembangan platform. Fitur Project Overview menjelaskan gambaran umum REEFSIGHT, sedangkan Background menyajikan permasalahan yang mendasari pengembangannya. Fitur Research Objectives menjelaskan tujuan penelitian, Research Location memperkenalkan Pulau Tunda sebagai lokasi penelitian, dan Technology Overview menjelaskan integrasi sensor akustik, optik, analisis lingkungan, dan WebGIS. Halaman ini juga dapat menyediakan Research Methodology untuk memberikan gambaran metode penelitian, Development Team untuk memperkenalkan tim pengembang, serta Partners & Collaboration untuk menampilkan lembaga atau mitra yang terlibat. Dengan adanya halaman ini, pengunjung dapat memahami alasan REEFSIGHT dikembangkan, teknologi yang digunakan, serta tujuan penelitian yang ingin dicapai.
+
+Contact & CollaborationContact & Collaboration merupakan halaman yang berfungsi sebagai sarana komunikasi antara tim REEFSIGHT dengan masyarakat, akademisi, lembaga penelitian, pemerintah, dan mitra konservasi. Fitur Contact Information menampilkan alamat email dan kontak resmi, sedangkan Contact Form memungkinkan pengunjung mengirim pertanyaan, saran, atau permintaan informasi. Fitur Collaboration Request menyediakan formulir pengajuan kerja sama penelitian, pengembangan teknologi, maupun kegiatan konservasi. Selain itu, tersedia Partnership Information untuk menjelaskan bentuk kerja sama yang dapat dilakukan, Institution Information untuk menampilkan informasi institusi pengembang, dan Social Media Links untuk menghubungkan pengunjung dengan kanal komunikasi resmi REEFSIGHT. Formulir dapat memuat nama, instansi, alamat email, subjek, kategori kebutuhan, isi pesan, dan lampiran opsional. Setelah pesan dikirim, sistem menampilkan konfirmasi bahwa pesan telah diterima. Dengan demikian, halaman ini membuka peluang komunikasi dan kolaborasi dengan pihak eksternal.
+
+REEFSIGHT — ADMIN PANEL
+
+01. Admin DashboardAdmin Dashboard merupakan halaman utama yang menampilkan ringkasan kondisi dan aktivitas keseluruhan platform REEFSIGHT. Halaman ini menyajikan informasi jumlah pengguna, perangkat prototype, data yang tersimpan, data yang menunggu validasi, data tervalidasi, serta informasi yang telah dipublikasikan. Administrator juga dapat memantau aktivitas terbaru, perkembangan pengumpulan data, status perangkat, dan statistik aktivitas sistem melalui grafik maupun visualisasi informasi.
+
+02. User ManagementUser Management merupakan fitur untuk mengelola seluruh akun pengguna internal REEFSIGHT, khususnya anggota Tim Ekologi dan Riset. Administrator dapat menambahkan akun baru, memperbarui informasi profil, mengatur username dan password, mengaktifkan atau menonaktifkan akun, serta menentukan hak akses berdasarkan tanggung jawab pengguna sebagai Operator Lapangan, Peneliti Ekologi, atau Validator Data. Fitur ini juga menyediakan informasi status akun dan riwayat aktivitas setiap pengguna sehingga pengelolaan akses sistem dapat dilakukan secara terstruktur.
+
+03. Prototype ManagementData Management merupakan pusat pengelolaan seluruh data yang digunakan dalam platform REEFSIGHT. Data yang dikelola meliputi rekaman akustik, citra optik, parameter lingkungan seperti suhu dan Chlorophyll-a, data persebaran terumbu karang dalam format GeoJSON hasil pengolahan ArcGIS, serta data pengamatan lapangan. Administrator dapat mengimpor, mencari, memeriksa, mengelompokkan, memperbarui metadata, dan mengekspor data sesuai kebutuhan. Fitur ini juga menyediakan pengelolaan status data, mulai dari data mentah, proses pengolahan, validasi, hingga data yang siap digunakan dan dipublikasikan.
+
+04. Data ManagementData Management merupakan pusat pengelolaan seluruh data yang digunakan dalam platform REEFSIGHT. Data yang dikelola meliputi rekaman akustik, citra optik, parameter lingkungan seperti suhu dan Chlorophyll-a, data persebaran terumbu karang dalam format GeoJSON hasil pengolahan ArcGIS, serta data pengamatan lapangan. Administrator dapat mengimpor, mencari, memeriksa, mengelompokkan, memperbarui metadata, dan mengekspor data sesuai kebutuhan. Fitur ini juga menyediakan pengelolaan status data, mulai dari data mentah, proses pengolahan, validasi, hingga data yang siap digunakan dan dipublikasikan.
+
+05. Publication ManagementPublication Management merupakan fitur yang mengatur informasi dan hasil penelitian yang akan ditampilkan pada Public Workspace REEFSIGHT. Administrator dapat memilih data yang telah melalui proses validasi, mengelola publikasi hasil analisis, mengatur layer WebGIS, serta menerbitkan laporan perkembangan penelitian dan informasi edukasi konservasi. Fitur ini juga memungkinkan Administrator mengelola judul, deskripsi, dokumentasi, kategori, dan status publikasi. Dengan demikian, informasi yang dapat diakses masyarakat merupakan data dan dokumentasi yang telah diperiksa serta memperoleh persetujuan untuk dipublikasikan.  
+
+06. Activity Logs & Logbook ManagementActivity Logs & Logbook Management merupakan fitur untuk memantau aktivitas sistem sekaligus mengelola dokumentasi perkembangan penelitian REEFSIGHT. Bagian Activity Logs mencatat aktivitas pengguna secara otomatis, seperti login, pengunggahan data, perubahan informasi, proses validasi, pengelolaan prototype, dan publikasi. Sementara itu, bagian Logbook Management digunakan untuk membuat, mengedit, mengelompokkan, dan mengelola catatan perkembangan penelitian, mulai dari kegiatan lapangan, pengambilan data, pemasangan perangkat, pemeliharaan prototype, hingga hasil pengolahan dan analisis. Administrator juga dapat mengatur status dokumentasi agar logbook yang telah diperiksa dan disetujui dapat ditampilkan kepada publik.07. Alert Management
+
+Fitur Peringatan (Alert Management) merupakan fitur pada Admin Workspace REEFSIGHT yang berfungsi untuk memantau, mengelola, dan mengawasi seluruh notifikasi yang dihasilkan oleh sistem berdasarkan hasil pemantauan kondisi ekosistem terumbu karang. Peringatan dapat muncul ketika sistem mendeteksi kondisi tertentu, seperti pemutihan karang (coral bleaching), penurunan aktivitas ikan (low fish activity), kerusakan terumbu karang (reef degradation), hingga tidak terdeteksinya objek karang (no coral detected). Setiap peringatan dilengkapi informasi berupa identitas stasiun, waktu deteksi, jenis kondisi, tingkat keparahan, ringkasan hasil deteksi, kemungkinan penyebab, serta rekomendasi tindakan yang perlu dilakukan.
+
+Melalui fitur ini, Admin dapat melihat seluruh riwayat peringatan, memantau status verifikasi, mengetahui peringatan yang sedang ditangani, serta mengawasi pengiriman notifikasi kepada petugas lapangan melalui integrasi WhatsApp API. Peringatan yang dihasilkan sistem selanjutnya diteruskan kepada Tim Riset untuk diperiksa dan diverifikasi berdasarkan bukti pengamatan, seperti foto, video, rekaman akustik, maupun data lingkungan. Apabila kondisi telah terkonfirmasi, sistem dapat mengirimkan notifikasi WhatsApp yang berisi lokasi kejadian, kondisi yang terdeteksi, kemungkinan penyebab, dan rekomendasi penanganan. Dengan demikian, fitur Peringatan berperan sebagai pusat koordinasi antara sistem pemantauan, Admin, Tim Riset, dan petugas lapangan dalam mendukung proses pemantauan serta penanganan kondisi ekosistem terumbu karang di Pulau Tunda.
+
+REEFSIGHT — RESEARCH & FIELD OPERATIONS WORKSPACE
+
+RESEARCH OPERATIONSResearch Dashboard merupakan halaman utama yang menampilkan ringkasan aktivitas penelitian dan kondisi pengelolaan data REEFSIGHT. Halaman ini membantu Tim Ekologi dan Riset mengetahui perkembangan kegiatan lapangan, jumlah data yang telah dikumpulkan, data yang sedang diproses, data yang menunggu validasi, serta data yang telah dinyatakan valid. Dashboard juga dapat menampilkan ringkasan pengamatan berdasarkan lokasi dan periode, status pengumpulan data dari perangkat prototype, serta grafik perkembangan penelitian. Dengan demikian, anggota tim dapat mengetahui pekerjaan yang sudah dilakukan, pekerjaan yang sedang berlangsung, dan tahapan penelitian yang masih perlu diselesaikan.
+
+Field Data Collection
+
+Field Data Collection merupakan halaman yang digunakan untuk mengelola seluruh proses pengumpulan data secara langsung di lapangan. Halaman ini mendukung kegiatan pengamatan pada titik-titik penelitian di Pulau Tunda, termasuk pengumpulan rekaman suara bawah laut menggunakan sensor akustik, pengambilan citra atau video menggunakan sensor optik, serta pencatatan informasi lokasi dan kondisi pengamatan. Anggota tim dapat memasukkan koordinat, tanggal, waktu, kedalaman, identitas stasiun, dan informasi perangkat yang digunakan. Data yang dikumpulkan kemudian disimpan ke dalam sistem sebagai data awal untuk diproses dan diperiksa sebelum digunakan dalam analisis penelitian.
+
+Environmental DataEnvironmental Data merupakan halaman yang digunakan untuk mengelola dan menganalisis informasi parameter lingkungan yang berhubungan dengan kondisi ekosistem terumbu karang. Parameter utama yang direncanakan dalam REEFSIGHT adalah Sea Surface Temperature (SST) dan Chlorophyll-a (CHL-a). Data tersebut dapat diperoleh dari pengukuran lapangan, perangkat sensor yang tersedia, maupun sumber data sekunder seperti citra satelit. Halaman ini memungkinkan tim mengunggah data, memeriksa metadata, menampilkan distribusi parameter dalam bentuk grafik dan peta, serta membandingkan perubahan kondisi lingkungan berdasarkan lokasi dan periode pengamatan. Informasi lingkungan tersebut selanjutnya digunakan sebagai variabel pendukung dalam menganalisis dinamika dan tekanan lingkungan terhadap ekosistem terumbu karang.
+
+ECOLOGICAL ANALYSIS
+
+Coral Distribution AnalysisCoral Distribution Analysis merupakan halaman yang digunakan untuk mengelola, menampilkan, dan menganalisis persebaran spasial ekosistem terumbu karang di Pulau Tunda. Data utama berasal dari hasil pengolahan geospasial menggunakan ArcGIS yang kemudian diintegrasikan ke dalam platform REEFSIGHT melalui format GeoJSON. Halaman ini memungkinkan tim menampilkan distribusi terumbu karang pada peta interaktif, mengidentifikasi lokasi pengamatan, melihat luas dan karakteristik wilayah persebaran berdasarkan atribut yang tersedia, serta membandingkan hasil pemetaan berdasarkan periode pengamatan. Selain menampilkan kondisi persebaran aktual, halaman ini juga dapat dikembangkan untuk melakukan proyeksi persebaran atau perubahan tutupan terumbu karang beberapa tahun ke depan menggunakan pendekatan matematis yang mempertimbangkan kondisi awal, laju pertumbuhan, dan faktor lingkungan. Hasil proyeksi harus dibedakan dari data aktual dan disertai informasi metode serta asumsi model.
+
+Ecological DynamicsEcological Dynamics merupakan halaman yang berfungsi untuk menganalisis dinamika ekosistem terumbu karang berdasarkan integrasi data akustik, optik, dan parameter lingkungan. Halaman ini menjadi bagian inti dari konsep kecerdasan ekologis REEFSIGHT karena menghubungkan berbagai informasi pengamatan untuk memahami perubahan kondisi ekosistem. Data akustik dapat dianalisis melalui karakteristik soundscape, distribusi frekuensi, intensitas suara, dan indeks akustik. Sementara itu, data optik dapat digunakan untuk mengidentifikasi kondisi visual habitat dan karakteristik tutupan terumbu karang. Hasil analisis tersebut kemudian dapat dibandingkan dengan perubahan parameter lingkungan seperti suhu dan Chlorophyll-a untuk mengkaji hubungan antara kondisi perairan dan dinamika ekosistem. Dengan demikian, halaman ini menghasilkan informasi analitis yang dapat mendukung interpretasi kondisi ekologis di Pulau Tunda.
+
+DATA MANAGEMENT
+
+Data ValidationData Validation merupakan halaman yang digunakan untuk memeriksa kualitas dan kelayakan data sebelum digunakan dalam analisis maupun dipublikasikan kepada masyarakat. Proses validasi dilakukan oleh anggota Tim Ekologi dan Riset yang memiliki tanggung jawab sebagai Validator Data. Pemeriksaan meliputi kelengkapan informasi, kesesuaian koordinat, konsistensi waktu pengamatan, kualitas rekaman akustik, kualitas citra optik, serta kelengkapan data parameter lingkungan dan metadata. Data yang memenuhi kriteria dapat disetujui, sedangkan data yang memiliki kekurangan dapat dikembalikan untuk diperbaiki atau ditolak dengan menyertakan alasan. Seluruh keputusan validasi disimpan dalam riwayat sehingga sumber, status, dan perubahan data dapat ditelusuri.
+
+Research LogbookResearch Logbook merupakan halaman dokumentasi yang digunakan untuk mencatat seluruh perkembangan kegiatan penelitian REEFSIGHT secara kronologis. Halaman ini menjadi tempat bagi anggota tim untuk mendokumentasikan kegiatan pengumpulan data, pengoperasian prototype, pemasangan dan pemeliharaan perangkat, pengolahan data, analisis hasil pengamatan, serta kegiatan penelitian lainnya. Setiap catatan dapat dilengkapi dengan tanggal, lokasi, anggota yang terlibat, deskripsi kegiatan, foto, video, dan dokumen pendukung. Logbook juga dapat dikelompokkan berdasarkan tahapan penelitian sehingga perkembangan proyek dapat ditelusuri dengan mudah. Catatan yang telah diperiksa dan disetujui dapat diteruskan ke Administrator untuk dipublikasikan pada Public Workspace sebagai informasi perkembangan penelitian.
+
+Scientific ReportsScientific Reports merupakan halaman yang digunakan untuk menyusun, mengelola, dan menghasilkan laporan ilmiah berdasarkan data serta hasil analisis penelitian REEFSIGHT. Halaman ini mendukung penyusunan laporan yang mencakup hasil pengamatan bioakustik, analisis citra optik, kondisi parameter lingkungan, persebaran terumbu karang, serta analisis dinamika dan tekanan lingkungan. Anggota tim dapat menyusun laporan berdasarkan lokasi, periode pengamatan, maupun tema penelitian dengan menyertakan tabel, grafik, peta, dokumentasi, dan interpretasi ilmiah. Laporan dapat diekspor ke format PDF atau dokumen sesuai kebutuhan dan diteruskan kepada Administrator untuk pemeriksaan serta publikasi. Setiap laporan harus mencantumkan sumber data, metode analisis, periode pengamatan, dan status validasi agar hasil penelitian dapat dipertanggungjawabkan secara ilmiah.

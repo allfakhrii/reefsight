@@ -528,3 +528,426 @@ export const MOCK_RESEARCH_LOGBOOKS: ResearchLogbookEntry[] = [
     is_published: true
   }
 ];
+
+
+// Additional Mock Data to directly power the UI matching extracted_designs
+
+export const USER_DIRECTORY = [
+  {
+    id: 'USR-001',
+    fullName: 'Reza Gading Oktavian',
+    username: 'reza.gading',
+    email: 'reza@reefsight.id',
+    role: 'admin' as const,
+    institution: 'Universitas Pendidikan Indonesia',
+    position: 'Tim Pengembang REEFSIGHT',
+    phone: '081234567890',
+    accountStatus: 'Active' as const,
+    lastActivity: '14 Nov 2025, 10:24 WIB',
+    createdAt: '02 Jun 2025',
+    avatarUrl: '/images/image18.png'
+  },
+  {
+    id: 'USR-002',
+    fullName: 'Aulia Rahma',
+    username: 'aulia.rahma',
+    email: 'aulia@reefsight.id',
+    role: 'peneliti_ekologi' as const,
+    institution: 'Pusat Riset Kelautan BRIN',
+    position: 'Peneliti Ekologi Terumbu Karang',
+    phone: '081298765432',
+    accountStatus: 'Active' as const,
+    lastActivity: '14 Nov 2025, 09:17 WIB',
+    createdAt: '05 Jun 2025',
+    avatarUrl: '/images/image18.png'
+  },
+  {
+    id: 'USR-003',
+    fullName: 'Dimas Pratama',
+    username: 'dimas.p',
+    email: 'dimas@reefsight.id',
+    role: 'operator_lapangan' as const,
+    institution: 'Komunitas Konservasi Pulau Tunda',
+    position: 'Operator Lapangan & Penyelam Ilmiah',
+    phone: '085892640228',
+    accountStatus: 'Active' as const,
+    lastActivity: '13 Nov 2025, 17:40 WIB',
+    createdAt: '07 Jun 2025',
+    avatarUrl: '/images/image18.png'
+  },
+  {
+    id: 'USR-004',
+    fullName: 'Sinta Nurhaliza',
+    username: 'sinta.n',
+    email: 'sinta@reefsight.id',
+    role: 'validator_data' as const,
+    institution: 'Balai Riset Observasi Laut (BROL)',
+    position: 'Data Quality & QA/QC Validator',
+    phone: '081345678910',
+    accountStatus: 'Pending' as const,
+    lastActivity: '12 Nov 2025, 14:05 WIB',
+    createdAt: '10 Jun 2025',
+    avatarUrl: '/images/image18.png'
+  },
+  {
+    id: 'USR-005',
+    fullName: 'Rizky Handoko',
+    username: 'rizky.h',
+    email: 'rizky@reefsight.id',
+    role: 'peneliti_ekologi' as const,
+    institution: 'Institut Pertanian Bogor',
+    position: 'Spesialis Bioakustik Laut',
+    phone: '081122334455',
+    accountStatus: 'Inactive' as const,
+    lastActivity: '08 Nov 2025, 11:22 WIB',
+    createdAt: '03 Jun 2025',
+    avatarUrl: '/images/image18.png'
+  }
+];
+
+export const ECO_TOURISM_ZONES = [
+  {
+    id: 'ECO-01',
+    name: 'ST-01 — Legon Bajo',
+    code: 'TUN-01',
+    category: 'Potential Diving Spot' as const,
+    depthRangeM: '5 – 15 m',
+    liveCoralPct: 56.8,
+    deadCoralPct: 10.2,
+    fishDiversityScore: 3.21,
+    visibilityM: '10 – 15 m',
+    currentVelocityMs: '0.1 – 0.3 m/s',
+    humanPressure: 'Rendah' as const,
+    suitabilityStatus: 'Highly Suitable' as const,
+    rationale: 'Tutupan karang hidup tinggi, keanekaragaman biota tinggi, visibilitas baik, dan tekanan aktivitas rendah.',
+    badgeColor: 'bg-blue-600 text-white'
+  },
+  {
+    id: 'ECO-02',
+    name: 'ST-02 — Karang Abang',
+    code: 'TUN-02',
+    category: 'Potential Snorkeling Spot' as const,
+    depthRangeM: '2 – 6 m',
+    liveCoralPct: 49.7,
+    deadCoralPct: 12.9,
+    fishDiversityScore: 2.95,
+    visibilityM: '8 – 12 m',
+    currentVelocityMs: '0.1 – 0.2 m/s',
+    humanPressure: 'Sedang' as const,
+    suitabilityStatus: 'Suitable' as const,
+    rationale: 'Kedalaman dangkal ramah pemula, perairan tenang dengan kelimpahan ikan karang tinggi.',
+    badgeColor: 'bg-cyan-500 text-white'
+  },
+  {
+    id: 'ECO-03',
+    name: 'ST-03 — Ciput Utara',
+    code: 'TUN-03',
+    category: 'Conservation Zone' as const,
+    depthRangeM: '4 – 18 m',
+    liveCoralPct: 52.0,
+    deadCoralPct: 11.7,
+    fishDiversityScore: 3.10,
+    visibilityM: '12 – 16 m',
+    currentVelocityMs: '0.2 – 0.4 m/s',
+    humanPressure: 'Rendah' as const,
+    suitabilityStatus: 'Restricted' as const,
+    rationale: 'Zona inti perlindungan rekrutmen karang Acropora dan habitat pemijahan ikan.',
+    badgeColor: 'bg-emerald-600 text-white'
+  },
+  {
+    id: 'ECO-04',
+    name: 'ST-04 — Teluk Selatan',
+    code: 'TUN-04',
+    category: 'Research Zone' as const,
+    depthRangeM: '6 – 20 m',
+    liveCoralPct: 45.2,
+    deadCoralPct: 14.8,
+    fishDiversityScore: 2.80,
+    visibilityM: '7 – 10 m',
+    currentVelocityMs: '0.3 – 0.5 m/s',
+    humanPressure: 'Rendah' as const,
+    suitabilityStatus: 'Conditional' as const,
+    rationale: 'Fokus pemantauan stasiun hydrophone bioakustik jangka panjang dan stasiun kalibrasi sensor.',
+    badgeColor: 'bg-purple-600 text-white'
+  },
+  {
+    id: 'ECO-05',
+    name: 'ST-05 — Karang Timur',
+    code: 'TUN-05',
+    category: 'Rehabilitation Zone' as const,
+    depthRangeM: '3 – 10 m',
+    liveCoralPct: 31.5,
+    deadCoralPct: 28.4,
+    fishDiversityScore: 2.10,
+    visibilityM: '5 – 8 m',
+    currentVelocityMs: '0.2 – 0.4 m/s',
+    humanPressure: 'Tinggi' as const,
+    suitabilityStatus: 'Highly Suitable' as const,
+    rationale: 'Memerlukan intervensi transplantasi fragmen karang bercabang dan pembersihan alga makro.',
+    badgeColor: 'bg-amber-600 text-white'
+  }
+];
+
+export const SYSTEM_ALERTS_MOCK = [
+  {
+    id: 'ALT-2025-0284',
+    alertCode: 'ALT-2025-0284',
+    stationId: 'TUN-01',
+    stationCode: 'TUN-01',
+    stationName: 'Legon Bajo (Pulau Tunda)',
+    detectedAt: '14 Nov 2025, 10:24 WIB',
+    alertType: 'Coral Bleaching' as const,
+    severity: 'High' as const,
+    confidence: 0.78,
+    status: 'Pending Review' as const,
+    source: 'Optical Monitoring (ReefCam-01)',
+    summary: 'Sistem mendeteksi indikasi pemutihan karang (coral bleaching) berdasarkan analisis citra bawah air pada area terumbu karang stasiun TUN-01. Diperlukan verifikasi oleh Tim Riset menggunakan bukti tambahan (foto/video lapangan) sebelum konfirmasi.',
+    possibleCauses: [
+      'Anomali kenaikan suhu permukaan laut (SST > 31.4°C)',
+      'Intensitas radiasi UV tinggi selama 14 hari berturut-turut',
+      'Arus tenang di teluk barat laut memicu retensi panas'
+    ],
+    recommendedActions: [
+      'Lakukan verifikasi visual di lokasi (foto/video transek)',
+      'Periksa parameter lingkungan (SST, salinitas, DO)',
+      'Bandingkan dengan data historis atau citra sebelumnya',
+      'Tentukan status akhir (terkonfirmasi / tidak terkonfirmasi)'
+    ],
+    whatsappDispatched: false
+  },
+  {
+    id: 'ALT-2025-0283',
+    alertCode: 'ALT-2025-0283',
+    stationId: 'TUN-02',
+    stationCode: 'TUN-02',
+    stationName: 'Karang Abang (Pulau Tunda)',
+    detectedAt: '14 Nov 2025, 09:47 WIB',
+    alertType: 'Low Fish Activity' as const,
+    severity: 'Medium' as const,
+    confidence: 0.71,
+    status: 'In Verification' as const,
+    source: 'Acoustic Monitoring (EchoVision-01)',
+    summary: 'Acoustic Complexity Index (ACI) mengalami penurunan signifikan di bawah ambang normal (ACI = 0.28). Suara snapping shrimp dan frekuensi ikan herbivora melemah.',
+    possibleCauses: [
+      'Gangguan kebisingan lalu lintas kapal nelayan lokal',
+      'Kekeruhan air temporer akibat pasang surut Selat Sunda'
+    ],
+    recommendedActions: [
+      'Ambil rekaman hidrofon ulang durasi 10 menit',
+      'Cek visual schooling fish menggunakan ReefCam-02'
+    ],
+    whatsappDispatched: true,
+    whatsappRecipient: '085892640228 (Dimas Pratama - Operator)'
+  },
+  {
+    id: 'ALT-2025-0282',
+    alertCode: 'ALT-2025-0282',
+    stationId: 'TUN-03',
+    stationCode: 'TUN-03',
+    stationName: 'Ciput (Pulau Tunda)',
+    detectedAt: '14 Nov 2025, 08:55 WIB',
+    alertType: 'Reef Degradation' as const,
+    severity: 'High' as const,
+    confidence: 0.84,
+    status: 'Verified' as const,
+    source: 'Integrated Ecological Detection',
+    summary: 'Terdeteksi akumulasi pecahan karang mati (rubble) meningkat 8% dalam 30 hari. Indikasi benturan mekanik atau penangkapan ikan tidak ramah lingkungan.',
+    possibleCauses: [
+      'Penggunaan jangkar perahu nelayan di atas koloni karang',
+      'Dinamika arus pasang surut ekstrem'
+    ],
+    recommendedActions: [
+      'Patroli pengawasan bersama Pokmaswas Pulau Tunda',
+      'Usulkan pemasangan mooring buoy tambahan di stasiun TUN-03'
+    ],
+    whatsappDispatched: true,
+    whatsappRecipient: '085892640228 (Dimas Pratama - Operator)'
+  },
+  {
+    id: 'ALT-2025-0281',
+    alertCode: 'ALT-2025-0281',
+    stationId: 'TUN-02',
+    stationCode: 'TUN-02',
+    stationName: 'Karang Abang (Pulau Tunda)',
+    detectedAt: '13 Nov 2025, 16:20 WIB',
+    alertType: 'Environmental Anomaly' as const,
+    severity: 'Medium' as const,
+    confidence: 0.69,
+    status: 'Resolved' as const,
+    source: 'EnviroSense Sensor Probe',
+    summary: 'Kekeruhan perairan (turbidity) melonjak mencapai 3.8 NTU selama 3 jam akibat sedimentasi pasang.',
+    possibleCauses: ['Sedimentasi pesisir pasca hujan deras'],
+    recommendedActions: ['Sensor otomatis kembali normal setelah arus berganti'],
+    whatsappDispatched: true
+  },
+  {
+    id: 'ALT-2025-0280',
+    alertCode: 'ALT-2025-0280',
+    stationId: 'TUN-01',
+    stationCode: 'TUN-01',
+    stationName: 'Legon Bajo (Pulau Tunda)',
+    detectedAt: '13 Nov 2025, 14:05 WIB',
+    alertType: 'Acoustic Anomaly' as const,
+    severity: 'Low' as const,
+    confidence: 0.66,
+    status: 'Verified' as const,
+    source: 'Hydrophone RE-HP-01',
+    summary: 'Terdeteksi kebisingan akustik motor tempel di zona konservasi terumbu.',
+    possibleCauses: ['Perahu wisata melintas di atas transek pengamatan'],
+    recommendedActions: ['Edukasi pemandu wisata lokal mengenai rute perahu yang ramah'],
+    whatsappDispatched: true
+  }
+];
+
+export const FIELD_COLLECTIONS_MOCK = [
+  {
+    id: 'COL-2025-0284',
+    collectionCode: 'COL-2025-0284',
+    collectionTitle: 'Rekaman Akustik Stasiun TUN-01',
+    stationId: 'TUN-01',
+    stationCode: 'TUN-01',
+    operatorId: 'USR-003',
+    operatorName: 'Aulia Rahma & Reza G.',
+    observationDate: '14 Nov 2025',
+    timeWindow: '10:24 WIB',
+    depthM: 10.0,
+    deviceUsed: 'EchoVision (EV-01)',
+    collectionType: 'Acoustic' as const,
+    fileCount: 3,
+    fileSizeBytes: 12400000000, // 12.4 GB
+    completenessPct: 100,
+    validationStatus: 'Pending' as const,
+    notes: 'Perekaman suara soundscape selama 30 menit. Kualitas audio jernih tanpa interferensi gelombang.'
+  },
+  {
+    id: 'COL-2025-0283',
+    collectionCode: 'COL-2025-0283',
+    collectionTitle: 'Pengamatan Terumbu Karang Stasiun TUN-02',
+    stationId: 'TUN-02',
+    stationCode: 'TUN-02',
+    operatorId: 'USR-001',
+    operatorName: 'Reza G. Oktavian',
+    observationDate: '14 Nov 2025',
+    timeWindow: '09:47 WIB',
+    depthM: 8.5,
+    deviceUsed: 'ReefCam (RC-02)',
+    collectionType: 'Optical' as const,
+    fileCount: 48,
+    fileSizeBytes: 8700000000, // 8.7 GB
+    completenessPct: 85,
+    validationStatus: 'Pending' as const,
+    notes: 'Pengambilan foto dan video kondisi terumbu karang pada transek 50 m (TUN-02). Metadata belum lengkap.'
+  },
+  {
+    id: 'COL-2025-0282',
+    collectionCode: 'COL-2025-0282',
+    collectionTitle: 'Pengukuran Parameter Lingkungan',
+    stationId: 'TUN-03',
+    stationCode: 'TUN-03',
+    operatorId: 'USR-003',
+    operatorName: 'Fajar Pratama',
+    observationDate: '13 Nov 2025',
+    timeWindow: '08:55 WIB',
+    depthM: 12.0,
+    deviceUsed: 'EnviroSense (ES-01)',
+    collectionType: 'Environmental' as const,
+    fileCount: 12,
+    fileSizeBytes: 156000000,
+    completenessPct: 92,
+    validationStatus: 'Needs Revision' as const,
+    notes: 'Suhu 29.4°C, salinitas 33.2 ppt, DO 6.8 mg/L. Kalibrasi probe pH perlu diulang.'
+  },
+  {
+    id: 'COL-2025-0281',
+    collectionCode: 'COL-2025-0281',
+    collectionTitle: 'Survei Ikan Karang (Stasiun TUN-04)',
+    stationId: 'TUN-04',
+    stationCode: 'TUN-04',
+    operatorId: 'USR-002',
+    operatorName: 'Aulia Rahma',
+    observationDate: '13 Nov 2025',
+    timeWindow: '16:20 WIB',
+    depthM: 6.0,
+    deviceUsed: 'ReefCam (RC-03)',
+    collectionType: 'Ecological' as const,
+    fileCount: 26,
+    fileSizeBytes: 4200000000,
+    completenessPct: 100,
+    validationStatus: 'Validated' as const,
+    notes: 'Pencatatan 68 spesies ikan karang dari 16 famili dengan metode Underwater Visual Census (UVC).'
+  },
+  {
+    id: 'COL-2025-0280',
+    collectionCode: 'COL-2025-0280',
+    collectionTitle: 'Citra Bawah Air - Monitoring Rutin',
+    stationId: 'TUN-01',
+    stationCode: 'TUN-01',
+    operatorId: 'USR-003',
+    operatorName: 'Dimas Saputra',
+    observationDate: '11 Nov 2025',
+    timeWindow: '14:05 WIB',
+    depthM: 10.0,
+    deviceUsed: 'ReefCam (RC-01)',
+    collectionType: 'Optical' as const,
+    fileCount: 37,
+    fileSizeBytes: 6100000000,
+    completenessPct: 78,
+    validationStatus: 'Pending' as const,
+    notes: 'Monitoring visual berkala transek permanen stasiun TUN-01.'
+  }
+];
+
+export const PROTOTYPE_INVENTORY = [
+  {
+    id: 'DEV-001',
+    code: 'EV-ASIK01',
+    name: 'EchoVision Buoy v1.0',
+    type: 'EchoVision',
+    stationAssigned: 'TUN-01 (Legon Bajo)',
+    status: 'Operational' as const,
+    battery: 94,
+    solarInput: 18.2,
+    sensors: 'Hydrophone, Underwater Camera, SST, Turbidity',
+    firmware: 'v2.4.1',
+    lastPing: '14 Nov 2025, 10:24 WIB'
+  },
+  {
+    id: 'DEV-002',
+    code: 'EV-ASIK02',
+    name: 'EchoVision Buoy v1.0',
+    type: 'EchoVision',
+    stationAssigned: 'TUN-02 (Karang Abang)',
+    status: 'Operational' as const,
+    battery: 88,
+    solarInput: 17.5,
+    sensors: 'Hydrophone, Underwater Camera, SST, Turbidity',
+    firmware: 'v2.4.1',
+    lastPing: '14 Nov 2025, 09:47 WIB'
+  },
+  {
+    id: 'DEV-003',
+    code: 'RC-02',
+    name: 'ReefCam High-Res Optical Unit',
+    type: 'ReefCam',
+    stationAssigned: 'TUN-03 (Ciput)',
+    status: 'Operational' as const,
+    battery: 91,
+    solarInput: 19.0,
+    sensors: 'Sony IMX335 4K, Dual Macro Strobe',
+    firmware: 'v1.8.0',
+    lastPing: '14 Nov 2025, 08:55 WIB'
+  },
+  {
+    id: 'DEV-004',
+    code: 'ES-01',
+    name: 'EnviroSense Multi-Probe Unit',
+    type: 'EnviroSense',
+    stationAssigned: 'TUN-04 (Teluk Selatan)',
+    status: 'Maintenance' as const,
+    battery: 42,
+    solarInput: 4.1,
+    sensors: 'SST, Dissolved Oxygen, Salinity, pH',
+    firmware: 'v2.1.0',
+    lastPing: '13 Nov 2025, 18:00 WIB'
+  }
+];

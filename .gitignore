@@ -16,7 +16,7 @@
 # production
 /build
 
-# misc
+# misc & certificates
 .DS_Store
 *.pem
 
@@ -52,10 +52,32 @@ Thumbs.db
 *.swp
 *.swo
 
+# AI Agents & Assistants
+.agent/
+.agents/
+AGENTS.md
+
 # Temporary Microsoft Office / Word lock files
 ~$*
 *.tmp
 
-# Temporary extraction files
+# ========================================================
+# Document & Archive Files (Abaikan dari GitHub)
+# ========================================================
+*.docx
+*.doc
+*.pptx
+*.ppt
+*.xlsx
+*.xls
+*.rar
+*.zip
+*.7z
+
+# Specific project docs & extracted assets
+REEFSIGHT - back end.docx
+REEFSIGHT - front end.docx
+3d.rar
+extracted_designs/
 backend_extracted.txt
 frontend_extracted.txt

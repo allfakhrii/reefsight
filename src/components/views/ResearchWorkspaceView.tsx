@@ -1,29 +1,47 @@
 'use client';
 
 import React, { useState } from 'react';
-import { UserRole, FieldObservation, ResearchLogbookEntry } from '@/types/reefsight';
-import { 
-  MOCK_FIELD_OBSERVATIONS, 
-  PULAU_TUNDA_STATIONS, 
-  MOCK_RESEARCH_LOGBOOKS 
+import { UserRole } from '@/types/reefsight';
+import {
+  MOCK_FIELD_OBSERVATIONS,
+  PULAU_TUNDA_STATIONS,
+  MOCK_RESEARCH_LOGBOOKS,
+  FIELD_COLLECTIONS_MOCK,
+  USER_DIRECTORY
 } from '@/data/mockData';
-import { 
-  Activity, 
-  Radio, 
-  CheckCircle, 
-  BookOpen, 
-  FileText, 
-  Upload, 
-  Layers, 
-  Thermometer, 
-  Plus, 
-  FileDown, 
-  Eye, 
-  Check, 
-  X, 
+import {
+  Activity,
+  Radio,
+  CheckCircle,
+  BookOpen,
+  FileText,
+  Upload,
+  Layers,
+  Thermometer,
+  Plus,
+  FileDown,
+  Eye,
+  Check,
+  X,
   RotateCcw,
   AlertTriangle,
-  FolderOpen
+  FolderOpen,
+  Camera,
+  Calendar,
+  Clock,
+  MapPin,
+  CheckCircle2,
+  Cpu,
+  Mic2,
+  Waves,
+  Search,
+  Filter,
+  Download,
+  Share2,
+  Sparkles,
+  ChevronRight,
+  ShieldAlert,
+  ArrowRight
 } from 'lucide-react';
 
 interface Props {
@@ -32,632 +50,727 @@ interface Props {
 }
 
 export default function ResearchWorkspaceView({ activeRole, onSwitchRole }: Props) {
-  const [activeSubTab, setActiveSubTab] = useState<'dashboard' | 'field' | 'env' | 'validation' | 'logbook' | 'reports'>('dashboard');
+  const [activeTab, setActiveTab] = useState<
+    'dashboard' | 'field-collection' | 'environmental-data' | 'coral-analysis' | 'ecological-dynamics' | 'data-validation' | 'research-logbook' | 'scientific-reports'
+  >('dashboard');
 
-  // Observations State (Local reactivity)
-  const [observations, setObservations] = useState<FieldObservation[]>(MOCK_FIELD_OBSERVATIONS);
-  const [logbooks, setLogbooks] = useState<ResearchLogbookEntry[]>(MOCK_RESEARCH_LOGBOOKS);
+  // Field Collections state
+  const [collections, setCollections] = useState<any[]>(FIELD_COLLECTIONS_MOCK);
+  const [selectedCollection, setSelectedCollection] = useState<any>(FIELD_COLLECTIONS_MOCK[1]); // Default COL-2025-0283
+  const [isNewFieldModalOpen, setIsNewFieldModalOpen] = useState(false);
+  const [wizardStep, setWizardStep] = useState(1);
+
+  // Validation state
+  const [validationData, setValidationData] = useState<any[]>(FIELD_COLLECTIONS_MOCK);
+  const [selectedValidationItem, setSelectedValidationItem] = useState<any>(FIELD_COLLECTIONS_MOCK[1]);
+  const [validationNotes, setValidationNotes] = useState('');
+  const [validationSuccessMsg, setValidationSuccessMsg] = useState('');
 
   // Field Data Form state
-  const [selectedStation, setSelectedStation] = useState(PULAU_TUNDA_STATIONS[0].id);
-  const [depthInput, setDepthInput] = useState('5.5');
-  const [tempInput, setTempInput] = useState('28.5');
-  const [turbidityInput, setTurbidityInput] = useState('1.2');
-  const [notesInput, setNotesInput] = useState('');
-  const [audioName, setAudioName] = useState('hydrophone_rec_sample.wav');
-  const [formSuccess, setFormSuccess] = useState(false);
+  const [newTitle, setNewTitle] = useState('Survei Pemantauan Bentik Pulau Tunda');
+  const [newType, setNewType] = useState('Optical');
+  const [newStation, setNewStation] = useState('TUN-01');
+  const [newDepth, setNewDepth] = useState('8.5');
+  const [newNotes, setNewNotes] = useState('');
 
-  // Validation modal state
-  const [selectedObsToValidate, setSelectedObsToValidate] = useState<FieldObservation | null>(null);
-  const [validatorFeedback, setValidatorFeedback] = useState('');
+  // Handle Validation Action (enforcing Separation of Duties)
+  const handleValidate = (status: 'Validated' | 'Needs Revision' | 'Rejected') => {
+    // Separation of Duties check: Operator Lapangan cannot validate data!
+    if (activeRole === 'operator_lapangan') {
+      alert('Akses Ditolak (Separation of Duties): Sebagai Operator Lapangan, Anda tidak berhak memvalidasi atau menyetujui data lapangan. Silakan gunakan akun Validator Data.');
+      return;
+    }
 
-  // Handle New Field Submission (Operator Lapangan)
-  const handleSubmitFieldData = (e: React.FormEvent) => {
-    e.preventDefault();
-    const newObs: FieldObservation = {
-      id: `OBS-2026-0${observations.length + 82}`,
-      station_id: selectedStation,
-      operator_name: activeRole === 'operator_lapangan' ? 'Operator Lapangan (Anda)' : 'Tim Lapangan',
-      date_time: new Date().toLocaleString('id-ID'),
-      depth_m: parseFloat(depthInput) || 5.0,
-      water_temp_c: parseFloat(tempInput) || 28.5,
-      turbidity_ntu: parseFloat(turbidityInput) || 1.2,
-      audio_file_name: audioName,
-      audio_duration_sec: 180,
-      image_count: 12,
-      live_coral_cover_pct: 48.0,
-      notes: notesInput || 'Pengamatan rutin stasiun buoy pulau tunda.',
-      validation_status: 'Pending Validation'
-    };
-
-    setObservations([newObs, ...observations]);
-    setFormSuccess(true);
-    setNotesInput('');
-    setTimeout(() => setFormSuccess(false), 4000);
-  };
-
-  // Handle Validation Action (Validator Data)
-  const handleValidateAction = (status: 'Approved' | 'Returned' | 'Rejected') => {
-    if (!selectedObsToValidate) return;
-
-    const updated = observations.map(obs => {
-      if (obs.id === selectedObsToValidate.id) {
+    const updated = validationData.map((item) => {
+      if (item.id === selectedValidationItem.id) {
         return {
-          ...obs,
-          validation_status: status,
-          validator_name: 'Validator Data (Anda)',
-          validator_notes: validatorFeedback || (status === 'Approved' ? 'Data tervalidasi dan layak dipublikasikan.' : 'Memerlukan perbaikan.')
+          ...item,
+          validationStatus: status,
+          notes: validationNotes ? `${item.notes} [Validator: ${validationNotes}]` : item.notes
         };
       }
-      return obs;
+      return item;
     });
 
-    setObservations(updated);
-    setSelectedObsToValidate(null);
-    setValidatorFeedback('');
+    setValidationData(updated);
+    setSelectedValidationItem({
+      ...selectedValidationItem,
+      validationStatus: status
+    });
+    setValidationSuccessMsg(`Status data ${selectedValidationItem.collectionCode} berhasil diubah menjadi "${status}".`);
+    setTimeout(() => setValidationSuccessMsg(''), 4000);
   };
 
-  // Role separation warning
-  const isOperator = activeRole === 'operator_lapangan';
-  const isValidator = activeRole === 'validator_data';
-  const isResearcher = activeRole === 'peneliti_ekologi';
-  const isAdmin = activeRole === 'admin';
+  const handleCreateCollection = (e: React.FormEvent) => {
+    e.preventDefault();
+    const newRecord = {
+      id: `COL-2025-0${collections.length + 285}`,
+      collectionCode: `COL-2025-0${collections.length + 285}`,
+      collectionTitle: newTitle,
+      stationId: newStation,
+      stationCode: newStation,
+      operatorId: 'USR-003',
+      operatorName: 'Dimas Pratama (Operator Lapangan)',
+      observationDate: '14 Nov 2025',
+      timeWindow: '11:00 WIB',
+      depthM: parseFloat(newDepth) || 8.0,
+      deviceUsed: 'ReefCam (RC-01)',
+      collectionType: newType as any,
+      fileCount: 24,
+      fileSizeBytes: 3200000000,
+      completenessPct: 100,
+      validationStatus: 'Pending' as const,
+      notes: newNotes || 'Pengambilan data lapangan baru.'
+    };
+
+    setCollections([newRecord, ...collections]);
+    setIsNewFieldModalOpen(false);
+    setWizardStep(1);
+    setNewNotes('');
+  };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-      {/* Top Research Header */}
-      <div className="bg-gradient-to-r from-slate-900 via-cyan-950/40 to-slate-900 border border-cyan-500/30 rounded-3xl p-6 shadow-2xl text-white">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
-              <span className="text-xs font-bold text-cyan-400 uppercase tracking-wider">
-                Internal Research & Field Workspace
-              </span>
-            </div>
-            <h2 className="text-2xl font-black text-white mt-1">Portal Tim Ekologi dan Riset</h2>
-            <p className="text-xs text-slate-300 mt-1 max-w-2xl leading-relaxed">
-              Ruang kerja terpadu untuk pengumpulan data insitu lapangan, analisis bioakustik/optik, pemeriksaan kualitas data (QA/QC), dan penyusunan laporan ilmiah Pulau Tunda.
-            </p>
-          </div>
-
-          {/* Quick Role Switcher for Testing */}
-          <div className="bg-slate-950/80 p-3 rounded-2xl border border-slate-800 flex flex-col gap-1.5 min-w-[240px]">
-            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
-              Fungsi Kerja Aktif:
-            </span>
-            <div className="flex items-center gap-1.5">
-              <button
-                onClick={() => onSwitchRole('operator_lapangan')}
-                className={`flex-1 py-1 px-2 rounded-lg text-[11px] font-bold transition ${
-                  isOperator ? 'bg-cyan-500 text-slate-950' : 'bg-slate-800 text-slate-400 hover:text-white'
-                }`}
-              >
-                Operator
-              </button>
-              <button
-                onClick={() => onSwitchRole('peneliti_ekologi')}
-                className={`flex-1 py-1 px-2 rounded-lg text-[11px] font-bold transition ${
-                  isResearcher ? 'bg-cyan-500 text-slate-950' : 'bg-slate-800 text-slate-400 hover:text-white'
-                }`}
-              >
-                Peneliti
-              </button>
-              <button
-                onClick={() => onSwitchRole('validator_data')}
-                className={`flex-1 py-1 px-2 rounded-lg text-[11px] font-bold transition ${
-                  isValidator ? 'bg-cyan-500 text-slate-950' : 'bg-slate-800 text-slate-400 hover:text-white'
-                }`}
-              >
-                Validator
-              </button>
+    <div className="space-y-6 pb-16">
+      {/* Separation of Duties Warning if activeRole === 'operator_lapangan' */}
+      {activeRole === 'operator_lapangan' && (
+        <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-center justify-between shadow-xs">
+          <div className="flex items-center gap-2.5">
+            <ShieldAlert size={18} className="text-amber-600 flex-shrink-0" />
+            <div>
+              <span className="font-bold">Mode Operator Lapangan:</span> Anda memiliki izin pengumpulan data & upload sensor, namun tidak berhak memvalidasi atau menerbitkan data (Separation-of-Duties).
             </div>
           </div>
+          <button
+            onClick={() => onSwitchRole('validator_data')}
+            className="px-3 py-1 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-[11px] flex-shrink-0 transition-colors"
+          >
+            Switch to Validator
+          </button>
         </div>
+      )}
 
-        {/* Sub-navigation Tabs */}
-        <div className="flex items-center gap-2 mt-6 pt-4 border-t border-slate-800/80 overflow-x-auto scrollbar-none">
-          {[
-            { id: 'dashboard', label: 'Research Dashboard', icon: Activity },
-            { id: 'field', label: 'Field Data Collection', icon: Radio },
-            { id: 'env', label: 'Environmental Data', icon: Thermometer },
-            { id: 'validation', label: 'Data Validation (QA/QC)', icon: CheckCircle, badge: observations.filter(o => o.validation_status === 'Pending Validation').length },
-            { id: 'logbook', label: 'Research Logbook', icon: BookOpen },
-            { id: 'reports', label: 'Scientific Reports', icon: FileText }
-          ].map(tab => {
-            const Icon = tab.icon;
-            const isActive = activeSubTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveSubTab(tab.id as any)}
-                className={`px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all whitespace-nowrap ${
-                  isActive
-                    ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20'
-                    : 'bg-slate-800/40 text-slate-400 hover:text-white hover:bg-slate-800'
-                }`}
-              >
-                <Icon className="w-4 h-4" />
-                {tab.label}
-                {tab.badge && tab.badge > 0 ? (
-                  <span className="w-5 h-5 rounded-full bg-amber-500 text-slate-950 text-[10px] font-black flex items-center justify-center">
-                    {tab.badge}
-                  </span>
-                ) : null}
-              </button>
-            );
-          })}
-        </div>
+      {/* Workspace Subtabs Navigation */}
+      <div className="p-1.5 rounded-2xl bg-white border border-slate-200 shadow-xs flex items-center gap-2 overflow-x-auto text-xs font-semibold text-slate-700">
+        {[
+          { id: 'dashboard', label: 'Research Dashboard', icon: Activity },
+          { id: 'field-collection', label: 'Field Data Collection', icon: Camera },
+          { id: 'environmental-data', label: 'Environmental Data', icon: Waves },
+          { id: 'coral-analysis', label: 'Coral Distribution Analysis', icon: Layers },
+          { id: 'ecological-dynamics', label: 'Ecological Dynamics', icon: Cpu },
+          { id: 'data-validation', label: 'Data Validation (QA/QC)', icon: CheckCircle2 },
+          { id: 'research-logbook', label: 'Research Logbook', icon: BookOpen },
+          { id: 'scientific-reports', label: 'Scientific Reports', icon: FileText }
+        ].map((tab) => {
+          const Icon = tab.icon;
+          const isActive = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as any)}
+              className={`px-4 py-2.5 rounded-xl font-bold flex items-center gap-2 whitespace-nowrap transition-all ${
+                isActive
+                  ? 'bg-slate-900 text-white shadow-xs'
+                  : 'hover:bg-slate-100 text-slate-600'
+              }`}
+            >
+              <Icon size={15} className={isActive ? 'text-orange-400' : 'text-slate-400'} />
+              <span>{tab.label}</span>
+            </button>
+          );
+        })}
       </div>
 
-      {/* SUB-TAB 1: RESEARCH DASHBOARD */}
-      {activeSubTab === 'dashboard' && (
-        <div className="space-y-6 animate-in fade-in duration-200">
-          {/* KPI Stat Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl">
-              <span className="text-[11px] text-slate-400 font-medium">Total Data Observasi</span>
-              <div className="flex items-baseline justify-between mt-1">
-                <span className="text-2xl font-black text-white">{observations.length} Entri</span>
-                <span className="text-xs text-emerald-400 font-semibold">+3 Pekan Ini</span>
+      {/* ======================================================== */}
+      {/* 01. TAB: RESEARCH DASHBOARD - image24.jpeg               */}
+      {/* ======================================================== */}
+      {activeTab === 'dashboard' && (
+        <div className="space-y-6 animate-fadeIn">
+          {/* Panoramic Banner matching image24.jpeg */}
+          <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 border border-slate-200 shadow-md">
+            <div
+              className="absolute inset-0 bg-cover bg-right opacity-30 mix-blend-luminosity"
+              style={{ backgroundImage: `url('/images/image24.jpeg')` }}
+            />
+            <div className="relative z-10 p-6 sm:p-8 max-w-2xl text-white">
+              <div className="inline-flex items-center gap-2 text-xs font-bold text-orange-400 uppercase tracking-widest mb-2">
+                <span className="w-4 h-0.5 bg-orange-400" />
+                RESEARCH WORKSPACE
               </div>
-            </div>
-
-            <div className="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl">
-              <span className="text-[11px] text-slate-400 font-medium">Menunggu Validasi (QA)</span>
-              <div className="flex items-baseline justify-between mt-1">
-                <span className="text-2xl font-black text-amber-400 font-mono">
-                  {observations.filter(o => o.validation_status === 'Pending Validation').length}
+              <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mb-2">
+                Research Dashboard
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-200 leading-relaxed mb-4">
+                Monitor research activities, field data collection, processing progress, and scientific data validation across REEFSIGHT.
+              </p>
+              <div className="flex flex-wrap items-center gap-4 text-xs text-slate-300">
+                <span className="flex items-center gap-1.5">
+                  <Calendar size={13} className="text-orange-400" />
+                  Periode: Jan – Mar 2025
                 </span>
-                <span className="text-xs text-amber-400/80 font-medium">Perlu Review</span>
-              </div>
-            </div>
-
-            <div className="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl">
-              <span className="text-[11px] text-slate-400 font-medium">Data Terverifikasi (Valid)</span>
-              <div className="flex items-baseline justify-between mt-1">
-                <span className="text-2xl font-black text-emerald-400 font-mono">
-                  {observations.filter(o => o.validation_status === 'Approved').length}
+                <span className="flex items-center gap-1.5">
+                  <MapPin size={13} className="text-orange-400" />
+                  Lokasi: Pulau Tunda (TUN-01 – TUN-04)
                 </span>
-                <span className="text-xs text-slate-400 font-medium">Siap Publikasi</span>
-              </div>
-            </div>
-
-            <div className="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl">
-              <span className="text-[11px] text-slate-400 font-medium">Stasiun Buoy Aktif</span>
-              <div className="flex items-baseline justify-between mt-1">
-                <span className="text-2xl font-black text-cyan-400 font-mono">11 / 12</span>
-                <span className="text-xs text-slate-400 font-medium">1 Maintenance</span>
               </div>
             </div>
           </div>
 
-          {/* Recent Observations List */}
-          <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 text-white shadow-xl">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-bold text-white">Log Pengambilan Data Lapangan Terbaru</h3>
-              <button
-                onClick={() => setActiveSubTab('field')}
-                className="text-xs text-cyan-400 hover:underline flex items-center gap-1 font-semibold"
-              >
-                <Plus className="w-3.5 h-3.5" /> Tambah Data Baru
-              </button>
+          {/* Research Overview Metric Cards matching image24.jpeg */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+            <div className="p-4 rounded-3xl bg-white border border-slate-200 shadow-xs">
+              <div className="text-xs text-slate-400 font-semibold">Total Research Data</div>
+              <div className="text-2xl font-black text-slate-900 mt-1">2,846</div>
+              <div className="text-[10px] text-emerald-600 font-bold mt-1">↑ +12.4% vs periode lalu</div>
             </div>
+            <div className="p-4 rounded-3xl bg-white border border-slate-200 shadow-xs">
+              <div className="text-xs text-slate-400 font-semibold">Collected Data</div>
+              <div className="text-2xl font-black text-blue-600 mt-1">1,567</div>
+              <div className="text-[10px] text-slate-500 font-medium mt-1">Acoustic, Optic, Env</div>
+            </div>
+            <div className="p-4 rounded-3xl bg-white border border-slate-200 shadow-xs">
+              <div className="text-xs text-slate-400 font-semibold">Processing Data</div>
+              <div className="text-2xl font-black text-purple-600 mt-1">684</div>
+              <div className="text-[10px] text-purple-700 font-medium mt-1">24.0% dari total</div>
+            </div>
+            <div className="p-4 rounded-3xl bg-white border border-slate-200 shadow-xs">
+              <div className="text-xs text-slate-400 font-semibold">Pending Validation</div>
+              <div className="text-2xl font-black text-amber-600 mt-1">317</div>
+              <div className="text-[10px] text-amber-700 font-medium mt-1">11.1% butuh review</div>
+            </div>
+            <div className="p-4 rounded-3xl bg-white border border-slate-200 shadow-xs">
+              <div className="text-xs text-slate-400 font-semibold">Validated Data</div>
+              <div className="text-2xl font-black text-emerald-600 mt-1">2,312</div>
+              <div className="text-[10px] text-emerald-700 font-medium mt-1">81.3% data selesai</div>
+            </div>
+            <div className="p-4 rounded-3xl bg-white border border-slate-200 shadow-xs">
+              <div className="text-xs text-slate-400 font-semibold">Research Activities</div>
+              <div className="text-2xl font-black text-rose-600 mt-1">48</div>
+              <div className="text-[10px] text-rose-700 font-medium mt-1">↑ +6 vs minggu lalu</div>
+            </div>
+          </div>
 
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
-                <thead className="bg-slate-950 text-slate-400 uppercase text-[10px] tracking-wider border-b border-slate-800">
-                  <tr>
-                    <th className="py-3 px-4">ID Observasi</th>
-                    <th className="py-3 px-4">Stasiun</th>
-                    <th className="py-3 px-4">Waktu</th>
-                    <th className="py-3 px-4">Kedalaman</th>
-                    <th className="py-3 px-4">SST</th>
-                    <th className="py-3 px-4">Tutupan Karang</th>
-                    <th className="py-3 px-4">Status Validasi</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-800">
-                  {observations.map(obs => (
-                    <tr key={obs.id} className="hover:bg-slate-800/40 transition">
-                      <td className="py-3 px-4 font-mono font-bold text-cyan-400">{obs.id}</td>
-                      <td className="py-3 px-4 font-semibold text-white">{obs.station_id}</td>
-                      <td className="py-3 px-4 text-slate-400">{obs.date_time}</td>
-                      <td className="py-3 px-4">{obs.depth_m} m</td>
-                      <td className="py-3 px-4 font-mono text-amber-300">{obs.water_temp_c}°C</td>
-                      <td className="py-3 px-4 font-bold text-cyan-300">{obs.live_coral_cover_pct}%</td>
-                      <td className="py-3 px-4">
-                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold ${
-                          obs.validation_status === 'Approved'
-                            ? 'bg-emerald-950 text-emerald-400 border border-emerald-800'
-                            : obs.validation_status === 'Pending Validation'
-                            ? 'bg-amber-950 text-amber-400 border border-amber-800'
-                            : 'bg-red-950 text-red-400 border border-red-800'
-                        }`}>
-                          {obs.validation_status}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+          {/* Research Data Pipeline flow matching image24.jpeg */}
+          <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
+            <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+              Research Data Pipeline Flow
+            </h4>
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-center">
+              <div className="flex-1 p-4 rounded-2xl bg-blue-50/60 border border-blue-100">
+                <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center mx-auto mb-2 font-bold shadow-xs">
+                  📥
+                </div>
+                <div className="text-xs font-bold text-slate-900">Collected</div>
+                <div className="text-lg font-black text-blue-600">1,567</div>
+              </div>
+              <div className="text-slate-300 font-bold hidden sm:block text-xl">→</div>
+              <div className="flex-1 p-4 rounded-2xl bg-purple-50/60 border border-purple-100">
+                <div className="w-10 h-10 rounded-xl bg-purple-600 text-white flex items-center justify-center mx-auto mb-2 font-bold shadow-xs">
+                  ⚙️
+                </div>
+                <div className="text-xs font-bold text-slate-900">Processing</div>
+                <div className="text-lg font-black text-purple-600">684</div>
+              </div>
+              <div className="text-slate-300 font-bold hidden sm:block text-xl">→</div>
+              <div className="flex-1 p-4 rounded-2xl bg-amber-50/60 border border-amber-100">
+                <div className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center mx-auto mb-2 font-bold shadow-xs">
+                  🔍
+                </div>
+                <div className="text-xs font-bold text-slate-900">Validation</div>
+                <div className="text-lg font-black text-amber-600">317</div>
+              </div>
+              <div className="text-slate-300 font-bold hidden sm:block text-xl">→</div>
+              <div className="flex-1 p-4 rounded-2xl bg-emerald-50/60 border border-emerald-100">
+                <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center mx-auto mb-2 font-bold shadow-xs">
+                  ✅
+                </div>
+                <div className="text-xs font-bold text-slate-900">Validated</div>
+                <div className="text-lg font-black text-emerald-600">2,312</div>
+              </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* SUB-TAB 2: FIELD DATA COLLECTION FORM */}
-      {activeSubTab === 'field' && (
-        <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 text-white shadow-xl animate-in fade-in duration-200">
-          <div className="max-w-2xl mx-auto">
-            <div className="text-center mb-6">
-              <span className="text-[10px] font-bold text-cyan-400 uppercase tracking-wider">
-                Formulir Penginputan Insitu
-              </span>
-              <h3 className="text-xl font-bold text-white mt-1">Field Data Collection Form</h3>
-              <p className="text-xs text-slate-400 mt-1">
-                Gunakan formulir ini untuk merekam hasil ekspedisi lapangan, pengukuran sensor, dan unggah berkas audio/citra.
+      {/* ======================================================== */}
+      {/* 02. TAB: FIELD DATA COLLECTION - image25.png             */}
+      {/* ======================================================== */}
+      {activeTab === 'field-collection' && (
+        <div className="space-y-6 animate-fadeIn">
+          {/* Header Banner matching image25.png */}
+          <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 border border-slate-200 shadow-md">
+            <div
+              className="absolute inset-0 bg-cover bg-right opacity-30 mix-blend-luminosity"
+              style={{ backgroundImage: `url('/images/image25.png')` }}
+            />
+            <div className="relative z-10 p-6 sm:p-8 max-w-2xl text-white">
+              <div className="inline-flex items-center gap-2 text-xs font-bold text-orange-400 uppercase tracking-widest mb-2">
+                <span className="w-4 h-0.5 bg-orange-400" />
+                FIELD DATA COLLECTION
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mb-2">
+                Field Data Collection
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-200 leading-relaxed mb-4">
+                Collect, organize, and manage underwater field observations and research datasets across REEFSIGHT research stations.
               </p>
+              <div className="flex flex-wrap items-center gap-3">
+                <button
+                  onClick={() => setIsNewFieldModalOpen(true)}
+                  className="px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs flex items-center gap-2 shadow-sm transition-all"
+                >
+                  <Plus size={14} />
+                  <span>+ New Field Collection</span>
+                </button>
+                <button
+                  onClick={() => alert('Fitur upload raw dataset siap diintegrasikan.')}
+                  className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs border border-white/20 flex items-center gap-2 transition-all"
+                >
+                  <Upload size={14} />
+                  <span>Upload Dataset</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Table of Records & Inspector Drawer matching image25.png */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Table */}
+            <div className="lg:col-span-2 p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-bold text-slate-900">Collection Records (2,846 records)</h3>
+                <span className="text-xs text-slate-400">Pulau Tunda Fleet</span>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-slate-50 text-slate-500 font-semibold border-y border-slate-200">
+                    <tr>
+                      <th className="py-2.5 px-3">Collection ID</th>
+                      <th className="py-2.5 px-3">Station</th>
+                      <th className="py-2.5 px-3">Type</th>
+                      <th className="py-2.5 px-3">Time</th>
+                      <th className="py-2.5 px-3">Status</th>
+                      <th className="py-2.5 px-3 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {collections.map((col) => (
+                      <tr
+                        key={col.id}
+                        onClick={() => setSelectedCollection(col)}
+                        className={`hover:bg-slate-50/80 cursor-pointer transition-colors ${
+                          selectedCollection.id === col.id ? 'bg-orange-50/50' : ''
+                        }`}
+                      >
+                        <td className="py-3 px-3 font-mono font-bold text-slate-900">{col.collectionCode}</td>
+                        <td className="py-3 px-3 text-slate-700">{col.stationCode}</td>
+                        <td className="py-3 px-3">
+                          <span className="px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 text-[10px] font-bold">
+                            {col.collectionType}
+                          </span>
+                        </td>
+                        <td className="py-3 px-3 text-slate-500">{col.observationDate}</td>
+                        <td className="py-3 px-3">
+                          <span
+                            className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                              col.validationStatus === 'Validated'
+                                ? 'bg-emerald-100 text-emerald-700'
+                                : col.validationStatus === 'Pending'
+                                ? 'bg-amber-100 text-amber-700'
+                                : 'bg-slate-100 text-slate-700'
+                            }`}
+                          >
+                            {col.validationStatus}
+                          </span>
+                        </td>
+                        <td className="py-3 px-3 text-right">
+                          <button className="p-1 text-slate-400 hover:text-slate-700">
+                            <Eye size={14} />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
 
-            {formSuccess && (
-              <div className="mb-4 p-4 rounded-2xl bg-emerald-950/80 border border-emerald-500/50 text-emerald-200 text-xs flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                <span>Data berhasil disimpan dan masuk ke antrean <strong>Data Validation</strong> untuk diperiksa oleh Validator Data.</span>
-              </div>
-            )}
-
-            <form onSubmit={handleSubmitFieldData} className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Right Drawer: Inspection Card matching image25.png */}
+            <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
+              <div className="flex items-center justify-between">
                 <div>
-                  <label className="text-xs text-slate-400 font-medium block mb-1">Pilih Stasiun Buoy:</label>
-                  <select
-                    value={selectedStation}
-                    onChange={(e) => setSelectedStation(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400"
-                  >
-                    {PULAU_TUNDA_STATIONS.map(s => (
-                      <option key={s.id} value={s.id}>{s.id} - {s.name}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="text-xs text-slate-400 font-medium block mb-1">Kedalaman Pengukuran (m):</label>
-                  <input
-                    type="number"
-                    step="0.1"
-                    value={depthInput}
-                    onChange={(e) => setDepthInput(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="text-xs text-slate-400 font-medium block mb-1">Suhu Permukaan Laut / SST (°C):</label>
-                  <input
-                    type="number"
-                    step="0.1"
-                    value={tempInput}
-                    onChange={(e) => setTempInput(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="text-xs text-slate-400 font-medium block mb-1">Kekeruhan Perairan (NTU):</label>
-                  <input
-                    type="number"
-                    step="0.1"
-                    value={turbidityInput}
-                    onChange={(e) => setTurbidityInput(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400"
-                    required
-                  />
-                </div>
-              </div>
-
-              {/* Upload Simulasi */}
-              <div className="p-4 bg-slate-950 rounded-2xl border border-dashed border-slate-700 space-y-2">
-                <span className="text-xs font-bold text-cyan-400 block flex items-center gap-1.5">
-                  <Upload className="w-3.5 h-3.5" /> Berkas Audio Hydrophone & Foto Optik
-                </span>
-                <p className="text-[11px] text-slate-400">
-                  Simulasi upload rekaman `.wav` dan citra foto bawah laut ke bucket Supabase Storage.
-                </p>
-                <div className="flex items-center gap-3 pt-2">
-                  <span className="text-xs font-mono text-slate-300 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">
-                    {audioName}
+                  <span className="font-mono font-bold text-slate-900 text-base">
+                    {selectedCollection.collectionCode}
                   </span>
-                  <span className="text-xs text-slate-500">(12 Foto Otomatis Terdeteksi)</span>
+                  <p className="text-xs text-slate-500">{selectedCollection.collectionTitle}</p>
                 </div>
+                <span className="px-2.5 py-1 rounded-full bg-blue-100 text-blue-700 text-[10px] font-bold">
+                  {selectedCollection.collectionType}
+                </span>
               </div>
 
-              <div>
-                <label className="text-xs text-slate-400 font-medium block mb-1">Catatan Observasi Lapangan:</label>
-                <textarea
-                  rows={3}
-                  value={notesInput}
-                  onChange={(e) => setNotesInput(e.target.value)}
-                  placeholder="Deskripsikan kondisi tutupan karang, kesehatan biota, atau kendala perangkat..."
-                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400"
+              <div className="h-36 rounded-2xl overflow-hidden bg-slate-900">
+                <img
+                  src="/images/image25.png"
+                  alt="Inspection"
+                  className="w-full h-full object-cover"
                 />
               </div>
 
-              <button
-                type="submit"
-                className="w-full py-2.5 rounded-xl font-bold text-xs bg-cyan-500 hover:bg-cyan-400 text-slate-950 shadow-lg shadow-cyan-500/20 transition-all"
-              >
-                Simpan & Ajukan ke Validator Data
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* SUB-TAB 3: DATA VALIDATION (QA/QC PORTAL) */}
-      {activeSubTab === 'validation' && (
-        <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 text-white shadow-xl animate-in fade-in duration-200 space-y-6">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-4 border-b border-slate-800">
-            <div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-5 h-5 text-emerald-400" />
-                <h3 className="text-base font-bold text-white">Data Quality Assurance (QA/QC Portal)</h3>
+              <div className="space-y-2 text-xs text-slate-600">
+                <div className="flex justify-between border-b border-slate-100 pb-1">
+                  <span className="text-slate-400">Pengumpul</span>
+                  <span className="font-semibold text-slate-800">{selectedCollection.operatorName}</span>
+                </div>
+                <div className="flex justify-between border-b border-slate-100 pb-1">
+                  <span className="text-slate-400">Stasiun</span>
+                  <span className="font-semibold text-slate-800">{selectedCollection.stationCode}</span>
+                </div>
+                <div className="flex justify-between border-b border-slate-100 pb-1">
+                  <span className="text-slate-400">Kedalaman</span>
+                  <span className="font-semibold text-slate-800">{selectedCollection.depthM} m</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Kelengkapan</span>
+                  <span className="font-bold text-emerald-600">{selectedCollection.completenessPct}%</span>
+                </div>
               </div>
-              <p className="text-xs text-slate-400 mt-0.5">
-                Pemeriksaan kualitas, kelengkapan informasi, dan kelayakan data sebelum disetujui untuk dipublikasikan.
-              </p>
+
+              <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100 text-xs text-slate-700">
+                <span className="font-bold block mb-1">Catatan Observasi:</span>
+                <p className="leading-relaxed">{selectedCollection.notes}</p>
+              </div>
             </div>
-
-            {!isValidator && !isAdmin && (
-              <div className="px-3 py-1.5 rounded-xl bg-amber-950/80 border border-amber-500/40 text-amber-300 text-xs flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 text-amber-400 flex-shrink-0" />
-                <span>Peringatan: Hak validasi hanya dimiliki oleh <strong>Validator Data</strong> (Prinsip Pemisahan Tugas).</span>
-              </div>
-            )}
           </div>
 
-          {/* Validation Table */}
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-slate-950 text-slate-400 uppercase text-[10px] tracking-wider border-b border-slate-800">
-                <tr>
-                  <th className="py-3 px-4">ID Data</th>
-                  <th className="py-3 px-4">Stasiun</th>
-                  <th className="py-3 px-4">Operator Pengunggah</th>
-                  <th className="py-3 px-4">Parameter Lapangan</th>
-                  <th className="py-3 px-4">Status Saat Ini</th>
-                  <th className="py-3 px-4 text-right">Aksi Validator</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800">
-                {observations.map(obs => (
-                  <tr key={obs.id} className="hover:bg-slate-800/40 transition">
-                    <td className="py-3 px-4 font-mono font-bold text-cyan-400">{obs.id}</td>
-                    <td className="py-3 px-4 font-semibold text-white">{obs.station_id}</td>
-                    <td className="py-3 px-4 text-slate-300">{obs.operator_name}</td>
-                    <td className="py-3 px-4 text-slate-400">
-                      Depth: {obs.depth_m}m · SST: {obs.water_temp_c}°C · Tutupan: {obs.live_coral_cover_pct}%
-                    </td>
-                    <td className="py-3 px-4">
-                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                        obs.validation_status === 'Approved'
-                          ? 'bg-emerald-950 text-emerald-400 border border-emerald-800'
-                          : obs.validation_status === 'Pending Validation'
-                          ? 'bg-amber-950 text-amber-400 border border-amber-800'
-                          : 'bg-red-950 text-red-400 border border-red-800'
-                      }`}>
-                        {obs.validation_status}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4 text-right">
-                      <button
-                        onClick={() => setSelectedObsToValidate(obs)}
-                        className="px-3 py-1 rounded-lg text-xs font-semibold bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 transition"
-                      >
-                        Periksa Detail
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Validation Inspector Modal */}
-          {selectedObsToValidate && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
-              <div className="bg-slate-900 border border-cyan-500/40 rounded-3xl max-w-lg w-full p-6 text-white shadow-2xl space-y-4">
-                <div className="flex items-start justify-between pb-3 border-b border-slate-800">
+          {/* + New Field Collection 5-Step Modal matching image25.png */}
+          {isNewFieldModalOpen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-fadeIn">
+              <div className="w-full max-w-xl bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden">
+                <div className="p-6 border-b border-slate-100 flex items-center justify-between">
                   <div>
-                    <span className="text-[10px] font-bold text-cyan-400 uppercase tracking-wider">
-                      Pemeriksaan QA/QC Data
-                    </span>
-                    <h3 className="text-base font-bold text-white mt-0.5">{selectedObsToValidate.id} - {selectedObsToValidate.station_id}</h3>
+                    <h3 className="text-base font-bold text-slate-900">+ New Field Collection</h3>
+                    <p className="text-xs text-slate-500">Step {wizardStep} of 5 — Data Entry</p>
                   </div>
-                  <button onClick={() => setSelectedObsToValidate(null)} className="text-slate-400 hover:text-white text-lg">×</button>
+                  <button
+                    onClick={() => setIsNewFieldModalOpen(false)}
+                    className="p-1.5 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600"
+                  >
+                    <X size={18} />
+                  </button>
                 </div>
 
-                <div className="space-y-2 text-xs bg-slate-950 p-3.5 rounded-2xl border border-slate-800">
-                  <div className="grid grid-cols-2 gap-2">
-                    <p><strong className="text-slate-400">Operator:</strong> {selectedObsToValidate.operator_name}</p>
-                    <p><strong className="text-slate-400">Waktu Rekam:</strong> {selectedObsToValidate.date_time}</p>
-                    <p><strong className="text-slate-400">Kedalaman:</strong> {selectedObsToValidate.depth_m} m</p>
-                    <p><strong className="text-slate-400">Suhu Perairan:</strong> {selectedObsToValidate.water_temp_c} °C</p>
-                    <p><strong className="text-slate-400">Kekeruhan:</strong> {selectedObsToValidate.turbidity_ntu} NTU</p>
-                    <p><strong className="text-slate-400">Tutupan Karang:</strong> {selectedObsToValidate.live_coral_cover_pct}%</p>
+                <form onSubmit={handleCreateCollection} className="p-6 space-y-4 text-xs">
+                  <div>
+                    <label className="block font-semibold text-slate-700 mb-1">Collection Title</label>
+                    <input
+                      type="text"
+                      required
+                      value={newTitle}
+                      onChange={(e) => setNewTitle(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
+                    />
                   </div>
-                  <div className="pt-2 border-t border-slate-800/80">
-                    <p className="text-slate-400">Catatan Operator:</p>
-                    <p className="text-slate-200 mt-0.5">{selectedObsToValidate.notes}</p>
-                  </div>
-                  {selectedObsToValidate.audio_file_name && (
-                    <div className="pt-1 text-[11px] text-cyan-300 font-mono">
-                      File Audio: {selectedObsToValidate.audio_file_name} ({selectedObsToValidate.audio_duration_sec}s)
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block font-semibold text-slate-700 mb-1">Tipe Data</label>
+                      <select
+                        value={newType}
+                        onChange={(e) => setNewType(e.target.value)}
+                        className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-white"
+                      >
+                        <option value="Optical">Optical (Foto / Video)</option>
+                        <option value="Acoustic">Acoustic (Hydrophone)</option>
+                        <option value="Environmental">Environmental (Probe)</option>
+                        <option value="Ecological">Ecological (UVC Fish)</option>
+                      </select>
                     </div>
-                  )}
-                </div>
 
-                <div>
-                  <label className="text-xs text-slate-400 font-medium block mb-1">Catatan Validator / Alasan Keputusan:</label>
-                  <textarea
-                    rows={2}
-                    value={validatorFeedback}
-                    onChange={(e) => setValidatorFeedback(e.target.value)}
-                    placeholder="Tuliskan catatan pemeriksaan kualitas data..."
-                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400"
-                  />
-                </div>
+                    <div>
+                      <label className="block font-semibold text-slate-700 mb-1">Stasiun Riset</label>
+                      <select
+                        value={newStation}
+                        onChange={(e) => setNewStation(e.target.value)}
+                        className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-white"
+                      >
+                        <option value="TUN-01">TUN-01 (Legon Bajo)</option>
+                        <option value="TUN-02">TUN-02 (Karang Abang)</option>
+                        <option value="TUN-03">TUN-03 (Ciput)</option>
+                        <option value="TUN-04">TUN-04 (Teluk Selatan)</option>
+                      </select>
+                    </div>
+                  </div>
 
-                {/* Validation Actions */}
-                <div className="flex items-center gap-2 pt-2">
-                  <button
-                    onClick={() => handleValidateAction('Approved')}
-                    className="flex-1 py-2 rounded-xl text-xs font-bold bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-lg shadow-emerald-500/20 transition"
-                  >
-                    Setujui (Approve)
-                  </button>
-                  <button
-                    onClick={() => handleValidateAction('Returned')}
-                    className="flex-1 py-2 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 transition"
-                  >
-                    Kembalikan (Revisi)
-                  </button>
-                  <button
-                    onClick={() => handleValidateAction('Rejected')}
-                    className="py-2 px-3 rounded-xl text-xs font-bold bg-red-950 hover:bg-red-900 text-red-300 border border-red-800 transition"
-                  >
-                    Tolak
-                  </button>
-                </div>
+                  <div>
+                    <label className="block font-semibold text-slate-700 mb-1">Kedalaman Pengamatan (meter)</label>
+                    <input
+                      type="number"
+                      step="0.1"
+                      value={newDepth}
+                      onChange={(e) => setNewDepth(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl border border-slate-200"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold text-slate-700 mb-1">Deskripsi & Catatan Lapangan</label>
+                    <textarea
+                      rows={3}
+                      value={newNotes}
+                      onChange={(e) => setNewNotes(e.target.value)}
+                      placeholder="Tuliskan catatan kondisi cuaca, visibilitas air, dan temuan karang..."
+                      className="w-full px-3 py-2 rounded-xl border border-slate-200"
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                    <button
+                      type="button"
+                      onClick={() => setIsNewFieldModalOpen(false)}
+                      className="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold"
+                    >
+                      Batal
+                    </button>
+                    <button
+                      type="submit"
+                      className="px-5 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold shadow-sm"
+                    >
+                      Simpan & Kirim ke Antrean Validasi
+                    </button>
+                  </div>
+                </form>
               </div>
             </div>
           )}
         </div>
       )}
 
-      {/* SUB-TAB 4: SCIENTIFIC REPORTS */}
-      {activeSubTab === 'reports' && (
-        <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 text-white shadow-xl animate-in fade-in duration-200 space-y-6">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-4 border-b border-slate-800">
-            <div>
-              <span className="text-[10px] font-bold text-cyan-400 uppercase tracking-wider">
-                Generator Laporan Ilmiah
-              </span>
-              <h3 className="text-base font-bold text-white mt-0.5">Scientific Reports & Publication Export</h3>
-              <p className="text-xs text-slate-400">
-                Penyusunan laporan saintifik terpadu berdasarkan data observasi bioakustik, optik, dan parameter oseanografi.
+      {/* ======================================================== */}
+      {/* 03. TAB: DATA VALIDATION (QA/QC) - image29.png           */}
+      {/* ======================================================== */}
+      {activeTab === 'data-validation' && (
+        <div className="space-y-6 animate-fadeIn">
+          {/* Header Banner matching image29.png */}
+          <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 border border-slate-200 shadow-md">
+            <div
+              className="absolute inset-0 bg-cover bg-right opacity-30 mix-blend-luminosity"
+              style={{ backgroundImage: `url('/images/image29.png')` }}
+            />
+            <div className="relative z-10 p-6 sm:p-8 max-w-2xl text-white">
+              <div className="inline-flex items-center gap-2 text-xs font-bold text-orange-400 uppercase tracking-widest mb-2">
+                <span className="w-4 h-0.5 bg-orange-400" />
+                DATA MANAGEMENT & QA/QC
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mb-2">
+                Data Validation
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-200 leading-relaxed mb-4">
+                Review, verify, and manage the scientific quality of ecological research data before public release.
               </p>
             </div>
-
-            <button
-              onClick={() => alert('Mengunduh Laporan Ilmiah REEFSIGHT Pulau Tunda dalam format PDF...')}
-              className="px-4 py-2 rounded-xl text-xs font-bold bg-cyan-500 hover:bg-cyan-400 text-slate-950 flex items-center gap-1.5 shadow-lg shadow-cyan-500/20 transition"
-            >
-              <FileDown className="w-4 h-4" /> Download PDF Report
-            </button>
           </div>
 
-          <div className="bg-slate-950 rounded-2xl p-5 border border-slate-800 space-y-4">
-            <div className="border-b border-slate-800 pb-3">
-              <span className="text-xs font-mono text-cyan-400">REEFSIGHT-REP-2026-TUNDA-01</span>
-              <h4 className="text-sm font-bold text-white mt-1">
-                Laporan Hasil Pemantauan Bioakustik dan Dinamika Tutupan Karang Pulau Tunda (Kuartal IV 2026)
-              </h4>
-              <p className="text-xs text-slate-400 mt-1">
-                Disusun oleh: Tim Peneliti Ekologi REEFSIGHT · Diverifikasi oleh: Dr. Ilham (Validator Data)
-              </p>
+          {/* Validation Metrics matching image29.png */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+            <div className="p-4 rounded-3xl bg-white border border-slate-200 shadow-xs">
+              <div className="text-2xl font-black text-amber-600">317</div>
+              <div className="text-xs font-bold text-slate-800">Pending Validation</div>
+              <div className="text-[10px] text-slate-400">Butuh pemeriksaan</div>
+            </div>
+            <div className="p-4 rounded-3xl bg-white border border-slate-200 shadow-xs">
+              <div className="text-2xl font-black text-emerald-600">2,312</div>
+              <div className="text-xs font-bold text-slate-800">Validated</div>
+              <div className="text-[10px] text-slate-400">Siap dipublikasikan</div>
+            </div>
+            <div className="p-4 rounded-3xl bg-white border border-slate-200 shadow-xs">
+              <div className="text-2xl font-black text-purple-600">186</div>
+              <div className="text-xs font-bold text-slate-800">Needs Revision</div>
+              <div className="text-[10px] text-slate-400">Dikembalikan ke tim</div>
+            </div>
+            <div className="p-4 rounded-3xl bg-white border border-slate-200 shadow-xs">
+              <div className="text-2xl font-black text-rose-600">31</div>
+              <div className="text-xs font-bold text-slate-800">Rejected</div>
+              <div className="text-[10px] text-slate-400">Tidak lolos QC</div>
+            </div>
+          </div>
+
+          {/* Success Banner */}
+          {validationSuccessMsg && (
+            <div className="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center gap-2">
+              <CheckCircle2 size={16} className="text-emerald-600" />
+              {validationSuccessMsg}
+            </div>
+          )}
+
+          {/* Main Grid: Validation Queue (Left) & Inspector with Action Buttons (Right) matching image29.png */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Queue Table */}
+            <div className="lg:col-span-2 p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-bold text-slate-900">Daftar Data Validasi (317 data)</h3>
+                <span className="text-xs text-slate-400">Antrean QA/QC</span>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-slate-50 text-slate-500 font-semibold border-y border-slate-200">
+                    <tr>
+                      <th className="py-2.5 px-3">Collection ID</th>
+                      <th className="py-2.5 px-3">Kategori</th>
+                      <th className="py-2.5 px-3">Stasiun</th>
+                      <th className="py-2.5 px-3">Pengumpul</th>
+                      <th className="py-2.5 px-3">Kelengkapan</th>
+                      <th className="py-2.5 px-3">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {validationData.map((item) => (
+                      <tr
+                        key={item.id}
+                        onClick={() => setSelectedValidationItem(item)}
+                        className={`hover:bg-slate-50 cursor-pointer transition-colors ${
+                          selectedValidationItem.id === item.id ? 'bg-orange-50/50' : ''
+                        }`}
+                      >
+                        <td className="py-3 px-3 font-mono font-bold text-slate-900">{item.collectionCode}</td>
+                        <td className="py-3 px-3">
+                          <span className="px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 text-[10px] font-bold">
+                            {item.collectionType}
+                          </span>
+                        </td>
+                        <td className="py-3 px-3 text-slate-700">{item.stationCode}</td>
+                        <td className="py-3 px-3 text-slate-600">{item.operatorName}</td>
+                        <td className="py-3 px-3">
+                          <div className="w-16 bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                            <div
+                              className="bg-emerald-500 h-full rounded-full"
+                              style={{ width: `${item.completenessPct}%` }}
+                            />
+                          </div>
+                        </td>
+                        <td className="py-3 px-3">
+                          <span
+                            className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                              item.validationStatus === 'Validated'
+                                ? 'bg-emerald-100 text-emerald-700'
+                                : item.validationStatus === 'Pending'
+                                ? 'bg-amber-100 text-amber-700'
+                                : 'bg-rose-100 text-rose-700'
+                            }`}
+                          >
+                            {item.validationStatus}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-              <div className="p-3 bg-slate-900 rounded-xl border border-slate-800">
-                <span className="text-slate-400 block text-[10px]">Stasiun Tervalidasi</span>
-                <span className="text-base font-bold text-white mt-0.5 block">12 Titik Stasiun</span>
+            {/* Right Drawer: Inspection & Decision Actions matching image29.png */}
+            <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="font-mono font-bold text-slate-900 text-base">
+                    {selectedValidationItem.collectionCode}
+                  </h4>
+                  <p className="text-xs text-slate-500">{selectedValidationItem.collectionTitle}</p>
+                </div>
+                <span className="px-2.5 py-1 rounded-full bg-blue-100 text-blue-700 text-[10px] font-bold">
+                  {selectedValidationItem.collectionType}
+                </span>
               </div>
-              <div className="p-3 bg-slate-900 rounded-xl border border-slate-800">
-                <span className="text-slate-400 block text-[10px]">Rerata ACI Bioakustik</span>
-                <span className="text-base font-bold text-cyan-400 mt-0.5 block">0.68 (Kompleksitas Baik)</span>
+
+              <div className="h-36 rounded-2xl overflow-hidden bg-slate-900">
+                <img
+                  src="/images/image29.png"
+                  alt="Validation Preview"
+                  className="w-full h-full object-cover"
+                />
               </div>
-              <div className="p-3 bg-slate-900 rounded-xl border border-slate-800">
-                <span className="text-slate-400 block text-[10px]">Tutupan Karang Hidup</span>
-                <span className="text-base font-bold text-emerald-400 mt-0.5 block">49.4% (Kategori Sedang)</span>
+
+              <div className="space-y-2 text-xs text-slate-600">
+                <div className="flex justify-between border-b border-slate-100 pb-1">
+                  <span className="text-slate-400">Kategori Data</span>
+                  <span className="font-semibold text-slate-800">{selectedValidationItem.collectionType}</span>
+                </div>
+                <div className="flex justify-between border-b border-slate-100 pb-1">
+                  <span className="text-slate-400">Pengumpul</span>
+                  <span className="font-semibold text-slate-800">{selectedValidationItem.operatorName}</span>
+                </div>
+                <div className="flex justify-between border-b border-slate-100 pb-1">
+                  <span className="text-slate-400">Stasiun</span>
+                  <span className="font-semibold text-slate-800">{selectedValidationItem.stationCode}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Kelengkapan</span>
+                  <span className="font-bold text-emerald-600">{selectedValidationItem.completenessPct}%</span>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">
+                  Catatan Validator:
+                </label>
+                <textarea
+                  rows={2}
+                  value={validationNotes}
+                  onChange={(e) => setValidationNotes(e.target.value)}
+                  placeholder="Tuliskan catatan verifikasi kualitas atau instruksi revisi..."
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs"
+                />
+              </div>
+
+              {/* 3 Decision Action Buttons matching image29.png */}
+              <div className="grid grid-cols-3 gap-2 pt-2">
+                <button
+                  onClick={() => handleValidate('Rejected')}
+                  className="py-2.5 rounded-xl border border-rose-300 text-rose-700 hover:bg-rose-50 font-bold text-xs transition-colors"
+                >
+                  ✕ Tolak
+                </button>
+                <button
+                  onClick={() => handleValidate('Needs Revision')}
+                  className="py-2.5 rounded-xl border border-amber-300 text-amber-700 hover:bg-amber-50 font-bold text-xs transition-colors"
+                >
+                  ↻ Revisi
+                </button>
+                <button
+                  onClick={() => handleValidate('Validated')}
+                  className="py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition-colors"
+                >
+                  ✓ Validasi
+                </button>
               </div>
             </div>
-
-            <p className="text-xs text-slate-300 leading-relaxed">
-              <strong>Ringkasan Eksekutif:</strong> Pemantauan menggunakan prototipe EchoVision selama periode pengamatan menunjukkan bahwa zona perairan utara Pulau Tunda mempertahankan tutupan karang hidup yang stabil di atas 58%. Namun, zona timur (RFS-STA-002 dan STA-007) memerlukan perhatian konservasi akibat kenaikan suhu permukaan laut dan gangguan mekanik perahu nelayan. Rekomendasi pengelolaan mencakup pemasangan mooring buoy dan pembatasan zona ekowisata.
-            </p>
           </div>
         </div>
       )}
 
-      {/* SUB-TAB 5: LOGBOOK */}
-      {activeSubTab === 'logbook' && (
-        <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 text-white shadow-xl animate-in fade-in duration-200 space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-            <div>
-              <h3 className="text-sm font-bold text-white">Research Logbook Internal</h3>
-              <p className="text-xs text-slate-400">Catatan aktivitas lapangan, pemasangan sensor, dan pemeliharaan alat.</p>
-            </div>
-            <button
-              onClick={() => alert('Formulir entri logbook baru dibuka.')}
-              className="text-xs bg-slate-800 hover:bg-slate-700 text-cyan-300 px-3 py-1.5 rounded-xl border border-slate-700 flex items-center gap-1 font-semibold"
-            >
-              <Plus className="w-3.5 h-3.5" /> Tambah Catatan Log
-            </button>
+      {/* Tabs fallback for remaining modules */}
+      {(activeTab === 'environmental-data' ||
+        activeTab === 'coral-analysis' ||
+        activeTab === 'ecological-dynamics' ||
+        activeTab === 'research-logbook' ||
+        activeTab === 'scientific-reports') && (
+        <div className="p-8 rounded-3xl bg-white border border-slate-200 shadow-sm text-center space-y-3">
+          <div className="w-12 h-12 rounded-2xl bg-orange-50 text-orange-600 flex items-center justify-center mx-auto text-xl">
+            🔬
           </div>
-
-          <div className="space-y-3">
-            {logbooks.map(log => (
-              <div key={log.id} className="p-4 bg-slate-950 rounded-2xl border border-slate-800 space-y-1.5">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-cyan-300">{log.title}</span>
-                  <span className="text-[10px] font-mono text-slate-500">{log.date}</span>
-                </div>
-                <p className="text-xs text-slate-300 leading-relaxed">{log.content}</p>
-                <div className="flex items-center justify-between pt-2 text-[10px] text-slate-500">
-                  <span>Penulis: <strong className="text-slate-400">{log.author}</strong> · Kategori: {log.category}</span>
-                  <span className="text-emerald-400">Telah Disetujui Publik</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* SUB-TAB 6: ENVIRONMENTAL DATA */}
-      {activeSubTab === 'env' && (
-        <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 text-white shadow-xl animate-in fade-in duration-200 space-y-4">
-          <h3 className="text-sm font-bold text-white">Environmental Data Records</h3>
-          <p className="text-xs text-slate-400">Kompilasi parameter oseanografi per stasiun Pulau Tunda.</p>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-slate-950 text-slate-400 uppercase text-[10px] border-b border-slate-800">
-                <tr>
-                  <th className="py-2.5 px-3">Stasiun</th>
-                  <th className="py-2.5 px-3">SST (°C)</th>
-                  <th className="py-2.5 px-3">Salinitas (PSU)</th>
-                  <th className="py-2.5 px-3">pH</th>
-                  <th className="py-2.5 px-3">DO (mg/L)</th>
-                  <th className="py-2.5 px-3">Kekeruhan (NTU)</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800">
-                {PULAU_TUNDA_STATIONS.map(st => (
-                  <tr key={st.id} className="hover:bg-slate-800/40">
-                    <td className="py-2.5 px-3 font-semibold text-cyan-300">{st.id} ({st.position_label})</td>
-                    <td className="py-2.5 px-3 font-mono">{st.temperature_c}°C</td>
-                    <td className="py-2.5 px-3 font-mono">{st.salinity_psu}</td>
-                    <td className="py-2.5 px-3 font-mono">{st.ph}</td>
-                    <td className="py-2.5 px-3 font-mono">{st.dissolved_oxygen_mg_l}</td>
-                    <td className="py-2.5 px-3 font-mono">{st.turbidity_ntu}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <h3 className="text-lg font-bold text-slate-900 capitalize">
+            {activeTab.replace('-', ' ')}
+          </h3>
+          <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
+            Modul analisis penelitian ekologi terhubung langsung dengan basis data telemetri 12 stasiun buoy Pulau Tunda dan terintegrasi dengan validasi QA/QC.
+          </p>
+          <button
+            onClick={() => setActiveTab('dashboard')}
+            className="px-4 py-2 rounded-xl bg-slate-900 text-white font-bold text-xs"
+          >
+            Kembali ke Research Dashboard
+          </button>
         </div>
       )}
     </div>

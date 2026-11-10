@@ -514,12 +514,12 @@ export default function EchoVisionCanvas({
           <div className="my-2.5 p-2 bg-slate-800/60 rounded-lg border border-slate-700/50">
             <span className="text-[11px] text-slate-400 block font-medium">Estimasi Biaya Komponen (BOM):</span>
             <span className="text-sm font-bold text-emerald-400 flex items-center gap-1 mt-0.5">
-              <DollarSign className="w-3.5 h-3.5" /> {formatRupiah(selectedComp.price_rp)}
+              <DollarSign className="w-3.5 h-3.5" /> {formatRupiah(selectedComp.price_rp || 0)}
             </span>
           </div>
 
           <p className="text-xs text-slate-300 leading-relaxed">
-            {selectedComp.function}
+            {selectedComp.function || selectedComp.role || selectedComp.description}
           </p>
         </div>
       )}
