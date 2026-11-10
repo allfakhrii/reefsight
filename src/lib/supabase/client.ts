@@ -9,6 +9,6 @@ const supabaseKey =
   process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
   process.env.SUPABASE_PUBLISHABLE_KEY ||
-  '';
+  'build-fallback-anon-key-reefsight';
 
 export const supabase = createClient(supabaseUrl, supabaseKey);

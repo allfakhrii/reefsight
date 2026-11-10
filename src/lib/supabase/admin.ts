@@ -8,7 +8,7 @@ const supabaseUrl =
 const supabaseSecretKey =
   process.env.SUPABASE_SECRET_KEY ||
   process.env.SUPABASE_SERVICE_ROLE_KEY ||
-  '';
+  'build-fallback-service-role-key-reefsight';
 
 // Admin client with full privileges for Server Actions & API Route Handlers
 export const supabaseAdmin = createClient(supabaseUrl, supabaseSecretKey, {
