@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 68" width="340" height="68" fill="none">
+  <defs>
+    <!-- Coral Sunset Gradient -->
+    <linearGradient id="coralGradH" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF7A45" />
+      <stop offset="50%" stop-color="#F05A28" />
+      <stop offset="100%" stop-color="#D9381E" />
+    </linearGradient>
+
+    <!-- Deep Slate Text Gradient -->
+    <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0F172A" />
+      <stop offset="100%" stop-color="#1E293B" />
+    </linearGradient>
+  </defs>
+
+  <!-- Left: The Iconic Emblem (52x52) -->
+  <g transform="translate(6, 8)">
+    <!-- Squircle Background -->
+    <rect x="0" y="0" width="52" height="52" rx="14" fill="url(#coralGradH)" />
+
+    <!-- Sonar Acoustic Wave -->
+    <path d="M12 28 A16 16 0 0 1 40 28" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" opacity="0.5" stroke-dasharray="2 3" />
+
+    <!-- Branching Coral Stem -->
+    <path d="M26 10 C27.5 10 29 11.5 29 14 L29 21 C31 20 34 20.5 35 23 C36.5 25.5 35 28 33 29.5 L29 32.5 L29 40 C29 42 27.5 43 26 43 C24.5 43 23 42 23 40 L23 32.5 L19 29.5 C17 28 15.5 25.5 17 23 C18 20.5 21 20 23 21 L23 14 C23 11.5 24.5 10 26 10 Z" fill="#FFFFFF" />
+
+    <!-- Lateral Coral Polyps -->
+    <circle cx="14" cy="21" r="2.2" fill="#FFFFFF" />
+    <circle cx="18" cy="15" r="1.8" fill="#FFFFFF" />
+    <circle cx="38" cy="21" r="2.2" fill="#FFFFFF" />
+    <circle cx="34" cy="15" r="1.8" fill="#FFFFFF" />
+    <circle cx="26" cy="10" r="2.6" fill="#FFFFFF" />
+
+    <!-- Sight Iris Center -->
+    <circle cx="26" cy="27" r="4.8" fill="#FFFFFF" />
+    <circle cx="26" cy="27" r="3.2" fill="url(#coralGradH)" />
+    <circle cx="26" cy="27" r="1.4" fill="#FFFFFF" />
+  </g>
+
+  <!-- Right: Typography -->
+  <g transform="translate(72, 14)">
+    <!-- Main Logotype: REEF SIGHT -->
+    <text x="0" y="27" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="28" font-weight="900" letter-spacing="-0.03em" fill="#0F172A">
+      REEF<tspan fill="#F05A28">SIGHT</tspan>
+    </text>
+
+    <!-- Subtitle / Tagline -->
+    <text x="1" y="42" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="9" font-weight="700" letter-spacing="0.16em" fill="#64748B" text-transform="uppercase">
+      ECOLOGICAL INTELLIGENCE PLATFORM
+    </text>
+
+    <!-- Pulau Tunda Pill / Indicator -->
+    <g transform="translate(196, 12)">
+      <rect x="0" y="0" width="62" height="16" rx="8" fill="#EFF6FF" />
+      <circle cx="8" cy="8" r="3" fill="#0EA5E9" />
+      <text x="15" y="11" font-family="system-ui, -apple-system, sans-serif" font-size="8" font-weight="800" fill="#0369A1" letter-spacing="0.05em">
+        P. TUNDA
+      </text>
+    </g>
+  </g>
+</svg>

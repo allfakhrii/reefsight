@@ -128,6 +128,29 @@ export default function Home() {
             />
           )}
         </main>
+
+        {/* Global Footer with Official Brand Identity */}
+        <footer className="mt-auto border-t border-slate-200/80 bg-white/70 backdrop-blur-xs py-6 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+            <div className="flex items-center gap-2.5">
+              <img
+                src="/brand/reefsight-icon.svg"
+                alt="REEFSIGHT"
+                className="w-6 h-6 object-contain"
+              />
+              <span className="font-extrabold text-slate-800 tracking-tight text-sm">
+                REEF<span className="text-[#F05A28]">SIGHT</span>
+              </span>
+              <span className="text-slate-300 hidden sm:inline">|</span>
+              <span className="hidden sm:inline">Platform Kecerdasan Ekologis Terumbu Karang Pulau Tunda</span>
+            </div>
+            <div className="flex items-center gap-3 text-[11px] text-slate-400">
+              <span>Kabupaten Serang, Banten</span>
+              <span>•</span>
+              <span>EchoVision IoT & WebGIS</span>
+            </div>
+          </div>
+        </footer>
       </div>
 
       {/* Interactive RBAC Login Modal matching image1.jpeg */}

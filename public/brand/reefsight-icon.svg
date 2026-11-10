@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%" fill="none">
+  <defs>
+    <!-- Vibrant Living Coral Gradient -->
+    <linearGradient id="coralGradient" x1="15%" y1="10%" x2="85%" y2="90%">
+      <stop offset="0%" stop-color="#FF7A45" />
+      <stop offset="45%" stop-color="#F05A28" />
+      <stop offset="100%" stop-color="#D9381E" />
+    </linearGradient>
+
+    <!-- Deep Ocean Sensor Cyan Gradient -->
+    <linearGradient id="oceanCyan" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="60%" stop-color="#0284C7" />
+      <stop offset="100%" stop-color="#0369A1" />
+    </linearGradient>
+
+    <!-- Glowing Eye & Sunbeam Aperture -->
+    <radialGradient id="irisGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="35%" stop-color="#FFD6A5" />
+      <stop offset="70%" stop-color="#F05A28" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#D9381E" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Subtle Drop Shadow -->
+    <filter id="coralShadow" x="-10%" y="-10%" width="120%" height="130%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#D9381E" flood-opacity="0.25" />
+    </filter>
+
+    <!-- Background Badge Shadow -->
+    <filter id="badgeShadow" x="-20%" y="-20%" width="140%" height="140%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#0F172A" flood-opacity="0.12" />
+    </filter>
+  </defs>
+
+  <!-- Base Rounded Container / Squircle Badge -->
+  <rect x="6" y="6" width="108" height="108" rx="28" fill="url(#coralGradient)" filter="url(#badgeShadow)" />
+
+  <!-- Inner Soft Radial Light Ray -->
+  <circle cx="60" cy="58" r="42" fill="url(#irisGlow)" opacity="0.35" />
+
+  <!-- Acoustic Sonar Pulse / Telemetry Concentric Arcs -->
+  <path d="M28 66 A36 36 0 0 1 92 66" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" opacity="0.4" stroke-dasharray="3 5" />
+  <path d="M36 68 A28 28 0 0 1 84 68" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" opacity="0.6" />
+
+  <!-- Main Coral Formation: Stylized Branching Acropora & Eye Symbolism -->
+  <g filter="url(#coralShadow)">
+    <!-- Central Main Coral Stem with Optical Aperture -->
+    <path d="M60 22 C63 22 66 26 66 31 L66 48 C70 45 76 46 78 50 C80 54 78 59 74 62 L66 68 L66 84 C66 89 63 93 60 93 C57 93 54 89 54 84 L54 68 L46 62 C42 59 40 54 42 50 C44 46 50 45 54 48 L54 31 C54 26 57 22 60 22 Z"
+      fill="#FFFFFF" />
+
+    <!-- Left Ascending Coral Branch -->
+    <path d="M42 42 C45 40 49 42 51 46 L54 53 L46 58 C42 60 38 58 37 54 L36 48 C35 44 38 42 42 42 Z"
+      fill="#FFFFFF" opacity="0.95" />
+
+    <!-- Right Ascending Coral Branch -->
+    <path d="M78 42 C82 42 85 44 84 48 L83 54 C82 58 78 60 74 58 L66 53 L69 46 C71 42 75 40 78 42 Z"
+      fill="#FFFFFF" opacity="0.95" />
+
+    <!-- Left Outer Micro-Branch (Polyps) -->
+    <circle cx="34" cy="46" r="4" fill="#FFFFFF" />
+    <circle cx="43" cy="33" r="3.5" fill="#FFFFFF" />
+
+    <!-- Right Outer Micro-Branch (Polyps) -->
+    <circle cx="86" cy="46" r="4" fill="#FFFFFF" />
+    <circle cx="77" cy="33" r="3.5" fill="#FFFFFF" />
+
+    <!-- Top Crown Branch -->
+    <circle cx="60" cy="22" r="5" fill="#FFFFFF" />
+  </g>
+
+  <!-- The "SIGHT" Optical Eye & Ecological Core (Telemetry Center) -->
+  <circle cx="60" cy="58" r="10" fill="#FFFFFF" />
+  <circle cx="60" cy="58" r="7.5" fill="url(#coralGradient)" />
+  <circle cx="60" cy="58" r="3.5" fill="#FFFFFF" />
+  <circle cx="62" cy="56" r="1.5" fill="#FFD6A5" />
+
+  <!-- Marine Wave Base Accent at Bottom -->
+  <path d="M38 88 C44 85 48 89 54 87 C60 85 64 88 70 86 C76 84 80 87 84 86" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" opacity="0.75" />
+</svg>

@@ -190,9 +190,9 @@ export default function LoginView({
         <div className="max-w-md w-full mx-auto my-auto space-y-5">
           {/* Brand Header with Clean Emblem from image1.jpeg */}
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-white border border-slate-200/80 p-1 flex items-center justify-center shadow-xs flex-shrink-0">
+            <div className="w-12 h-12 rounded-2xl overflow-hidden shadow-xs flex-shrink-0">
               <img
-                src="/images/reefsight_emblem.png"
+                src="/brand/reefsight-icon.svg"
                 alt="REEFSIGHT Coral Logo"
                 className="w-full h-full object-contain"
               />

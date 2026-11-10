@@ -113,8 +113,12 @@ export default function AppSidebar({
           className="flex items-center gap-3 text-left overflow-hidden focus:outline-none group"
         >
           {/* Coral Logo Icon */}
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 via-rose-500 to-amber-500 flex items-center justify-center text-white font-black text-xl shadow-md shadow-orange-500/20 group-hover:scale-105 transition-transform flex-shrink-0">
-            🪸
+          <div className="w-10 h-10 rounded-xl overflow-hidden shadow-md shadow-orange-500/20 group-hover:scale-105 transition-transform flex-shrink-0">
+            <img
+              src="/brand/reefsight-icon.svg"
+              alt="REEFSIGHT"
+              className="w-full h-full object-contain"
+            />
           </div>
           {!isCollapsed && (
             <div className="flex flex-col">
@@ -213,8 +217,12 @@ export default function AppSidebar({
       <div className="p-3 border-t border-slate-100 bg-slate-50/50">
         {!isCollapsed ? (
           <div className="p-3 rounded-xl bg-gradient-to-br from-cyan-900 via-blue-900 to-indigo-950 text-white relative overflow-hidden shadow-inner">
-            <div className="absolute -right-4 -bottom-4 w-16 h-16 opacity-20 pointer-events-none text-4xl">
-              🪸
+            <div className="absolute -right-3 -bottom-3 w-16 h-16 opacity-15 pointer-events-none">
+              <img
+                src="/brand/reefsight-icon.svg"
+                alt=""
+                className="w-full h-full object-contain filter brightness-200"
+              />
             </div>
             <div className="flex items-center gap-1.5 text-[10px] text-cyan-300 font-semibold uppercase tracking-wider mb-1">
               <Sparkles size={12} />

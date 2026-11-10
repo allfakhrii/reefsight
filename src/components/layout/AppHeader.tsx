@@ -97,6 +97,18 @@ export default function AppHeader({
           <Menu size={20} />
         </button>
 
+        {/* Mobile Brand Logo */}
+        <div className="flex lg:hidden items-center gap-1.5 mr-1">
+          <img
+            src="/brand/reefsight-icon.svg"
+            alt="REEFSIGHT"
+            className="w-7 h-7 rounded-lg object-contain shadow-xs"
+          />
+          <span className="font-extrabold text-xs text-slate-900 tracking-tight hidden sm:inline">
+            REEF<span className="text-[#F05A28]">SIGHT</span>
+          </span>
+        </div>
+
         <div className="flex items-center gap-2">
           {/* Workspace Switcher Pill */}
           <div className="inline-flex p-1 rounded-xl bg-slate-100 border border-slate-200/80 text-xs font-semibold">
