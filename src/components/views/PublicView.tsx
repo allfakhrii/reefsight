@@ -75,6 +75,12 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
   const [contactCategory, setContactCategory] = useState('Kolaborasi Penelitian');
   const [contactMsg, setContactMsg] = useState('');
   const [contactSent, setContactSent] = useState(false);
+  const [downloadToast, setDownloadToast] = useState<string | null>(null);
+
+  const handleDownloadPdf = (title: string) => {
+    setDownloadToast(`Menyiapkan berkas PDF: "${title}". Unduhan dimulai.`);
+    setTimeout(() => setDownloadToast(null), 4000);
+  };
 
   const handleContactSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -102,13 +108,13 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
             />
             <div className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/60 to-transparent" />
 
-            <div className="relative z-10 p-8 sm:p-12 max-w-3xl text-white space-y-4">
+            <div className="relative z-10 p-6 sm:p-10 lg:p-12 max-w-3xl text-white space-y-4">
               <div className="inline-flex items-center gap-2 text-xs font-bold text-orange-400 uppercase tracking-widest">
                 <span className="w-4 h-0.5 bg-orange-400" />
                 Marine Ecological Encyclopedia
               </div>
 
-              <h1 className="text-3xl sm:text-5xl font-black text-white leading-tight tracking-tight">
+              <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black text-white leading-tight tracking-tight">
                 Discover the Living Ecosystem Beneath the Ocean
               </h1>
 
@@ -118,15 +124,17 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
 
               <div className="flex flex-wrap items-center gap-3 pt-2">
                 <button
+                  type="button"
                   onClick={() => onSelectTab('biodiversity')}
-                  className="px-6 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-rose-600 text-white font-bold text-xs shadow-md shadow-orange-500/30 hover:from-orange-600 hover:to-rose-700 transition-all flex items-center gap-2"
+                  className="min-h-[44px] px-5 sm:px-6 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-rose-600 text-white font-bold text-xs shadow-md shadow-orange-500/30 hover:from-orange-600 hover:to-rose-700 transition-all flex items-center gap-2"
                 >
                   <span>Explore Encyclopedia</span>
                   <ArrowRight size={14} />
                 </button>
                 <button
+                  type="button"
                   onClick={() => onSelectTab('webgis')}
-                  className="px-5 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs border border-white/20 backdrop-blur-xs flex items-center gap-2 transition-all"
+                  className="min-h-[44px] px-5 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs border border-white/20 backdrop-blur-xs flex items-center gap-2 transition-all"
                 >
                   <MapPin size={14} />
                   <span>View WebGIS</span>
@@ -212,7 +220,7 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
                 </button>
               </div>
 
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3">
                 {[
                   { name: 'Branching', sub: '(Bercabang)', img: '/images/image2.jpeg' },
                   { name: 'Massive', sub: '(Masif)', img: '/images/image2.jpeg' },
@@ -221,13 +229,14 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
                   { name: 'Tabular', sub: '(Meja)', img: '/images/image2.jpeg' },
                   { name: 'Submassive', sub: '(Setengah Masif)', img: '/images/image2.jpeg' }
                 ].map((form) => (
-                  <div
+                  <button
                     key={form.name}
+                    type="button"
                     onClick={() => {
                       setSelectedGrowthForm(`Acropora ${form.name}`);
                       onSelectTab('biodiversity');
                     }}
-                    className="p-2 rounded-2xl border border-slate-100 hover:border-orange-300 hover:shadow-xs text-center cursor-pointer transition-all group"
+                    className="w-full p-2.5 rounded-2xl border border-slate-100 hover:border-orange-300 hover:shadow-xs text-center cursor-pointer transition-all group bg-white"
                   >
                     <div className="h-16 rounded-xl overflow-hidden mb-1.5 bg-slate-100">
                       <img
@@ -239,60 +248,62 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
                     <div className="text-[11px] font-bold text-slate-800 leading-tight">
                       {form.name}
                     </div>
-                    <div className="text-[9px] text-slate-400 font-medium">
+                    <div className="text-[10px] text-slate-500 font-medium">
                       {form.sub}
                     </div>
-                  </div>
+                  </button>
                 ))}
               </div>
             </div>
 
             {/* Card 3: Keanekaragaman Biota Laut */}
-            <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
-              <div className="flex items-center justify-between">
+            <div className="p-5 sm:p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center gap-2 text-xs font-bold text-orange-600 uppercase tracking-wider">
                   <span className="w-2.5 h-1 bg-orange-500 rounded-full" />
                   Keanekaragaman Biota Laut
                 </div>
                 <button
+                  type="button"
                   onClick={() => onSelectTab('biodiversity')}
-                  className="text-xs font-semibold text-slate-500 hover:text-orange-600 flex items-center gap-1"
+                  className="min-h-[36px] px-2 text-xs font-semibold text-slate-500 hover:text-orange-600 flex items-center gap-1"
                 >
                   <span>View All</span>
                   <ArrowRight size={12} />
                 </button>
               </div>
 
-              <div className="grid grid-cols-4 gap-2.5 text-center">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-center">
                 <div className="p-2 rounded-2xl border border-slate-100 bg-slate-50/50">
                   <div className="h-14 rounded-xl overflow-hidden mb-1">
                     <img src="/images/image2.jpeg" alt="Ikan Karang" className="w-full h-full object-cover" />
                   </div>
                   <div className="text-[10px] font-bold text-slate-800">Ikan Karang</div>
-                  <div className="text-[8px] text-slate-400">(Reef Fish)</div>
+                  <div className="text-[9px] text-slate-500">(Reef Fish)</div>
                 </div>
                 <div className="p-2 rounded-2xl border border-slate-100 bg-slate-50/50">
                   <div className="h-14 rounded-xl overflow-hidden mb-1">
                     <img src="/images/image2.jpeg" alt="Echinodermata" className="w-full h-full object-cover" />
                   </div>
                   <div className="text-[10px] font-bold text-slate-800">Echinodermata</div>
-                  <div className="text-[8px] text-slate-400">(Bintang Laut)</div>
+                  <div className="text-[9px] text-slate-500">(Bintang Laut)</div>
                 </div>
                 <div className="p-2 rounded-2xl border border-slate-100 bg-slate-50/50">
                   <div className="h-14 rounded-xl overflow-hidden mb-1">
                     <img src="/images/image2.jpeg" alt="Moluska" className="w-full h-full object-cover" />
                   </div>
                   <div className="text-[10px] font-bold text-slate-800">Moluska</div>
-                  <div className="text-[8px] text-slate-400">(Kima, Siput)</div>
+                  <div className="text-[9px] text-slate-500">(Kima, Siput)</div>
                 </div>
-                <div
+                <button
+                  type="button"
                   onClick={() => onSelectTab('biodiversity')}
-                  className="p-2 rounded-2xl border border-dashed border-slate-200 hover:border-orange-400 flex flex-col items-center justify-center cursor-pointer text-slate-600 hover:text-orange-600"
+                  className="min-h-[84px] p-2 rounded-2xl border border-dashed border-slate-200 hover:border-orange-400 flex flex-col items-center justify-center cursor-pointer text-slate-600 hover:text-orange-600 transition-colors"
                 >
                   <span className="text-base font-bold">+</span>
                   <span className="text-[10px] font-bold">Lainnya</span>
-                  <span className="text-[8px] text-slate-400">(Spesies Terkait)</span>
-                </div>
+                  <span className="text-[9px] text-slate-500">(Spesies Terkait)</span>
+                </button>
               </div>
             </div>
 
@@ -312,8 +323,8 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
                 </button>
               </div>
 
-              <div className="flex items-center gap-4">
-                <div className="w-32 h-24 rounded-2xl overflow-hidden bg-slate-100 flex-shrink-0">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                <div className="w-full sm:w-32 h-36 sm:h-24 rounded-2xl overflow-hidden bg-slate-100 flex-shrink-0">
                   <img
                     src="/images/image2.jpeg"
                     alt="Aerial Pulau Tunda"
@@ -325,7 +336,7 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
                 </p>
               </div>
 
-              <div className="grid grid-cols-3 gap-2 pt-2 border-t border-slate-100 text-center">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-2 border-t border-slate-100 text-center">
                 <div className="p-2 rounded-xl bg-slate-50">
                   <div className="text-[10px] text-slate-400 font-semibold">Luas</div>
                   <div className="text-xs font-extrabold text-slate-800">± 2,8 km²</div>
@@ -343,8 +354,8 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
           </div>
 
           {/* Pendekatan Penelitian REEFSIGHT matching image2.jpeg */}
-          <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
-            <div className="flex items-center justify-between">
+          <div className="p-5 sm:p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-2">
               <div>
                 <div className="flex items-center gap-2 text-xs font-bold text-orange-600 uppercase tracking-wider mb-1">
                   <span className="w-2.5 h-1 bg-orange-500 rounded-full" />
@@ -419,15 +430,15 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
           </div>
 
           {/* Bottom Banner: Fungsi Ekologis Terumbu Karang matching image2.jpeg */}
-          <div className="p-6 rounded-3xl bg-slate-900 text-white shadow-lg flex flex-col lg:flex-row items-center gap-6">
-            <div className="lg:w-1/4 text-center lg:text-left">
+          <div className="p-5 sm:p-6 rounded-3xl bg-slate-900 text-white shadow-lg flex flex-col lg:flex-row items-start lg:items-center gap-6">
+            <div className="lg:w-1/4 text-left">
               <h3 className="text-lg font-black tracking-tight text-white leading-tight">
                 Fungsi Ekologis Terumbu Karang
               </h3>
               <p className="text-[11px] text-slate-300 mt-1">Peran Vital Bagi Ekosistem Laut</p>
             </div>
 
-            <div className="lg:w-3/4 grid grid-cols-2 sm:grid-cols-3 gap-4 text-xs text-slate-300">
+            <div className="w-full lg:w-3/4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 text-xs text-slate-300">
               <div className="flex items-center gap-2">
                 <span className="text-lg">🐟</span>
                 <span>Habitat dan tempat berlindung biota laut</span>
@@ -504,44 +515,56 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
               <Cpu size={14} />
               3D Prototype Explorer
             </button>
-            <button
-              onClick={() => onSelectTab('system-architecture')}
-              className="px-4 py-2 rounded-xl hover:bg-slate-100 flex items-center gap-1.5 transition-colors"
-            >
-              <Database size={14} />
-              System Architecture
-            </button>
-            <button
-              onClick={() => alert('Daftar lengkap 16 komponen BOM ditampilkan di bawah kanvas 3D.')}
-              className="px-4 py-2 rounded-xl hover:bg-slate-100 flex items-center gap-1.5 transition-colors"
-            >
-              <FileSpreadsheet size={14} />
-              Hardware Components
-            </button>
-            <button
-              onClick={() => alert('Simulasi skenario ekologis dapat diuji melalui tombol di bawah kanvas.')}
-              className="px-4 py-2 rounded-xl hover:bg-slate-100 flex items-center gap-1.5 transition-colors"
-            >
-              <Activity size={14} />
-              Scenario Simulation
-            </button>
+              <button
+                type="button"
+                onClick={() => onSelectTab('system-architecture')}
+                className="min-h-[40px] px-4 py-2 rounded-xl hover:bg-slate-100 flex items-center gap-1.5 transition-colors whitespace-nowrap"
+              >
+                <Database size={14} />
+                System Architecture
+              </button>
+              <button
+                type="button"
+                onClick={() => document.getElementById('bom-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
+                className="min-h-[40px] px-4 py-2 rounded-xl hover:bg-slate-100 flex items-center gap-1.5 transition-colors whitespace-nowrap"
+              >
+                <FileSpreadsheet size={14} />
+                Hardware Components
+              </button>
+              <button
+                type="button"
+                onClick={() => document.getElementById('scenario-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
+                className="min-h-[40px] px-4 py-2 rounded-xl hover:bg-slate-100 flex items-center gap-1.5 transition-colors whitespace-nowrap"
+              >
+                <Activity size={14} />
+                Scenario Simulation
+              </button>
           </div>
 
           {/* Interactive Three.js 3D Prototype Hardware Canvas */}
           <div id="viewer3d">
-            <EchoVisionCanvas />
+            <EchoVisionCanvas
+              scenario={
+                activeScenario === 'thermal_stress'
+                  ? 'bleaching'
+                  : activeScenario === 'turbidity'
+                  ? 'degradation'
+                  : 'healthy'
+              }
+            />
           </div>
 
           {/* Bottom Row matching image3.jpeg: System Architecture Flow, Scenario Simulation & BOM Price */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
             {/* 1. System Architecture */}
-            <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-3">
-              <div className="flex items-center justify-between">
+            <div className="p-5 sm:p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-3">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
                   <Database size={14} className="text-blue-600" />
                   System Architecture
                 </h4>
                 <button
+                  type="button"
                   onClick={() => onSelectTab('system-architecture')}
                   className="text-xs font-semibold text-orange-600 hover:underline"
                 >
@@ -549,35 +572,33 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
                 </button>
               </div>
 
-              <div className="flex items-center justify-between text-center pt-2">
-                <div className="flex-1">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center pt-2">
+                <div className="p-2 rounded-2xl bg-slate-50/70">
                   <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto mb-1 text-xs">
                     🌊
                   </div>
                   <div className="text-[10px] font-bold text-slate-800">Akuisisi Data</div>
-                  <div className="text-[9px] text-slate-400">Sensor Akustik/Optik</div>
+                  <div className="text-[9px] text-slate-500">Sensor Akustik/Optik</div>
                 </div>
-                <div className="text-slate-300 font-bold">→</div>
-                <div className="flex-1">
+                <div className="p-2 rounded-2xl bg-slate-50/70">
                   <div className="w-9 h-9 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mx-auto mb-1 text-xs">
                     💾
                   </div>
                   <div className="text-[10px] font-bold text-slate-800">Data Logger</div>
-                  <div className="text-[9px] text-slate-400">Penyimpanan Lokal</div>
+                  <div className="text-[9px] text-slate-500">Penyimpanan Lokal</div>
                 </div>
-                <div className="text-slate-300 font-bold">→</div>
-                <div className="flex-1">
+                <div className="p-2 rounded-2xl bg-slate-50/70">
                   <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-1 text-xs">
                     📡
                   </div>
                   <div className="text-[10px] font-bold text-slate-800">Transmisi LoRa</div>
-                  <div className="text-[9px] text-slate-400">868 MHz Gateway</div>
+                  <div className="text-[9px] text-slate-500">868 MHz Gateway</div>
                 </div>
               </div>
             </div>
 
             {/* 2. Scenario Simulation */}
-            <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-3">
+            <div id="scenario-section" className="p-5 sm:p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-3">
               <div className="flex items-center justify-between">
                 <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
                   <Activity size={14} className="text-orange-500" />
@@ -586,50 +607,53 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
                 <span className="text-[10px] font-semibold text-slate-400">3 Mode</span>
               </div>
 
-              <div className="grid grid-cols-3 gap-2 text-center pt-1">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-center pt-1">
                 <button
+                  type="button"
                   onClick={() => setActiveScenario('normal')}
-                  className={`p-2 rounded-2xl border text-xs font-semibold transition-all ${
+                  className={`min-h-[44px] p-2.5 rounded-2xl border text-xs font-semibold transition-all ${
                     activeScenario === 'normal'
                       ? 'border-emerald-500 bg-emerald-50 text-emerald-800'
                       : 'border-slate-100 hover:bg-slate-50 text-slate-600'
                   }`}
                 >
-                  <div className="text-base mb-1">🌿</div>
-                  <div className="text-[10px] font-bold">Normal</div>
-                  <div className="text-[8px] text-slate-400">Ekosistem Stabil</div>
+                  <div className="text-base mb-0.5">🌿</div>
+                  <div className="text-[11px] font-bold">Normal</div>
+                  <div className="text-[9px] text-slate-500">Ekosistem Stabil</div>
                 </button>
 
                 <button
+                  type="button"
                   onClick={() => setActiveScenario('thermal_stress')}
-                  className={`p-2 rounded-2xl border text-xs font-semibold transition-all ${
+                  className={`min-h-[44px] p-2.5 rounded-2xl border text-xs font-semibold transition-all ${
                     activeScenario === 'thermal_stress'
                       ? 'border-rose-500 bg-rose-50 text-rose-800'
                       : 'border-slate-100 hover:bg-slate-50 text-slate-600'
                   }`}
                 >
-                  <div className="text-base mb-1">🔥</div>
-                  <div className="text-[10px] font-bold">Suhu Naik</div>
-                  <div className="text-[8px] text-slate-400">Thermal Stress</div>
+                  <div className="text-base mb-0.5">🔥</div>
+                  <div className="text-[11px] font-bold">Suhu Naik</div>
+                  <div className="text-[9px] text-slate-500">Thermal Stress</div>
                 </button>
 
                 <button
+                  type="button"
                   onClick={() => setActiveScenario('turbidity')}
-                  className={`p-2 rounded-2xl border text-xs font-semibold transition-all ${
+                  className={`min-h-[44px] p-2.5 rounded-2xl border text-xs font-semibold transition-all ${
                     activeScenario === 'turbidity'
                       ? 'border-amber-500 bg-amber-50 text-amber-800'
                       : 'border-slate-100 hover:bg-slate-50 text-slate-600'
                   }`}
                 >
-                  <div className="text-base mb-1">🌪️</div>
-                  <div className="text-[10px] font-bold">Keruh</div>
-                  <div className="text-[8px] text-slate-400">Turbiditas Tinggi</div>
+                  <div className="text-base mb-0.5">🌪️</div>
+                  <div className="text-[11px] font-bold">Keruh</div>
+                  <div className="text-[9px] text-slate-500">Turbiditas Tinggi</div>
                 </button>
               </div>
             </div>
 
             {/* 3. Estimasi Biaya Prototipe (EchoVision) matching image3.jpeg */}
-            <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-3">
+            <div id="bom-section" className="p-5 sm:p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-3">
               <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
                 <FileSpreadsheet size={14} className="text-emerald-600" />
                 Estimasi Biaya Prototipe (EchoVision)
@@ -690,12 +714,13 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
           </div>
 
           {/* Period Selector Tabs matching image6.jpeg */}
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
             {[5, 10, 15].map((period) => (
               <button
                 key={period}
+                type="button"
                 onClick={() => setProjPeriod(period)}
-                className={`px-5 py-2.5 rounded-2xl font-bold text-xs flex items-center gap-2 shadow-xs transition-all ${
+                className={`min-h-[44px] px-4 sm:px-5 py-2.5 rounded-2xl font-bold text-xs flex items-center gap-2 shadow-xs transition-all ${
                   projPeriod === period
                     ? 'bg-slate-900 text-white shadow-md'
                     : 'bg-white text-slate-700 hover:bg-slate-50 border border-slate-200'
@@ -710,8 +735,8 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
           {/* Projection Visual Area & Charts matching image6.jpeg */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Simulated Map Display */}
-            <div className="lg:col-span-2 p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
-              <div className="flex items-center justify-between">
+            <div className="lg:col-span-2 p-5 sm:p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <h3 className="text-sm font-bold text-slate-900">
                   Peta Proyeksi Sebaran Karang (+{projPeriod} Tahun)
                 </h3>
@@ -720,7 +745,7 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
                 </span>
               </div>
 
-              <div className="relative h-72 rounded-2xl overflow-hidden bg-slate-950 border border-slate-100">
+              <div className="relative h-64 sm:h-72 rounded-2xl overflow-hidden bg-slate-950 border border-slate-100">
                 <img
                   src="/images/image6.jpeg"
                   alt="Coral Projection Map"
@@ -728,9 +753,9 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
                 />
                 <div className="absolute bottom-3 left-3 bg-slate-900/90 backdrop-blur-xs text-white p-2.5 rounded-xl text-[10px] space-y-1">
                   <div className="font-bold text-orange-400">Luas Area (+{projPeriod} Thn):</div>
-                  <div>HC: 115,42 ha (39,51%)</div>
-                  <div>SC: 43,88 ha (15,03%)</div>
-                  <div>DC: 24,71 ha (8,46%)</div>
+                  <div>HC: {projPeriod === 5 ? '115,42 ha (39,51%)' : projPeriod === 10 ? '118,10 ha (40,39%)' : '121,05 ha (41,40%)'}</div>
+                  <div>SC: {projPeriod === 5 ? '43,88 ha (15,03%)' : projPeriod === 10 ? '42,15 ha (14,42%)' : '40,70 ha (13,92%)'}</div>
+                  <div>DC: {projPeriod === 5 ? '24,71 ha (8,46%)' : projPeriod === 10 ? '22,30 ha (7,63%)' : '20,18 ha (6,90%)'}</div>
                 </div>
               </div>
             </div>
@@ -833,8 +858,9 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
           {/* Subtabs matching image10.jpeg */}
           <div className="p-1.5 rounded-2xl bg-white border border-slate-200 shadow-xs flex items-center gap-2 overflow-x-auto text-xs font-semibold text-slate-700">
             <button
+              type="button"
               onClick={() => setBioTab('growth_form')}
-              className={`px-4 py-2 rounded-xl transition-all ${
+              className={`min-h-[44px] px-4 py-2 rounded-xl whitespace-nowrap transition-all ${
                 bioTab === 'growth_form'
                   ? 'bg-slate-900 text-white shadow-xs'
                   : 'hover:bg-slate-100 text-slate-600'
@@ -843,8 +869,9 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
               Coral Species & Growth Form
             </button>
             <button
+              type="button"
               onClick={() => setBioTab('fish')}
-              className={`px-4 py-2 rounded-xl transition-all ${
+              className={`min-h-[44px] px-4 py-2 rounded-xl whitespace-nowrap transition-all ${
                 bioTab === 'fish'
                   ? 'bg-slate-900 text-white shadow-xs'
                   : 'hover:bg-slate-100 text-slate-600'
@@ -853,8 +880,9 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
               Reef Fish & Associated Biodiversity
             </button>
             <button
+              type="button"
               onClick={() => setBioTab('relationship')}
-              className={`px-4 py-2 rounded-xl transition-all ${
+              className={`min-h-[44px] px-4 py-2 rounded-xl whitespace-nowrap transition-all ${
                 bioTab === 'relationship'
                   ? 'bg-slate-900 text-white shadow-xs'
                   : 'hover:bg-slate-100 text-slate-600'
@@ -866,7 +894,7 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
 
           {/* Subtab Contents */}
           {bioTab === 'growth_form' && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
               {CORAL_LIFE_FORMS.map((coral) => (
                 <div
                   key={coral.name}
@@ -904,7 +932,7 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
           )}
 
           {bioTab === 'fish' && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
               {REEF_FISH_CATALOG.map((fish) => (
                 <div
                   key={fish.id}
@@ -1157,24 +1185,27 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
           {/* Subtabs matching image12.jpeg */}
           <div className="p-1.5 rounded-2xl bg-white border border-slate-200 shadow-xs flex items-center gap-2 overflow-x-auto text-xs font-semibold text-slate-700">
             <button
+              type="button"
               onClick={() => setEcoTab('suitability')}
-              className={`px-4 py-2 rounded-xl transition-all ${
+              className={`min-h-[44px] px-4 py-2 rounded-xl whitespace-nowrap transition-all ${
                 ecoTab === 'suitability' ? 'bg-slate-900 text-white shadow-xs' : 'hover:bg-slate-100 text-slate-600'
               }`}
             >
               Eco-Tourism Suitability Map
             </button>
             <button
+              type="button"
               onClick={() => setEcoTab('rehabilitation')}
-              className={`px-4 py-2 rounded-xl transition-all ${
+              className={`min-h-[44px] px-4 py-2 rounded-xl whitespace-nowrap transition-all ${
                 ecoTab === 'rehabilitation' ? 'bg-slate-900 text-white shadow-xs' : 'hover:bg-slate-100 text-slate-600'
               }`}
             >
               Coral Rehabilitation Priority Map
             </button>
             <button
+              type="button"
               onClick={() => setEcoTab('recommendation')}
-              className={`px-4 py-2 rounded-xl transition-all ${
+              className={`min-h-[44px] px-4 py-2 rounded-xl whitespace-nowrap transition-all ${
                 ecoTab === 'recommendation' ? 'bg-slate-900 text-white shadow-xs' : 'hover:bg-slate-100 text-slate-600'
               }`}
             >
@@ -1191,30 +1222,31 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
               </h4>
               <div className="space-y-2">
                 {ECO_TOURISM_ZONES.map((zone) => (
-                  <div
+                  <button
                     key={zone.id}
+                    type="button"
                     onClick={() => setSelectedEcoZone(zone)}
-                    className={`p-4 rounded-2xl border cursor-pointer transition-all ${
+                    className={`w-full text-left p-4 rounded-2xl border cursor-pointer transition-all ${
                       selectedEcoZone.id === zone.id
                         ? 'border-orange-500 bg-orange-50/50 shadow-sm'
                         : 'border-slate-200 bg-white hover:border-slate-300'
                     }`}
                   >
-                    <div className="flex items-center justify-between mb-1">
+                    <div className="flex flex-wrap items-center justify-between gap-1.5 mb-1">
                       <span className="font-bold text-slate-900 text-xs">{zone.name}</span>
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${zone.badgeColor}`}>
                         {zone.category}
                       </span>
                     </div>
                     <p className="text-[11px] text-slate-500 line-clamp-2">{zone.rationale}</p>
-                  </div>
+                  </button>
                 ))}
               </div>
             </div>
 
             {/* Zone Inspector Card matching image12.jpeg */}
-            <div className="lg:col-span-2 p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
-              <div className="flex items-center justify-between">
+            <div className="lg:col-span-2 p-5 sm:p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
+              <div className="flex flex-wrap items-start sm:items-center justify-between gap-2">
                 <div>
                   <h3 className="text-xl font-black text-slate-900">{selectedEcoZone.name}</h3>
                   <p className="text-xs text-slate-500 font-medium">{selectedEcoZone.category}</p>
@@ -1284,11 +1316,18 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
               <span>Dokumen Publikasi Ilmiah Resmi (Open Access)</span>
             </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {downloadToast && (
+              <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center gap-2">
+                <CheckCircle2 size={16} className="text-emerald-600 flex-shrink-0" />
+                <span>{downloadToast}</span>
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
               {MOCK_PUBLICATIONS.map((pub) => (
                 <div
                   key={pub.id}
-                  className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between space-y-4"
+                  className="p-5 sm:p-6 rounded-3xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between space-y-4"
                 >
                   <div className="space-y-2">
                     <span className="px-2.5 py-1 rounded-full bg-blue-100 text-blue-700 font-bold text-[10px]">
@@ -1302,11 +1341,12 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
                     </p>
                   </div>
 
-                  <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
-                    <span className="text-[11px] text-slate-400">{pub.download_count} Unduhan</span>
+                  <div className="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
+                    <span className="text-[11px] text-slate-500">{pub.download_count} Unduhan</span>
                     <button
-                      onClick={() => alert(`Mengunduh berkas PDF: ${pub.title}`)}
-                      className="px-3 py-1.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs flex items-center gap-1.5 transition-colors"
+                      type="button"
+                      onClick={() => handleDownloadPdf(pub.title)}
+                      className="min-h-[40px] px-3.5 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs flex items-center gap-1.5 transition-colors"
                     >
                       <Download size={13} />
                       <span>Unduh PDF</span>
@@ -1325,7 +1365,7 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
       {activeTab === 'system-architecture' && (
         <div className="space-y-6 animate-fadeIn">
           {/* Header Banner */}
-          <div className="p-8 rounded-3xl bg-slate-900 text-white space-y-3">
+          <div className="p-6 sm:p-8 rounded-3xl bg-slate-900 text-white space-y-3">
             <div className="text-xs font-bold text-orange-400 uppercase tracking-widest">
               DATABASE & PLATFORM INFRASTRUCTURE
             </div>
@@ -1338,7 +1378,7 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
+            <div className="p-5 sm:p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
               <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
                 <Database size={16} className="text-blue-600" />
                 Daftar Tabel Database Supabase PostGIS
@@ -1354,12 +1394,12 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
                   { name: 'alerts', desc: 'Anomali terdeteksi & status pengiriman WhatsApp API' },
                   { name: 'publications', desc: 'Laporan ilmiah & dataset penelitian yang dipublikasikan' }
                 ].map((t) => (
-                  <div key={t.name} className="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
-                    <div>
+                  <div key={t.name} className="p-3 rounded-xl bg-slate-50 border border-slate-100 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2">
+                    <div className="min-w-0">
                       <span className="font-mono font-bold text-slate-900">{t.name}</span>
                       <p className="text-[11px] text-slate-500">{t.desc}</p>
                     </div>
-                    <span className="text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Active</span>
+                    <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full flex-shrink-0">Active</span>
                   </div>
                 ))}
               </div>

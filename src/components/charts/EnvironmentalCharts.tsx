@@ -5,6 +5,8 @@ import { Thermometer, Droplets, LineChart, TrendingDown, Info, Calculator, Flame
 
 export default function EnvironmentalCharts() {
   const [selectedVar, setSelectedVar] = useState<'sst_coral' | 'chla_fish' | 'turb_diversity'>('sst_coral');
+  const [selectedMonth, setSelectedMonth] = useState<string>('Mei');
+  const [selectedPointIdx, setSelectedPointIdx] = useState<number | null>(null);
 
   // Time-series monthly data for Pulau Tunda (Jan - Des)
   const monthlyData = [
@@ -94,15 +96,15 @@ export default function EnvironmentalCharts() {
             </p>
           </div>
 
-          <div className="flex items-center gap-4 bg-slate-950/80 p-3 rounded-xl border border-amber-500/20">
+          <div className="w-full md:w-auto flex flex-wrap items-center justify-between sm:justify-start gap-4 bg-slate-950/80 p-3 rounded-xl border border-amber-500/20">
             <div>
               <span className="text-[10px] text-slate-400 block font-medium">Degree Heating Weeks:</span>
-              <span className="text-xl font-black text-amber-400 font-mono">3.8 °C-weeks</span>
+              <span className="text-lg sm:text-xl font-black text-amber-400 font-mono">3.8 °C-weeks</span>
             </div>
-            <div className="w-px h-8 bg-slate-800" />
+            <div className="hidden sm:block w-px h-8 bg-slate-800" />
             <div>
               <span className="text-[10px] text-slate-400 block font-medium">Status NOAA:</span>
-              <span className="text-xs font-bold text-amber-300 bg-amber-950/80 px-2 py-0.5 rounded-full border border-amber-800">
+              <span className="inline-block mt-0.5 text-xs font-bold text-amber-300 bg-amber-950/80 px-2.5 py-0.5 rounded-full border border-amber-800">
                 Bleaching Watch
               </span>
             </div>
@@ -113,14 +115,14 @@ export default function EnvironmentalCharts() {
       {/* Main Grid: Temporal Charts & Correlation Scatter Plot */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Temporal Time-Series Chart */}
-        <div className="bg-slate-900/90 backdrop-blur-xl border border-cyan-500/30 rounded-2xl p-5 text-white shadow-xl flex flex-col justify-between">
+        <div className="bg-slate-900/90 backdrop-blur-xl border border-cyan-500/30 rounded-2xl p-4 sm:p-5 text-white shadow-xl flex flex-col justify-between min-w-0">
           <div>
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+            <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-800">
               <div>
                 <span className="text-[10px] font-bold text-cyan-400 uppercase tracking-wider">Deret Waktu Bulanan</span>
                 <h4 className="text-sm font-bold text-white">SST & Klorofil-a Pulau Tunda</h4>
               </div>
-              <div className="flex items-center gap-3 text-xs">
+              <div className="flex flex-wrap items-center gap-3 text-xs">
                 <span className="flex items-center gap-1.5 text-amber-400 font-semibold">
                   <span className="w-2.5 h-2.5 rounded-full bg-amber-400" /> SST (°C)
                 </span>
@@ -130,43 +132,75 @@ export default function EnvironmentalCharts() {
               </div>
             </div>
 
-            {/* Custom SVG Bar / Line Chart */}
-            <div className="h-56 mt-6 flex items-end justify-between gap-1.5 px-2">
-              {monthlyData.map((d) => {
-                const sstHeight = ((d.sst - 27) / 3.2) * 100;
-                const isWarning = d.sst >= 29.0;
-                return (
-                  <div key={d.month} className="flex-1 flex flex-col items-center gap-1 group">
-                    <span className="text-[9px] font-mono text-slate-400 opacity-0 group-hover:opacity-100 transition">
-                      {d.sst}°
-                    </span>
-                    <div className="w-full flex items-end justify-center h-44 bg-slate-950 rounded-t-md p-1">
-                      <div
-                        style={{ height: `${Math.max(15, sstHeight)}%` }}
-                        className={`w-full rounded-t transition-all duration-300 ${
-                          isWarning
-                            ? 'bg-gradient-to-t from-amber-600 to-amber-400 shadow-lg shadow-amber-500/30'
-                            : 'bg-gradient-to-t from-cyan-600 to-cyan-400'
+            {/* Custom Interactive Tap/Click Monthly Bar Chart */}
+            <div className="overflow-x-auto pb-1">
+              <div className="h-56 min-w-[300px] mt-5 flex items-end justify-between gap-1 sm:gap-1.5 px-1">
+                {monthlyData.map((d) => {
+                  const sstHeight = ((d.sst - 27) / 3.2) * 100;
+                  const isWarning = d.sst >= 29.0;
+                  const isSelected = selectedMonth === d.month;
+                  return (
+                    <button
+                      key={d.month}
+                      type="button"
+                      onClick={() => setSelectedMonth(d.month)}
+                      aria-label={`Bulan ${d.month}: SST ${d.sst} derajat Celsius, Klorofil ${d.chla}`}
+                      className="flex-1 min-w-0 flex flex-col items-center gap-1 group focus:outline-none"
+                    >
+                      <span
+                        className={`text-[9px] font-mono transition ${
+                          isSelected
+                            ? 'text-cyan-300 font-bold opacity-100'
+                            : 'text-slate-400 opacity-0 group-hover:opacity-100 sm:opacity-70'
                         }`}
-                      />
-                    </div>
-                    <span className="text-[10px] font-mono text-slate-400 font-semibold">{d.month}</span>
-                  </div>
-                );
-              })}
+                      >
+                        {d.sst}°
+                      </span>
+                      <div
+                        className={`w-full flex items-end justify-center h-44 bg-slate-950 rounded-t-md p-0.5 sm:p-1 transition-all ${
+                          isSelected ? 'ring-1 ring-cyan-400/70' : ''
+                        }`}
+                      >
+                        <div
+                          style={{ height: `${Math.max(15, sstHeight)}%` }}
+                          className={`w-full rounded-t transition-all duration-300 ${
+                            isWarning
+                              ? 'bg-gradient-to-t from-amber-600 to-amber-400 shadow-lg shadow-amber-500/30'
+                              : 'bg-gradient-to-t from-cyan-600 to-cyan-400'
+                          }`}
+                        />
+                      </div>
+                      <span
+                        className={`text-[10px] font-mono font-semibold ${
+                          isSelected ? 'text-cyan-300' : 'text-slate-400'
+                        }`}
+                      >
+                        {d.month}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
 
-          <div className="mt-4 pt-3 border-t border-slate-800 text-[11px] text-slate-400 flex items-center justify-between">
-            <span>Suhu Puncak: <strong className="text-amber-400">29.8°C (Mei)</strong></span>
-            <span>Rerata Klorofil: <strong className="text-cyan-400">0.43 mg/m³</strong></span>
-          </div>
+          {(() => {
+            const activeItem = monthlyData.find((m) => m.month === selectedMonth) || monthlyData[4];
+            return (
+              <div className="mt-4 pt-3 border-t border-slate-800 text-[11px] text-slate-300 flex flex-wrap items-center justify-between gap-2">
+                <span>
+                  {activeItem.month}: <strong className="text-amber-400">{activeItem.sst}°C</strong> · CHL-a <strong className="text-cyan-400">{activeItem.chla} mg/m³</strong>
+                </span>
+                <span>DHW: <strong className="text-white">{activeItem.dhw} °C-w</strong></span>
+              </div>
+            );
+          })()}
         </div>
 
         {/* Scientific Correlation Scatter Plot */}
-        <div className="bg-slate-900/90 backdrop-blur-xl border border-cyan-500/30 rounded-2xl p-5 text-white shadow-xl flex flex-col justify-between">
+        <div className="bg-slate-900/90 backdrop-blur-xl border border-cyan-500/30 rounded-2xl p-4 sm:p-5 text-white shadow-xl flex flex-col justify-between min-w-0">
           <div>
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+            <div className="flex flex-wrap items-center justify-between gap-2.5 pb-3 border-b border-slate-800">
               <div>
                 <span className="text-[10px] font-bold text-cyan-400 uppercase tracking-wider">Analisis Statistik Ilmiah</span>
                 <h4 className="text-sm font-bold text-white">Korelasi Lingkungan & Ekologi</h4>
@@ -174,9 +208,13 @@ export default function EnvironmentalCharts() {
 
               {/* Selector */}
               <select
+                aria-label="Pilih pasangan variabel korelasi"
                 value={selectedVar}
-                onChange={(e) => setSelectedVar(e.target.value as any)}
-                className="bg-slate-800 border border-slate-700 text-xs rounded-xl px-2.5 py-1 text-cyan-300 focus:outline-none focus:border-cyan-400"
+                onChange={(e) => {
+                  setSelectedVar(e.target.value as any);
+                  setSelectedPointIdx(null);
+                }}
+                className="min-h-[40px] w-full sm:w-auto bg-slate-800 border border-slate-700 text-xs rounded-xl px-3 py-1.5 text-cyan-300 focus:outline-none focus:border-cyan-400"
               >
                 <option value="sst_coral">SST vs Tutupan Karang</option>
                 <option value="chla_fish">CHL-a vs Ikan Karang</option>
@@ -191,7 +229,7 @@ export default function EnvironmentalCharts() {
               {/* Axes & Grid */}
               <div className="absolute inset-3 border-b border-l border-slate-800" />
 
-              {/* Render Scatter Dots */}
+              {/* Render Scatter Dots (Interactive Click/Tap) */}
               {currCorr.points.map((pt, i) => {
                 const minX = Math.min(...currCorr.points.map(p => p.x));
                 const maxX = Math.max(...currCorr.points.map(p => p.x));
@@ -200,16 +238,36 @@ export default function EnvironmentalCharts() {
 
                 const posX = ((pt.x - minX) / (maxX - minX)) * 84 + 8;
                 const posY = 90 - ((pt.y - minY) / (maxY - minY)) * 80;
+                const isActive = selectedPointIdx === i;
 
                 return (
-                  <div
+                  <button
                     key={i}
+                    type="button"
+                    onClick={() => setSelectedPointIdx(isActive ? null : i)}
+                    aria-label={`Titik observasi X=${pt.x}, Y=${pt.y}`}
                     style={{ left: `${posX}%`, top: `${posY}%` }}
-                    className="absolute w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-md shadow-cyan-400/50 hover:scale-150 transition-all cursor-pointer"
+                    className={`absolute -translate-x-1/2 -translate-y-1/2 w-5 h-5 flex items-center justify-center rounded-full transition-all focus:outline-none ${
+                      isActive ? 'scale-125' : ''
+                    }`}
                     title={`X: ${pt.x}, Y: ${pt.y}`}
-                  />
+                  >
+                    <span
+                      className={`w-2.5 h-2.5 rounded-full transition-all ${
+                        isActive
+                          ? 'bg-orange-400 ring-4 ring-orange-400/30'
+                          : 'bg-cyan-400 shadow-md shadow-cyan-400/50 hover:scale-125'
+                      }`}
+                    />
+                  </button>
                 );
               })}
+
+              {selectedPointIdx !== null && currCorr.points[selectedPointIdx] && (
+                <div className="absolute top-2.5 right-2.5 px-2.5 py-1 rounded-lg bg-slate-900/95 border border-cyan-500/40 text-[10px] font-mono text-cyan-300 shadow">
+                  X: {currCorr.points[selectedPointIdx].x} · Y: {currCorr.points[selectedPointIdx].y}
+                </div>
+              )}
 
               {/* Trendline Indicator */}
               <div
@@ -218,7 +276,7 @@ export default function EnvironmentalCharts() {
                   transform: selectedVar === 'chla_fish' ? 'rotate(-18deg)' : 'rotate(18deg)',
                   width: '90%'
                 }}
-                className="absolute left-[5%] h-0.5 bg-dashed bg-cyan-500/40 border-t border-dashed border-cyan-400"
+                className="pointer-events-none absolute left-[5%] h-0.5 bg-dashed bg-cyan-500/40 border-t border-dashed border-cyan-400"
               />
             </div>
 

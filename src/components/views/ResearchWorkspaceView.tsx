@@ -44,15 +44,53 @@ import {
   ArrowRight
 } from 'lucide-react';
 
+type ResearchTabId =
+  | 'dashboard'
+  | 'field-collection'
+  | 'environmental-data'
+  | 'coral-analysis'
+  | 'ecological-dynamics'
+  | 'data-validation'
+  | 'research-logbook'
+  | 'scientific-reports';
+
+const VALID_RESEARCH_TABS: ResearchTabId[] = [
+  'dashboard',
+  'field-collection',
+  'environmental-data',
+  'coral-analysis',
+  'ecological-dynamics',
+  'data-validation',
+  'research-logbook',
+  'scientific-reports',
+];
+
 interface Props {
   activeRole: UserRole;
   onSwitchRole: (role: UserRole) => void;
+  activeTab?: string;
+  onSelectTab?: (tab: string) => void;
 }
 
-export default function ResearchWorkspaceView({ activeRole, onSwitchRole }: Props) {
-  const [activeTab, setActiveTab] = useState<
-    'dashboard' | 'field-collection' | 'environmental-data' | 'coral-analysis' | 'ecological-dynamics' | 'data-validation' | 'research-logbook' | 'scientific-reports'
-  >('dashboard');
+export default function ResearchWorkspaceView({
+  activeRole,
+  onSwitchRole,
+  activeTab: controlledTab,
+  onSelectTab,
+}: Props) {
+  const [internalTab, setInternalTab] = useState<ResearchTabId>('dashboard');
+  const activeTab: ResearchTabId =
+    controlledTab && VALID_RESEARCH_TABS.includes(controlledTab as ResearchTabId)
+      ? (controlledTab as ResearchTabId)
+      : internalTab;
+  const setActiveTab = (tab: ResearchTabId) => {
+    setInternalTab(tab);
+    onSelectTab?.(tab);
+  };
+  const [researchNotice, setResearchNotice] = useState<{
+    type: 'error' | 'info' | 'success';
+    message: string;
+  } | null>(null);
 
   // Field Collections state
   const [collections, setCollections] = useState<any[]>(FIELD_COLLECTIONS_MOCK);
@@ -77,9 +115,14 @@ export default function ResearchWorkspaceView({ activeRole, onSwitchRole }: Prop
   const handleValidate = (status: 'Validated' | 'Needs Revision' | 'Rejected') => {
     // Separation of Duties check: Operator Lapangan cannot validate data!
     if (activeRole === 'operator_lapangan') {
-      alert('Akses Ditolak (Separation of Duties): Sebagai Operator Lapangan, Anda tidak berhak memvalidasi atau menyetujui data lapangan. Silakan gunakan akun Validator Data.');
+      setResearchNotice({
+        type: 'error',
+        message:
+          'Akses Ditolak (Separation of Duties): Sebagai Operator Lapangan, Anda tidak berhak memvalidasi atau menyetujui data lapangan. Silakan gunakan akun Validator Data.',
+      });
       return;
     }
+    setResearchNotice(null);
 
     const updated = validationData.map((item) => {
       if (item.id === selectedValidationItem.id) {
@@ -132,17 +175,41 @@ export default function ResearchWorkspaceView({ activeRole, onSwitchRole }: Prop
   return (
     <div className="space-y-6 pb-16">
       {/* Separation of Duties Warning if activeRole === 'operator_lapangan' */}
+      {researchNotice && (
+        <div
+          role={researchNotice.type === 'error' ? 'alert' : 'status'}
+          className={`p-3.5 sm:p-4 rounded-2xl border text-xs flex items-start sm:items-center justify-between gap-3 shadow-xs ${
+            researchNotice.type === 'error'
+              ? 'bg-rose-50 border-rose-200 text-rose-900'
+              : researchNotice.type === 'success'
+              ? 'bg-emerald-50 border-emerald-200 text-emerald-900'
+              : 'bg-sky-50 border-sky-200 text-sky-900'
+          }`}
+        >
+          <span className="leading-relaxed font-medium">{researchNotice.message}</span>
+          <button
+            type="button"
+            onClick={() => setResearchNotice(null)}
+            aria-label="Tutup pemberitahuan"
+            className="min-w-[44px] min-h-[44px] -my-2 -mr-2 inline-flex items-center justify-center rounded-xl hover:bg-black/5 flex-shrink-0"
+          >
+            <X size={16} />
+          </button>
+        </div>
+      )}
+
       {activeRole === 'operator_lapangan' && (
-        <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-center justify-between shadow-xs">
-          <div className="flex items-center gap-2.5">
-            <ShieldAlert size={18} className="text-amber-600 flex-shrink-0" />
-            <div>
+        <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+          <div className="flex items-start sm:items-center gap-2.5">
+            <ShieldAlert size={18} className="text-amber-600 flex-shrink-0 mt-0.5 sm:mt-0" />
+            <div className="leading-relaxed">
               <span className="font-bold">Mode Operator Lapangan:</span> Anda memiliki izin pengumpulan data & upload sensor, namun tidak berhak memvalidasi atau menerbitkan data (Separation-of-Duties).
             </div>
           </div>
           <button
+            type="button"
             onClick={() => onSwitchRole('validator_data')}
-            className="px-3 py-1 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-[11px] flex-shrink-0 transition-colors"
+            className="w-full sm:w-auto min-h-[44px] px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs flex-shrink-0 transition-colors"
           >
             Switch to Validator
           </button>
@@ -165,9 +232,10 @@ export default function ResearchWorkspaceView({ activeRole, onSwitchRole }: Prop
           const isActive = activeTab === tab.id;
           return (
             <button
+              type="button"
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
-              className={`px-4 py-2.5 rounded-xl font-bold flex items-center gap-2 whitespace-nowrap transition-all ${
+              onClick={() => setActiveTab(tab.id as ResearchTabId)}
+              className={`min-h-[44px] px-4 py-2.5 rounded-xl font-bold flex items-center gap-2 whitespace-nowrap transition-all ${
                 isActive
                   ? 'bg-slate-900 text-white shadow-xs'
                   : 'hover:bg-slate-100 text-slate-600'
@@ -254,8 +322,8 @@ export default function ResearchWorkspaceView({ activeRole, onSwitchRole }: Prop
             <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
               Research Data Pipeline Flow
             </h4>
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-center">
-              <div className="flex-1 p-4 rounded-2xl bg-blue-50/60 border border-blue-100">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 text-center [&>div]:w-full sm:[&>div]:w-auto">
+              <div className="sm:flex-1 p-4 rounded-2xl bg-blue-50/60 border border-blue-100">
                 <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center mx-auto mb-2 font-bold shadow-xs">
                   📥
                 </div>
@@ -313,17 +381,25 @@ export default function ResearchWorkspaceView({ activeRole, onSwitchRole }: Prop
               <p className="text-xs sm:text-sm text-slate-200 leading-relaxed mb-4">
                 Collect, organize, and manage underwater field observations and research datasets across REEFSIGHT research stations.
               </p>
-              <div className="flex flex-wrap items-center gap-3">
+              <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
                 <button
+                  type="button"
                   onClick={() => setIsNewFieldModalOpen(true)}
-                  className="px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs flex items-center gap-2 shadow-sm transition-all"
+                  className="w-full sm:w-auto min-h-[44px] px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all"
                 >
                   <Plus size={14} />
                   <span>+ New Field Collection</span>
                 </button>
                 <button
-                  onClick={() => alert('Fitur upload raw dataset siap diintegrasikan.')}
-                  className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs border border-white/20 flex items-center gap-2 transition-all"
+                  type="button"
+                  onClick={() =>
+                    setResearchNotice({
+                      type: 'info',
+                      message:
+                        'Panel upload dataset sensor (CSV/WAV/GeoJSON) siap digunakan. Pilih file dari perangkat Anda untuk divalidasi.',
+                    })
+                  }
+                  className="w-full sm:w-auto min-h-[44px] px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs border border-white/20 flex items-center justify-center gap-2 transition-all"
                 >
                   <Upload size={14} />
                   <span>Upload Dataset</span>
@@ -336,9 +412,9 @@ export default function ResearchWorkspaceView({ activeRole, onSwitchRole }: Prop
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Table */}
             <div className="lg:col-span-2 p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <h3 className="text-sm font-bold text-slate-900">Collection Records (2,846 records)</h3>
-                <span className="text-xs text-slate-400">Pulau Tunda Fleet</span>
+                <span className="text-xs text-slate-500">Pulau Tunda Fleet</span>
               </div>
 
               <div className="overflow-x-auto">
@@ -383,9 +459,13 @@ export default function ResearchWorkspaceView({ activeRole, onSwitchRole }: Prop
                             {col.validationStatus}
                           </span>
                         </td>
-                        <td className="py-3 px-3 text-right">
-                          <button className="p-1 text-slate-400 hover:text-slate-700">
-                            <Eye size={14} />
+                        <td className="py-2 px-3 text-right">
+                          <button
+                            type="button"
+                            aria-label="Lihat detail rekaman observasi"
+                            className="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+                          >
+                            <Eye size={15} />
                           </button>
                         </td>
                       </tr>
@@ -445,16 +525,30 @@ export default function ResearchWorkspaceView({ activeRole, onSwitchRole }: Prop
 
           {/* + New Field Collection 5-Step Modal matching image25.png */}
           {isNewFieldModalOpen && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-fadeIn">
-              <div className="w-full max-w-xl bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden">
-                <div className="p-6 border-b border-slate-100 flex items-center justify-between">
-                  <div>
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-label="Tambah pengumpulan data lapangan baru"
+              onKeyDown={(e) => {
+                if (e.key === 'Escape') setIsNewFieldModalOpen(false);
+              }}
+              onClick={(e) => {
+                if (e.target === e.currentTarget) setIsNewFieldModalOpen(false);
+              }}
+              className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/60 backdrop-blur-sm animate-fadeIn"
+            >
+              <div className="w-full max-w-xl max-h-[90dvh] overflow-y-auto bg-white rounded-3xl shadow-2xl border border-slate-200">
+                <div className="sticky top-0 z-10 px-5 py-4 sm:p-6 bg-white/95 backdrop-blur-xs border-b border-slate-100 flex items-center justify-between gap-3">
+                  <div className="min-w-0">
                     <h3 className="text-base font-bold text-slate-900">+ New Field Collection</h3>
-                    <p className="text-xs text-slate-500">Step {wizardStep} of 5 — Data Entry</p>
+                    <p className="text-xs text-slate-500">Step {wizardStep} of 5: Data Entry</p>
                   </div>
                   <button
+                    type="button"
+                    autoFocus
                     onClick={() => setIsNewFieldModalOpen(false)}
-                    className="p-1.5 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600"
+                    aria-label="Tutup modal pengumpulan data"
+                    className="w-11 h-11 inline-flex items-center justify-center rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 flex-shrink-0"
                   >
                     <X size={18} />
                   </button>
@@ -472,7 +566,7 @@ export default function ResearchWorkspaceView({ activeRole, onSwitchRole }: Prop
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                       <label className="block font-semibold text-slate-700 mb-1">Tipe Data</label>
                       <select
@@ -524,17 +618,17 @@ export default function ResearchWorkspaceView({ activeRole, onSwitchRole }: Prop
                     />
                   </div>
 
-                  <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                  <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-2 pt-3 border-t border-slate-100">
                     <button
                       type="button"
                       onClick={() => setIsNewFieldModalOpen(false)}
-                      className="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold"
+                      className="w-full sm:w-auto min-h-[44px] px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold"
                     >
                       Batal
                     </button>
                     <button
                       type="submit"
-                      className="px-5 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold shadow-sm"
+                      className="w-full sm:w-auto min-h-[44px] px-5 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold shadow-sm"
                     >
                       Simpan & Kirim ke Antrean Validasi
                     </button>
@@ -724,26 +818,37 @@ export default function ResearchWorkspaceView({ activeRole, onSwitchRole }: Prop
               </div>
 
               {/* 3 Decision Action Buttons matching image29.png */}
-              <div className="grid grid-cols-3 gap-2 pt-2">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-2">
                 <button
+                  type="button"
                   onClick={() => handleValidate('Rejected')}
-                  className="py-2.5 rounded-xl border border-rose-300 text-rose-700 hover:bg-rose-50 font-bold text-xs transition-colors"
+                  className="min-h-[44px] px-3 py-2.5 rounded-xl border border-rose-300 text-rose-700 hover:bg-rose-50 font-bold text-xs transition-colors"
                 >
                   ✕ Tolak
                 </button>
                 <button
+                  type="button"
                   onClick={() => handleValidate('Needs Revision')}
-                  className="py-2.5 rounded-xl border border-amber-300 text-amber-700 hover:bg-amber-50 font-bold text-xs transition-colors"
+                  className="min-h-[44px] px-3 py-2.5 rounded-xl border border-amber-300 text-amber-700 hover:bg-amber-50 font-bold text-xs transition-colors"
                 >
                   ↻ Revisi
                 </button>
                 <button
+                  type="button"
                   onClick={() => handleValidate('Validated')}
-                  className="py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition-colors"
+                  className="min-h-[44px] px-3 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition-colors"
                 >
                   ✓ Validasi
                 </button>
               </div>
+              {researchNotice?.type === 'error' && activeRole === 'operator_lapangan' && (
+                <p
+                  role="alert"
+                  className="text-[11px] font-medium text-rose-700 bg-rose-50 border border-rose-200 rounded-xl px-3 py-2"
+                >
+                  {researchNotice.message}
+                </p>
+              )}
             </div>
           </div>
         </div>

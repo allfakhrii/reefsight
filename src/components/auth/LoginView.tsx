@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { UserRole } from '@/types/reefsight';
 import {
   Lock,
@@ -24,6 +24,7 @@ import {
 interface LoginViewProps {
   onSuccess: (role: UserRole) => void;
   onBackToPublic: () => void;
+  onClose?: () => void;
   currentRole?: UserRole;
   initialMode?: 'login' | 'register';
 }
@@ -31,17 +32,32 @@ interface LoginViewProps {
 export default function LoginView({
   onSuccess,
   onBackToPublic,
+  onClose,
   currentRole = 'admin',
   initialMode = 'login'
 }: LoginViewProps) {
   const [isRegisterMode, setIsRegisterMode] = useState(initialMode === 'register');
 
   // Sign In state
-  const [selectedRole, setSelectedRole] = useState<UserRole>('admin');
+  const [selectedRole, setSelectedRole] = useState<UserRole>(
+    currentRole && currentRole !== 'public' ? currentRole : 'admin'
+  );
   const [usernameOrEmail, setUsernameOrEmail] = useState('reza.gading@reefsight.id');
   const [password, setPassword] = useState('••••••••••••');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
+  const [forgotNotice, setForgotNotice] = useState('');
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (onClose) onClose();
+        else onBackToPublic();
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [onClose, onBackToPublic]);
 
   // Registration form state
   const [regFullName, setRegFullName] = useState('');
@@ -124,7 +140,12 @@ export default function LoginView({
   };
 
   return (
-    <div className="fixed inset-0 z-50 w-screen h-screen min-h-screen bg-white flex flex-col lg:flex-row overflow-hidden animate-fadeIn">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="Autentikasi REEFSIGHT"
+      className="fixed inset-0 z-50 w-full min-h-dvh lg:h-dvh bg-white flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden animate-fadeIn"
+    >
       {/* ======================================================== */}
       {/* LEFT COLUMN: 54% Full-Bleed Underwater Coral Reef Hero    */}
       {/* Exactly matching image1.jpeg                              */}
@@ -167,23 +188,25 @@ export default function LoginView({
       {/* RIGHT COLUMN: 46% Crisp Clean White Form Canvas           */}
       {/* Exactly matching image1.jpeg                              */}
       {/* ======================================================== */}
-      <div className="flex-1 w-full lg:w-[46%] h-full bg-white flex flex-col justify-between p-6 sm:p-10 lg:p-12 xl:p-14 overflow-y-auto scrollbar-thin">
+      <div className="flex-1 w-full lg:w-[46%] min-h-dvh lg:h-full bg-white flex flex-col justify-between p-4 sm:p-8 lg:p-12 xl:p-14 lg:overflow-y-auto scrollbar-thin">
         {/* Top bar with back and close button */}
-        <div className="flex items-center justify-between mb-4 w-full">
+        <div className="flex items-center justify-between gap-2 mb-4 w-full">
           <button
+            type="button"
             onClick={onBackToPublic}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors"
+            className="min-h-[44px] px-2 -ml-2 inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 rounded-xl transition-colors"
           >
             <ArrowLeft size={16} />
             <span>Kembali ke Public Workspace</span>
           </button>
 
           <button
-            onClick={onBackToPublic}
+            type="button"
+            onClick={() => (onClose ? onClose() : onBackToPublic())}
             aria-label="Tutup Halaman"
-            className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 flex items-center justify-center transition-colors"
+            className="w-11 h-11 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 hover:text-slate-900 flex items-center justify-center transition-colors flex-shrink-0"
           >
-            <X size={16} />
+            <X size={18} />
           </button>
         </div>
 
@@ -256,11 +279,11 @@ export default function LoginView({
                 <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider">
                   Pilih Akses Pengguna (RBAC)
                 </label>
-                <div className="grid grid-cols-2 gap-2 text-xs">
+                <div className="grid grid-cols-1 min-[380px]:grid-cols-2 gap-2 text-xs">
                   <button
                     type="button"
                     onClick={() => handleRoleClick('admin', 'reza.gading@reefsight.id')}
-                    className={`p-2.5 rounded-xl border text-left font-medium transition-all flex items-center gap-2 ${
+                    className={`min-h-[44px] p-2.5 rounded-xl border text-left font-medium transition-all flex items-center gap-2 ${
                       selectedRole === 'admin'
                         ? 'border-orange-500 bg-orange-50/80 text-orange-800 shadow-xs ring-1 ring-orange-500/30'
                         : 'border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50'
@@ -273,7 +296,7 @@ export default function LoginView({
                   <button
                     type="button"
                     onClick={() => handleRoleClick('peneliti_ekologi', 'aulia.rahma@reefsight.id')}
-                    className={`p-2.5 rounded-xl border text-left font-medium transition-all flex items-center gap-2 ${
+                    className={`min-h-[44px] p-2.5 rounded-xl border text-left font-medium transition-all flex items-center gap-2 ${
                       selectedRole === 'peneliti_ekologi'
                         ? 'border-orange-500 bg-orange-50/80 text-orange-800 shadow-xs ring-1 ring-orange-500/30'
                         : 'border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50'
@@ -286,7 +309,7 @@ export default function LoginView({
                   <button
                     type="button"
                     onClick={() => handleRoleClick('operator_lapangan', 'dimas.p@reefsight.id')}
-                    className={`p-2.5 rounded-xl border text-left font-medium transition-all flex items-center gap-2 ${
+                    className={`min-h-[44px] p-2.5 rounded-xl border text-left font-medium transition-all flex items-center gap-2 ${
                       selectedRole === 'operator_lapangan'
                         ? 'border-orange-500 bg-orange-50/80 text-orange-800 shadow-xs ring-1 ring-orange-500/30'
                         : 'border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50'
@@ -299,7 +322,7 @@ export default function LoginView({
                   <button
                     type="button"
                     onClick={() => handleRoleClick('validator_data', 'sinta.n@reefsight.id')}
-                    className={`p-2.5 rounded-xl border text-left font-medium transition-all flex items-center gap-2 ${
+                    className={`min-h-[44px] p-2.5 rounded-xl border text-left font-medium transition-all flex items-center gap-2 ${
                       selectedRole === 'validator_data'
                         ? 'border-orange-500 bg-orange-50/80 text-orange-800 shadow-xs ring-1 ring-orange-500/30'
                         : 'border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50'
@@ -354,7 +377,7 @@ export default function LoginView({
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
                       aria-label="Toggle password visibility"
-                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none"
+                      className="absolute right-1.5 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-600 focus:outline-none"
                     >
                       {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                     </button>
@@ -373,12 +396,22 @@ export default function LoginView({
                   </label>
                   <button
                     type="button"
-                    onClick={() => alert('Fitur pemulihan kata sandi: Silakan hubungi Administrator REEFSIGHT di admin@reefsight.id untuk reset akun.')}
-                    className="font-semibold text-orange-600 hover:text-orange-700 hover:underline"
+                    onClick={() =>
+                      setForgotNotice(
+                        'Untuk pemulihan kata sandi, silakan hubungi Administrator REEFSIGHT di admin@reefsight.id.'
+                      )
+                    }
+                    className="min-h-[44px] px-1 font-semibold text-orange-600 hover:text-orange-700 hover:underline"
                   >
                     Forgot Password?
                   </button>
                 </div>
+
+                {forgotNotice && (
+                  <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs leading-relaxed">
+                    {forgotNotice}
+                  </div>
+                )}
 
                 <button
                   type="submit"
@@ -427,7 +460,7 @@ export default function LoginView({
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-2.5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <label className="block font-semibold text-slate-700">Username</label>
                   <input
@@ -436,7 +469,7 @@ export default function LoginView({
                     value={regUsername}
                     onChange={(e) => setRegUsername(e.target.value)}
                     placeholder="budi.santoso"
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
+                    className="w-full min-h-[44px] px-3 py-2 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
                   />
                 </div>
                 <div className="space-y-1">
@@ -447,7 +480,7 @@ export default function LoginView({
                     value={regEmail}
                     onChange={(e) => setRegEmail(e.target.value)}
                     placeholder="budi@brin.go.id"
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
+                    className="w-full min-h-[44px] px-3 py-2 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
                   />
                 </div>
               </div>
@@ -470,7 +503,7 @@ export default function LoginView({
               {/* Role Requested Selection */}
               <div className="space-y-1.5">
                 <label className="block font-semibold text-slate-700">Fungsi / Peran dalam Platform</label>
-                <div className="grid grid-cols-3 gap-1.5 text-[11px]">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs sm:text-[11px]">
                   {[
                     { role: 'peneliti_ekologi', label: 'Peneliti Ekologi', desc: 'Analisis & Bioakustik' },
                     { role: 'operator_lapangan', label: 'Operator Lapangan', desc: 'Pengumpulan Data Buoy' },
@@ -480,21 +513,21 @@ export default function LoginView({
                       key={r.role}
                       type="button"
                       onClick={() => setRegRole(r.role as UserRole)}
-                      className={`p-2 rounded-xl border text-left font-medium transition-all ${
+                      className={`min-h-[44px] p-2.5 rounded-xl border text-left font-medium transition-all ${
                         regRole === r.role
                           ? 'border-orange-500 bg-orange-50 text-orange-900 ring-1 ring-orange-500/30'
                           : 'border-slate-200 text-slate-600 hover:bg-slate-50'
                       }`}
                     >
                       <div className="font-bold leading-tight">{r.label}</div>
-                      <div className="text-[9px] text-slate-400 mt-0.5">{r.desc}</div>
+                      <div className="text-[10px] text-slate-500 mt-0.5">{r.desc}</div>
                     </button>
                   ))}
                 </div>
               </div>
 
               {/* Password & Confirm */}
-              <div className="grid grid-cols-2 gap-2.5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <label className="block font-semibold text-slate-700">Kata Sandi</label>
                   <div className="relative">
@@ -504,8 +537,16 @@ export default function LoginView({
                       value={regPassword}
                       onChange={(e) => setRegPassword(e.target.value)}
                       placeholder="Min. 6 karakter"
-                      className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-orange-500/20"
+                      className="w-full min-h-[44px] pl-3 pr-10 py-2 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-orange-500/20"
                     />
+                    <button
+                      type="button"
+                      onClick={() => setShowRegPassword(!showRegPassword)}
+                      aria-label="Toggle register password visibility"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center text-slate-400 hover:text-slate-700 rounded-lg"
+                    >
+                      {showRegPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                    </button>
                   </div>
                 </div>
 
@@ -517,7 +558,7 @@ export default function LoginView({
                     value={regConfirmPassword}
                     onChange={(e) => setRegConfirmPassword(e.target.value)}
                     placeholder="Ulangi kata sandi"
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-orange-500/20"
+                    className="w-full min-h-[44px] px-3 py-2 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-orange-500/20"
                   />
                 </div>
               </div>
@@ -563,7 +604,7 @@ export default function LoginView({
                       setErrorMessage('');
                       setIsRegisterMode(false);
                     }}
-                    className="font-bold text-orange-600 hover:text-orange-700 hover:underline"
+                    className="min-h-[44px] px-1 inline-flex items-center font-bold text-orange-600 hover:text-orange-700 hover:underline"
                   >
                     Masuk ke Workspace
                   </button>
@@ -574,10 +615,11 @@ export default function LoginView({
         </div>
 
         {/* Back Link to Public Workspace */}
-        <div className="pt-5 text-center border-t border-slate-100 mt-5">
+        <div className="pt-5 text-center border-t border-slate-100 mt-5 pb-2">
           <button
+            type="button"
             onClick={onBackToPublic}
-            className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-slate-700 hover:text-slate-900 transition-colors group"
+            className="min-h-[44px] px-3 inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-slate-700 hover:text-slate-900 rounded-xl transition-colors group"
           >
             <ArrowLeft size={16} className="text-slate-500 group-hover:-translate-x-1 transition-transform" />
             <span>Back to Public Workspace</span>

@@ -46,27 +46,56 @@ const SAMPLES: SoundSample[] = [
 export default function SoundscapeExplorer() {
   const [selectedSample, setSelectedSample] = useState<SoundSample>(SAMPLES[0]);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [isMuted, setIsMuted] = useState<boolean>(false);
   const [volume, setVolume] = useState<number>(0.7);
 
   const canvasWaveRef = useRef<HTMLCanvasElement>(null);
   const canvasSpecRef = useRef<HTMLCanvasElement>(null);
   const animFrameRef = useRef<number | null>(null);
+  const isPlayingRef = useRef<boolean>(false);
 
   // Web Audio Synth for realistic sound generation
   const audioCtxRef = useRef<AudioContext | null>(null);
   const gainNodeRef = useRef<GainNode | null>(null);
   const noiseNodeRef = useRef<AudioNode | null>(null);
 
+  const syncGainLevel = (nextMuted: boolean, nextVol: number) => {
+    if (gainNodeRef.current && audioCtxRef.current) {
+      gainNodeRef.current.gain.setValueAtTime(
+        nextMuted ? 0 : nextVol * 0.15,
+        audioCtxRef.current.currentTime
+      );
+    }
+  };
+
+  const stopAudio = () => {
+    if (noiseNodeRef.current) {
+      try {
+        (noiseNodeRef.current as any).stop();
+      } catch (e) {}
+      noiseNodeRef.current = null;
+    }
+    isPlayingRef.current = false;
+    setIsPlaying(false);
+  };
+
   const togglePlay = () => {
     if (isPlaying) {
       stopAudio();
     } else {
-      startAudio();
+      startAudio(selectedSample);
     }
   };
 
-  const startAudio = () => {
+  const startAudio = (sampleToPlay: SoundSample = selectedSample) => {
     try {
+      if (noiseNodeRef.current) {
+        try {
+          (noiseNodeRef.current as any).stop();
+        } catch (e) {}
+        noiseNodeRef.current = null;
+      }
+
       if (!audioCtxRef.current) {
         audioCtxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
       }
@@ -76,7 +105,7 @@ export default function SoundscapeExplorer() {
 
       const ctx = audioCtxRef.current;
       const gain = ctx.createGain();
-      gain.gain.setValueAtTime(volume * 0.15, ctx.currentTime);
+      gain.gain.setValueAtTime(isMuted ? 0 : volume * 0.15, ctx.currentTime);
       gain.connect(ctx.destination);
       gainNodeRef.current = gain;
 
@@ -90,12 +119,12 @@ export default function SoundscapeExplorer() {
         // base water hum
         let val = (Math.random() * 2 - 1) * 0.04;
 
-        if (selectedSample.condition === 'Sehat') {
+        if (sampleToPlay.condition === 'Sehat') {
           // Snapping shrimp sharp clicks
           if (Math.random() < 0.003) {
             val += (Math.random() * 2 - 1) * 0.8;
           }
-        } else if (selectedSample.condition.includes('Noise')) {
+        } else if (sampleToPlay.condition.includes('Noise')) {
           // Boat engine low rumble
           val += Math.sin(i * 0.04) * 0.25;
         }
@@ -109,29 +138,29 @@ export default function SoundscapeExplorer() {
       whiteNoise.start();
       noiseNodeRef.current = whiteNoise;
 
+      isPlayingRef.current = true;
       setIsPlaying(true);
     } catch (e) {
       console.error('Audio init error:', e);
+      isPlayingRef.current = true;
       setIsPlaying(true); // fallback visual
     }
   };
 
-  const stopAudio = () => {
-    if (noiseNodeRef.current) {
-      try {
-        (noiseNodeRef.current as any).stop();
-      } catch (e) {}
-      noiseNodeRef.current = null;
-    }
-    setIsPlaying(false);
-  };
-
   useEffect(() => {
-    if (isPlaying) {
-      stopAudio();
-      startAudio();
+    if (isPlayingRef.current) {
+      startAudio(selectedSample);
     }
   }, [selectedSample]);
+
+  useEffect(() => {
+    return () => {
+      stopAudio();
+      if (audioCtxRef.current && audioCtxRef.current.state !== 'closed') {
+        audioCtxRef.current.close().catch(() => {});
+      }
+    };
+  }, []);
 
   // Handle Canvas Visualizer Animation
   useEffect(() => {
@@ -232,12 +261,11 @@ export default function SoundscapeExplorer() {
 
     return () => {
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
-      stopAudio();
     };
   }, [isPlaying, selectedSample]);
 
   return (
-    <div className="bg-slate-900/90 backdrop-blur-xl border border-cyan-500/30 rounded-2xl p-5 text-white shadow-2xl">
+    <div className="bg-slate-900/90 backdrop-blur-xl border border-cyan-500/30 rounded-2xl p-4 sm:p-5 text-white shadow-2xl">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between pb-4 border-b border-slate-800 gap-3">
         <div>
@@ -254,10 +282,38 @@ export default function SoundscapeExplorer() {
         </div>
 
         {/* Play & Volume Controls */}
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2.5">
           <button
+            type="button"
+            onClick={() => {
+              const nextMuted = !isMuted;
+              setIsMuted(nextMuted);
+              syncGainLevel(nextMuted, volume);
+            }}
+            aria-label={isMuted ? 'Aktifkan suara' : 'Bisukan suara'}
+            className="w-11 h-11 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 flex items-center justify-center transition-colors flex-shrink-0"
+          >
+            {isMuted ? <VolumeX className="w-4 h-4 text-rose-400" /> : <Volume2 className="w-4 h-4 text-cyan-300" />}
+          </button>
+          <input
+            type="range"
+            aria-label="Volume audio"
+            min="0"
+            max="1"
+            step="0.05"
+            value={isMuted ? 0 : volume}
+            onChange={(e) => {
+              const nextVol = parseFloat(e.target.value);
+              setVolume(nextVol);
+              setIsMuted(nextVol === 0);
+              syncGainLevel(nextVol === 0, nextVol);
+            }}
+            className="w-20 sm:w-24 accent-cyan-400 cursor-pointer"
+          />
+          <button
+            type="button"
             onClick={togglePlay}
-            className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all shadow-lg ${
+            className={`min-h-[44px] px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all shadow-lg ${
               isPlaying
                 ? 'bg-amber-500 hover:bg-amber-600 text-slate-950 shadow-amber-500/20'
                 : 'bg-cyan-500 hover:bg-cyan-400 text-slate-950 shadow-cyan-500/20'
@@ -276,8 +332,9 @@ export default function SoundscapeExplorer() {
           return (
             <button
               key={sample.id}
+              type="button"
               onClick={() => setSelectedSample(sample)}
-              className={`p-3 rounded-xl text-left border transition-all ${
+              className={`min-h-[44px] p-3.5 rounded-xl text-left border transition-all ${
                 isSelected
                   ? 'bg-cyan-950/60 border-cyan-400 text-white shadow-lg shadow-cyan-950/50'
                   : 'bg-slate-800/40 hover:bg-slate-800 border-slate-700/60 text-slate-300'

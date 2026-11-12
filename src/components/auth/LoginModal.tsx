@@ -26,6 +26,7 @@ export default function LoginModal({
         onSelectRole(role);
         onClose();
       }}
+      onClose={onClose}
       onBackToPublic={() => {
         onSelectRole('public');
         onClose();

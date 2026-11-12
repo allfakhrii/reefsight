@@ -40,14 +40,52 @@ import {
   CheckCircle
 } from 'lucide-react';
 
+type AdminTabId =
+  | 'dashboard'
+  | 'user-management'
+  | 'prototype-management'
+  | 'data-management'
+  | 'alert-management'
+  | 'publication-management'
+  | 'activity-logs'
+  | 'settings';
+
+const VALID_ADMIN_TABS: AdminTabId[] = [
+  'dashboard',
+  'user-management',
+  'prototype-management',
+  'data-management',
+  'alert-management',
+  'publication-management',
+  'activity-logs',
+  'settings',
+];
+
 interface Props {
   activeRole: UserRole;
+  activeTab?: string;
+  onSelectTab?: (tab: string) => void;
 }
 
-export default function AdminWorkspaceView({ activeRole }: Props) {
-  const [activeTab, setActiveTab] = useState<
-    'dashboard' | 'user-management' | 'prototype-management' | 'data-management' | 'alert-management' | 'publication-management' | 'activity-logs' | 'settings'
-  >('dashboard');
+export default function AdminWorkspaceView({
+  activeRole,
+  activeTab: controlledTab,
+  onSelectTab,
+}: Props) {
+  const [internalTab, setInternalTab] = useState<AdminTabId>('dashboard');
+  const activeTab: AdminTabId =
+    controlledTab && VALID_ADMIN_TABS.includes(controlledTab as AdminTabId)
+      ? (controlledTab as AdminTabId)
+      : internalTab;
+  const setActiveTab = (tab: AdminTabId) => {
+    setInternalTab(tab);
+    onSelectTab?.(tab);
+  };
+  const [adminNotice, setAdminNotice] = useState<{
+    scope: 'telemetry' | 'user' | 'alert';
+    tone: 'success' | 'info' | 'warning';
+    message: string;
+  } | null>(null);
 
   // Users Management state matching image18.png
   const [users, setUsers] = useState<UserProfile[]>(USER_DIRECTORY as UserProfile[]);
@@ -175,8 +213,15 @@ export default function AdminWorkspaceView({ activeRole }: Props) {
               </p>
               <div className="flex flex-wrap items-center gap-3">
                 <button
-                  onClick={() => alert('Data telemetri disinkronkan ulang.')}
-                  className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs flex items-center gap-2 shadow-xs transition-all"
+                  type="button"
+                  onClick={() =>
+                    setAdminNotice({
+                      scope: 'telemetry',
+                      tone: 'success',
+                      message: 'Data telemetri 12 stasiun mooring dan sensor optik berhasil disinkronkan ulang.',
+                    })
+                  }
+                  className="w-full sm:w-auto min-h-[44px] px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs flex items-center justify-center gap-2 shadow-xs transition-all"
                 >
                   <RefreshCw size={14} />
                   <span>Refresh Data</span>
@@ -189,10 +234,35 @@ export default function AdminWorkspaceView({ activeRole }: Props) {
           </div>
 
           {/* Platform Overview Metrics matching image17.jpeg */}
+          {adminNotice?.scope === 'telemetry' && (
+            <div
+              role="status"
+              className="p-3.5 sm:p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs flex items-center justify-between gap-3"
+            >
+              <span className="font-medium leading-relaxed">{adminNotice.message}</span>
+              <button
+                type="button"
+                onClick={() => setAdminNotice(null)}
+                aria-label="Tutup pemberitahuan sinkronisasi"
+                className="min-w-[44px] min-h-[44px] -my-2 -mr-2 inline-flex items-center justify-center rounded-xl hover:bg-emerald-100 flex-shrink-0"
+              >
+                <X size={16} />
+              </button>
+            </div>
+          )}
+
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
             <div
+              role="button"
+              tabIndex={0}
               onClick={() => setActiveTab('user-management')}
-              className="p-4 rounded-3xl bg-white border border-slate-200 shadow-xs hover:border-orange-300 cursor-pointer transition-all"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setActiveTab('user-management');
+                }
+              }}
+              className="p-4 rounded-3xl bg-white border border-slate-200 shadow-xs hover:border-orange-300 focus-visible:outline-2 focus-visible:outline-orange-500 cursor-pointer transition-all min-w-0"
             >
               <div className="text-xs text-slate-400 font-semibold">Total Users</div>
               <div className="text-2xl font-black text-slate-900 mt-1">128</div>
@@ -385,17 +455,18 @@ export default function AdminWorkspaceView({ activeRole }: Props) {
           {/* Main Grid: User Directory (Left) & User Profile Detail (Right) matching image18.png */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* User Directory Table */}
-            <div className="lg:col-span-2 p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
-              <div className="flex items-center justify-between">
+            <div className="lg:col-span-2 p-4 sm:p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4 min-w-0">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <h3 className="text-sm font-bold text-slate-900">User Directory</h3>
-                <div className="relative w-48">
+                <div className="relative w-full sm:w-56">
                   <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                   <input
                     type="text"
                     value={userSearch}
                     onChange={(e) => setUserSearch(e.target.value)}
-                    placeholder="Search user..."
-                    className="w-full pl-8 pr-3 py-1 text-xs rounded-xl border border-slate-200"
+                    placeholder="Cari nama, username, peran..."
+                    aria-label="Cari pengguna berdasarkan nama, username, atau peran"
+                    className="w-full min-h-[42px] sm:min-h-[36px] pl-9 pr-3 py-1.5 text-xs rounded-xl border border-slate-200 focus:border-orange-500 focus:outline-none"
                   />
                 </div>
               </div>
@@ -412,7 +483,15 @@ export default function AdminWorkspaceView({ activeRole }: Props) {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
-                    {users.map((usr) => (
+                    {users
+                      .filter((usr) => {
+                        const q = userSearch.trim().toLowerCase();
+                        if (!q) return true;
+                        return Object.values(usr).some((val) =>
+                          String(val ?? '').toLowerCase().includes(q)
+                        );
+                      })
+                      .map((usr) => (
                       <tr
                         key={usr.id}
                         onClick={() => setSelectedUser(usr)}
@@ -451,9 +530,13 @@ export default function AdminWorkspaceView({ activeRole }: Props) {
                           </span>
                         </td>
                         <td className="py-3 px-3 text-slate-500 text-[11px]">{usr.lastActivity}</td>
-                        <td className="py-3 px-3 text-right">
-                          <button className="p-1 text-slate-400 hover:text-slate-700">
-                            <Eye size={14} />
+                        <td className="py-2 px-3 text-right">
+                          <button
+                            type="button"
+                            aria-label="Lihat detail pengguna"
+                            className="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+                          >
+                            <Eye size={15} />
                           </button>
                         </td>
                       </tr>
@@ -482,34 +565,68 @@ export default function AdminWorkspaceView({ activeRole }: Props) {
               </div>
 
               <div className="space-y-2 text-xs text-slate-600 border-t border-slate-100 pt-3">
-                <div className="flex justify-between py-1 border-b border-slate-100">
+                <div className="flex flex-wrap justify-between gap-1.5 py-1.5 border-b border-slate-100">
                   <span className="text-slate-400">Username</span>
-                  <span className="font-semibold text-slate-800">{selectedUser.username}</span>
+                  <span className="font-semibold text-slate-800 break-all">{selectedUser.username}</span>
                 </div>
-                <div className="flex justify-between py-1 border-b border-slate-100">
+                <div className="flex flex-wrap justify-between gap-1.5 py-1.5 border-b border-slate-100">
                   <span className="text-slate-400">Email</span>
-                  <span className="font-semibold text-slate-800">{selectedUser.email}</span>
+                  <span className="font-semibold text-slate-800 break-all">{selectedUser.email}</span>
                 </div>
-                <div className="flex justify-between py-1 border-b border-slate-100">
+                <div className="flex flex-wrap justify-between gap-1.5 py-1.5 border-b border-slate-100">
                   <span className="text-slate-400">Institusi</span>
-                  <span className="font-semibold text-slate-800">{selectedUser.institution}</span>
+                  <span className="font-semibold text-slate-800 text-right">{selectedUser.institution}</span>
                 </div>
-                <div className="flex justify-between py-1 border-b border-slate-100">
+                <div className="flex flex-wrap justify-between gap-1.5 py-1.5 border-b border-slate-100">
                   <span className="text-slate-400">Status Akun</span>
                   <span className="font-bold text-emerald-600">● {selectedUser.accountStatus}</span>
                 </div>
               </div>
 
-              <div className="space-y-2 pt-2">
+              <div className="space-y-2.5 pt-2">
+                {adminNotice?.scope === 'user' && (
+                  <div
+                    role="status"
+                    className={`p-3 rounded-xl border text-xs flex items-center justify-between gap-2 ${
+                      adminNotice.tone === 'warning'
+                        ? 'bg-amber-50 border-amber-200 text-amber-900'
+                        : 'bg-sky-50 border-sky-200 text-sky-900'
+                    }`}
+                  >
+                    <span className="leading-snug font-medium">{adminNotice.message}</span>
+                    <button
+                      type="button"
+                      onClick={() => setAdminNotice(null)}
+                      aria-label="Tutup pemberitahuan akun"
+                      className="min-w-[36px] min-h-[36px] inline-flex items-center justify-center rounded-lg hover:bg-black/5 flex-shrink-0"
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                )}
                 <button
-                  onClick={() => alert(`Password akun ${selectedUser.username} telah direset.`)}
-                  className="w-full py-2 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 font-bold text-xs"
+                  type="button"
+                  onClick={() =>
+                    setAdminNotice({
+                      scope: 'user',
+                      tone: 'info',
+                      message: `Tautan reset password akun ${selectedUser.username} telah dikirim ke ${selectedUser.email}.`,
+                    })
+                  }
+                  className="w-full min-h-[44px] py-2.5 px-3 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 font-bold text-xs transition-colors"
                 >
                   Reset Password
                 </button>
                 <button
-                  onClick={() => alert(`Status akun ${selectedUser.username} diubah.`)}
-                  className="w-full py-2 rounded-xl border border-rose-200 text-rose-600 hover:bg-rose-50 font-bold text-xs"
+                  type="button"
+                  onClick={() =>
+                    setAdminNotice({
+                      scope: 'user',
+                      tone: 'warning',
+                      message: `Permintaan perubahan status aktif/nonaktif akun ${selectedUser.username} telah dicatat pada log audit.`,
+                    })
+                  }
+                  className="w-full min-h-[44px] py-2.5 px-3 rounded-xl border border-rose-200 text-rose-600 hover:bg-rose-50 font-bold text-xs transition-colors"
                 >
                   Deactivate User
                 </button>
@@ -519,12 +636,29 @@ export default function AdminWorkspaceView({ activeRole }: Props) {
 
           {/* Add User Modal */}
           {isAddUserModalOpen && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-fadeIn">
-              <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden p-6 space-y-4">
-                <div className="flex justify-between items-center border-b border-slate-100 pb-3">
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-label="Tambah akun pengguna baru"
+              onKeyDown={(e) => {
+                if (e.key === 'Escape') setIsAddUserModalOpen(false);
+              }}
+              onClick={(e) => {
+                if (e.target === e.currentTarget) setIsAddUserModalOpen(false);
+              }}
+              className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/60 backdrop-blur-sm animate-fadeIn"
+            >
+              <div className="w-full max-w-md max-h-[90dvh] overflow-y-auto bg-white rounded-3xl shadow-2xl border border-slate-200 p-5 sm:p-6 space-y-4">
+                <div className="flex justify-between items-center gap-3 border-b border-slate-100 pb-3">
                   <h3 className="font-bold text-slate-900 text-base">+ Add New User Account</h3>
-                  <button onClick={() => setIsAddUserModalOpen(false)}>
-                    <X size={18} className="text-slate-400" />
+                  <button
+                    type="button"
+                    autoFocus
+                    onClick={() => setIsAddUserModalOpen(false)}
+                    aria-label="Tutup modal tambah pengguna"
+                    className="w-11 h-11 inline-flex items-center justify-center rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 flex-shrink-0"
+                  >
+                    <X size={18} />
                   </button>
                 </div>
                 <form onSubmit={handleAddUser} className="space-y-3 text-xs">
@@ -626,12 +760,27 @@ export default function AdminWorkspaceView({ activeRole }: Props) {
                   <span>Send WhatsApp Notification</span>
                 </button>
                 <button
-                  onClick={() => alert('Laporan rekapitulasi peringatan diunduh.')}
-                  className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs border border-white/20 flex items-center gap-2 transition-all"
+                  type="button"
+                  onClick={() =>
+                    setAdminNotice({
+                      scope: 'alert',
+                      tone: 'info',
+                      message: 'Laporan rekapitulasi peringatan dini (CSV & ringkasan PDF) siap diunduh.',
+                    })
+                  }
+                  className="w-full sm:w-auto min-h-[44px] px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs border border-white/20 flex items-center justify-center gap-2 transition-all"
                 >
                   <Download size={14} />
                   <span>Export Report</span>
                 </button>
+                {adminNotice?.scope === 'alert' && (
+                  <p
+                    role="status"
+                    className="w-full text-[11px] font-medium text-emerald-200 bg-emerald-500/15 border border-emerald-400/30 rounded-xl px-3 py-2 mt-1"
+                  >
+                    {adminNotice.message}
+                  </p>
+                )}
               </div>
             </div>
           </div>

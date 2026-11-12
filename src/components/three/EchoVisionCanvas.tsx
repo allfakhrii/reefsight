@@ -32,6 +32,8 @@ export default function EchoVisionCanvas({
   const compMapRef = useRef<{ [key: number]: PrototypeComponent }>({});
   const isDraggingRef = useRef(false);
   const prevMousePosRef = useRef({ x: 0, y: 0 });
+  const touchMovedRef = useRef(false);
+  const pinchDistRef = useRef<number | null>(null);
   const cameraAngleRef = useRef({ theta: Math.PI / 4, phi: Math.PI / 3, radius: 2.8 });
 
   // Load 3D JSON Data
@@ -262,19 +264,38 @@ export default function EchoVisionCanvas({
       if (!mountRef.current || !renderer || !camera) return;
       const w = mountRef.current.clientWidth;
       const h = mountRef.current.clientHeight;
+      if (w === 0 || h === 0) return;
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
     };
     window.addEventListener('resize', handleResize);
+    const resizeObserver = new ResizeObserver(() => {
+      handleResize();
+    });
+    resizeObserver.observe(mountRef.current);
 
     return () => {
       cancelAnimationFrame(animId);
+      resizeObserver.disconnect();
       window.removeEventListener('resize', handleResize);
       renderer.dispose();
       if (mountRef.current) mountRef.current.innerHTML = '';
     };
   }, [components]);
+
+  // Escape closes selected component detail card
+  useEffect(() => {
+    if (!selectedComp) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setSelectedComp(null);
+        highlightComponent(-1);
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [selectedComp]);
 
   // Handle Scenario lighting color shift
   useEffect(() => {
@@ -336,24 +357,13 @@ export default function EchoVisionCanvas({
     updateCameraPosition();
   };
 
-  // Handle Explode Animation/Slider
-  const handleExplodeChange = (val: number) => {
-    setExploded(val);
-    Object.keys(groupMapRef.current).forEach(idStr => {
-      const group = groupMapRef.current[Number(idStr)];
-      if (group && group.userData.explode) {
-        const ex = group.userData.explode;
-        group.position.set(ex[0] * val, ex[1] * val, ex[2] * val);
-      }
-    });
-  };
-
-  // Click Raycaster for Selecting Component
-  const handleClick = (e: React.MouseEvent) => {
+  // Shared Raycaster Selection Helper (Mouse & Tap)
+  const selectComponentAtPoint = (clientX: number, clientY: number) => {
     if (!mountRef.current || !cameraRef.current || !sceneRef.current) return;
     const rect = mountRef.current.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-    const y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+    if (rect.width === 0 || rect.height === 0) return;
+    const x = ((clientX - rect.left) / rect.width) * 2 - 1;
+    const y = -((clientY - rect.top) / rect.height) * 2 + 1;
 
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(new THREE.Vector2(x, y), cameraRef.current);
@@ -370,6 +380,78 @@ export default function EchoVisionCanvas({
         }
       }
     }
+  };
+
+  // Touch Orbit, Pinch-Zoom & Tap Controls for Mobile/Tablet
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 1) {
+      isDraggingRef.current = true;
+      touchMovedRef.current = false;
+      pinchDistRef.current = null;
+      prevMousePosRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    } else if (e.touches.length === 2) {
+      isDraggingRef.current = false;
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      pinchDistRef.current = Math.hypot(dx, dy);
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (e.touches.length === 1 && isDraggingRef.current) {
+      const t = e.touches[0];
+      const deltaX = t.clientX - prevMousePosRef.current.x;
+      const deltaY = t.clientY - prevMousePosRef.current.y;
+      if (Math.hypot(deltaX, deltaY) > 4) {
+        touchMovedRef.current = true;
+      }
+      prevMousePosRef.current = { x: t.clientX, y: t.clientY };
+
+      cameraAngleRef.current.theta -= deltaX * 0.008;
+      cameraAngleRef.current.phi = Math.max(
+        0.15,
+        Math.min(Math.PI - 0.15, cameraAngleRef.current.phi - deltaY * 0.008)
+      );
+      updateCameraPosition();
+    } else if (e.touches.length === 2 && pinchDistRef.current !== null) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const newDist = Math.hypot(dx, dy);
+      const diff = newDist - pinchDistRef.current;
+      pinchDistRef.current = newDist;
+      cameraAngleRef.current.radius = Math.max(
+        1.2,
+        Math.min(6.0, cameraAngleRef.current.radius - diff * 0.01)
+      );
+      updateCameraPosition();
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (e.touches.length === 0) {
+      if (!touchMovedRef.current && e.changedTouches.length === 1) {
+        selectComponentAtPoint(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+      }
+      isDraggingRef.current = false;
+      pinchDistRef.current = null;
+    }
+  };
+
+  // Handle Explode Animation/Slider
+  const handleExplodeChange = (val: number) => {
+    setExploded(val);
+    Object.keys(groupMapRef.current).forEach(idStr => {
+      const group = groupMapRef.current[Number(idStr)];
+      if (group && group.userData.explode) {
+        const ex = group.userData.explode;
+        group.position.set(ex[0] * val, ex[1] * val, ex[2] * val);
+      }
+    });
+  };
+
+  // Click Raycaster for Selecting Component
+  const handleClick = (e: React.MouseEvent) => {
+    selectComponentAtPoint(e.clientX, e.clientY);
   };
 
   const highlightComponent = (id: number) => {
@@ -400,16 +482,21 @@ export default function EchoVisionCanvas({
   };
 
   return (
-    <div className="relative w-full h-[600px] lg:h-[700px] bg-gradient-to-b from-slate-950 via-[#061b2e] to-slate-950 rounded-2xl overflow-hidden border border-cyan-500/20 shadow-2xl">
+    <div className="relative w-full h-[460px] sm:h-[560px] lg:h-[680px] bg-gradient-to-b from-slate-950 via-[#061b2e] to-slate-950 rounded-2xl overflow-hidden border border-cyan-500/20 shadow-2xl">
       {/* 3D Canvas Mounting Area */}
       <div
         ref={mountRef}
+        style={{ touchAction: 'none' }}
         className="w-full h-full cursor-grab active:cursor-grabbing"
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
         onWheel={handleWheel}
         onClick={handleClick}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       />
 
       {loading && (
@@ -422,76 +509,87 @@ export default function EchoVisionCanvas({
       )}
 
       {/* Floating Header Info */}
-      <div className="absolute top-4 left-4 z-20 pointer-events-none">
-        <div className="bg-slate-900/80 backdrop-blur-md border border-cyan-500/30 rounded-xl p-3 shadow-lg pointer-events-auto">
+      <div className="absolute top-3 left-3 sm:top-4 sm:left-4 right-16 sm:right-auto z-20 pointer-events-none">
+        <div className="bg-slate-900/80 backdrop-blur-md border border-cyan-500/30 rounded-xl p-2.5 sm:p-3 shadow-lg pointer-events-auto max-w-xs">
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
-            <h2 className="text-xs uppercase tracking-wider font-bold text-cyan-400">EchoVision 3D Hardware</h2>
+            <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse flex-shrink-0" />
+            <h2 className="text-[11px] sm:text-xs uppercase tracking-wider font-bold text-cyan-400 truncate">EchoVision 3D Hardware</h2>
           </div>
-          <p className="text-sm font-semibold text-white mt-1">Prototipe Pemantau Nirawak Terpadu</p>
-          <p className="text-xs text-slate-400 mt-0.5">BOM Hardware Total: <span className="text-emerald-400 font-bold">{formatRupiah(totalBom)}</span></p>
+          <p className="text-xs sm:text-sm font-semibold text-white mt-0.5 sm:mt-1 truncate">Prototipe Pemantau Nirawak Terpadu</p>
+          <p className="text-[11px] sm:text-xs text-slate-300 mt-0.5">BOM Total: <span className="text-emerald-400 font-bold">{formatRupiah(totalBom)}</span></p>
         </div>
       </div>
 
       {/* Floating Controls Overlay */}
-      <div className="absolute top-4 right-4 z-20 flex flex-col gap-2">
+      <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 flex flex-col gap-2">
         <button
+          type="button"
           onClick={resetView}
+          aria-label="Reset sudut pandang 3D"
           title="Reset Sudut Pandang"
-          className="p-2.5 bg-slate-900/80 hover:bg-cyan-900/50 backdrop-blur-md border border-cyan-500/30 text-cyan-300 rounded-lg transition-all"
+          className="w-11 h-11 bg-slate-900/85 hover:bg-cyan-900/60 backdrop-blur-md border border-cyan-500/30 text-cyan-300 rounded-xl flex items-center justify-center transition-all"
         >
           <RotateCcw className="w-4 h-4" />
         </button>
         <button
+          type="button"
           onClick={() => {
             cameraAngleRef.current.radius = Math.max(1.2, cameraAngleRef.current.radius - 0.4);
             updateCameraPosition();
           }}
+          aria-label="Perbesar model 3D"
           title="Zoom In"
-          className="p-2.5 bg-slate-900/80 hover:bg-cyan-900/50 backdrop-blur-md border border-cyan-500/30 text-cyan-300 rounded-lg transition-all"
+          className="w-11 h-11 bg-slate-900/85 hover:bg-cyan-900/60 backdrop-blur-md border border-cyan-500/30 text-cyan-300 rounded-xl flex items-center justify-center transition-all"
         >
           <ZoomIn className="w-4 h-4" />
         </button>
         <button
+          type="button"
           onClick={() => {
             cameraAngleRef.current.radius = Math.min(5.5, cameraAngleRef.current.radius + 0.4);
             updateCameraPosition();
           }}
+          aria-label="Perkecil model 3D"
           title="Zoom Out"
-          className="p-2.5 bg-slate-900/80 hover:bg-cyan-900/50 backdrop-blur-md border border-cyan-500/30 text-cyan-300 rounded-lg transition-all"
+          className="w-11 h-11 bg-slate-900/85 hover:bg-cyan-900/60 backdrop-blur-md border border-cyan-500/30 text-cyan-300 rounded-xl flex items-center justify-center transition-all"
         >
           <ZoomOut className="w-4 h-4" />
         </button>
       </div>
 
       {/* Bottom Explode Slider & Hint */}
-      <div className="absolute bottom-4 left-4 right-4 z-20 flex flex-col md:flex-row items-center justify-between gap-3 pointer-events-none">
-        <div className="bg-slate-900/85 backdrop-blur-md border border-slate-700/60 rounded-xl px-4 py-2.5 text-xs text-slate-300 pointer-events-auto flex items-center gap-3">
+      <div className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4 z-20 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 sm:gap-3 pointer-events-none">
+        <div className="hidden sm:flex bg-slate-900/85 backdrop-blur-md border border-slate-700/60 rounded-xl px-4 py-2.5 text-xs text-slate-300 pointer-events-auto items-center gap-3">
           <span className="text-cyan-400 font-semibold flex items-center gap-1.5">
-            <Activity className="w-3.5 h-3.5" /> Putar: Drag Mouse · Zoom: Scroll · Klik Komponen untuk Detail
+            <Activity className="w-3.5 h-3.5 flex-shrink-0" /> Putar: Geser · Zoom: Scroll/Cubit · Pilih Komponen
           </span>
         </div>
 
-        <div className="bg-slate-900/85 backdrop-blur-md border border-cyan-500/30 rounded-xl px-4 py-2 pointer-events-auto flex items-center gap-3">
-          <Layers className="w-4 h-4 text-cyan-400" />
-          <span className="text-xs text-slate-300 font-medium">Bongkar (Explode):</span>
+        <div className="bg-slate-900/85 backdrop-blur-md border border-cyan-500/30 rounded-xl px-3.5 py-2.5 pointer-events-auto flex items-center justify-between sm:justify-start gap-2.5 min-h-[44px]">
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <Layers className="w-4 h-4 text-cyan-400" />
+            <label htmlFor="explode-slider" className="text-xs text-slate-200 font-medium">
+              Explode:
+            </label>
+          </div>
           <input
+            id="explode-slider"
             type="range"
             min="0"
             max="1"
             step="0.05"
             value={exploded}
             onChange={(e) => handleExplodeChange(parseFloat(e.target.value))}
-            className="w-28 md:w-36 accent-cyan-400 cursor-pointer"
+            className="flex-1 sm:w-32 md:w-36 accent-cyan-400 cursor-pointer"
           />
-          <span className="text-xs text-cyan-400 font-mono w-8">{Math.round(exploded * 100)}%</span>
+          <span className="text-xs text-cyan-400 font-mono w-9 text-right">{Math.round(exploded * 100)}%</span>
         </div>
       </div>
 
       {/* Selected Component Detail Card */}
       {selectedComp && (
-        <div className="absolute top-20 left-4 max-w-sm w-[calc(100vw-32px)] md:w-80 bg-slate-900/90 backdrop-blur-xl border border-cyan-400/50 rounded-2xl p-4 text-white shadow-2xl z-20 animate-in fade-in slide-in-from-left duration-200">
-          <div className="flex items-start justify-between">
+        <div className="absolute top-24 sm:top-20 left-3 right-3 sm:left-4 sm:right-auto sm:w-80 max-h-[calc(100%-10rem)] overflow-y-auto bg-slate-900/95 backdrop-blur-xl border border-cyan-400/50 rounded-2xl p-4 text-white shadow-2xl z-30 animate-in fade-in slide-in-from-left duration-200">
+          <div className="flex items-start justify-between gap-2">
             <div>
               <span className="text-[10px] font-bold text-cyan-400 uppercase tracking-wider bg-cyan-950/80 px-2 py-0.5 rounded-full border border-cyan-800">
                 Komponen #{selectedComp.id}
@@ -499,11 +597,13 @@ export default function EchoVisionCanvas({
               <h3 className="text-base font-bold text-white mt-1.5">{selectedComp.name}</h3>
             </div>
             <button
+              type="button"
+              aria-label="Tutup detail komponen"
               onClick={() => {
                 setSelectedComp(null);
                 highlightComponent(-1);
               }}
-              className="text-slate-400 hover:text-white text-lg p-1"
+              className="w-10 h-10 -mt-1 -mr-1 rounded-xl text-slate-300 hover:text-white hover:bg-white/10 text-xl flex items-center justify-center flex-shrink-0"
             >
               ×
             </button>

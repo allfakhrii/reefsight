@@ -33,8 +33,12 @@ export default function DeploymentMapLibre({
   onSelectStation
 }: Props) {
   const mapContainer = useRef<HTMLDivElement>(null);
+  const directoryRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const [activeStation, setActiveStation] = useState<StationData>(PULAU_TUNDA_STATIONS[5]); // Default ASIK-06
+  const [showMobileLegend, setShowMobileLegend] = useState<boolean>(false);
+  const [showDirectory, setShowDirectory] = useState<boolean>(false);
+  const [showExtendedTelemetry, setShowExtendedTelemetry] = useState<boolean>(false);
   const markersRef = useRef<{ [key: string]: maplibregl.Marker }>({});
 
   useEffect(() => {
@@ -159,10 +163,27 @@ export default function DeploymentMapLibre({
       });
     });
 
+    const resizeObserver = new ResizeObserver(() => {
+      map.resize();
+    });
+    resizeObserver.observe(mapContainer.current);
+
     return () => {
+      resizeObserver.disconnect();
       map.remove();
     };
   }, []);
+
+  const handleSelectStationFromDirectory = (station: StationData) => {
+    setActiveStation(station);
+    if (onSelectStation) onSelectStation(station);
+    mapRef.current?.flyTo({
+      center: [station.longitude, station.latitude],
+      zoom: 14.5,
+      pitch: 35,
+      essential: true
+    });
+  };
 
   return (
     <div className="space-y-6">
@@ -184,13 +205,32 @@ export default function DeploymentMapLibre({
             Explore the planned and documented deployment locations of REEFSIGHT monitoring prototypes around Pulau Tunda, and discover how each station contributes to ecological observation.
           </p>
           <div className="flex flex-wrap items-center gap-3">
-            <button className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs flex items-center gap-2 shadow-sm transition-all">
+            <button
+              type="button"
+              onClick={() => {
+                mapContainer.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                mapRef.current?.flyTo({ center: [106.274, -5.813], zoom: 13.8, pitch: 30, essential: true });
+              }}
+              className="min-h-[44px] px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs flex items-center gap-2 shadow-sm transition-all"
+            >
               <Compass size={14} />
               Explore Deployment Map
             </button>
-            <button className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs border border-white/20 flex items-center gap-2 transition-all">
+            <button
+              type="button"
+              onClick={() => {
+                setShowDirectory((prev) => {
+                  const next = !prev;
+                  if (next) {
+                    setTimeout(() => directoryRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+                  }
+                  return next;
+                });
+              }}
+              className="min-h-[44px] px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs border border-white/20 flex items-center gap-2 transition-all"
+            >
               <Layers size={14} />
-              View Location Directory
+              {showDirectory ? 'Sembunyikan Direktori' : 'View Location Directory'}
             </button>
           </div>
           <p className="text-[11px] text-slate-300 font-medium mt-4 flex items-center gap-1.5">
@@ -200,15 +240,72 @@ export default function DeploymentMapLibre({
         </div>
       </div>
 
+      {/* Expandable 12-Station Directory Grid */}
+      {showDirectory && (
+        <div
+          ref={directoryRef}
+          className="p-4 sm:p-5 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-3 animate-fadeIn"
+        >
+          <div className="flex items-center justify-between gap-2">
+            <h3 className="text-xs sm:text-sm font-bold text-slate-900">
+              Direktori 12 Stasiun Mooring Pulau Tunda (Klik untuk Fokus Peta)
+            </h3>
+            <button
+              type="button"
+              onClick={() => setShowDirectory(false)}
+              aria-label="Tutup direktori stasiun"
+              className="w-10 h-10 rounded-xl hover:bg-slate-100 text-slate-500 flex items-center justify-center"
+            >
+              <X size={16} />
+            </button>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
+            {PULAU_TUNDA_STATIONS.map((station, idx) => {
+              const code = `ASIK-${String(idx + 1).padStart(2, '0')}`;
+              const isSelected = activeStation.id === station.id;
+              return (
+                <button
+                  key={station.id}
+                  type="button"
+                  onClick={() => handleSelectStationFromDirectory(station)}
+                  className={`min-h-[44px] p-2.5 rounded-xl border text-left transition-all ${
+                    isSelected
+                      ? 'border-orange-500 bg-orange-50 text-orange-900 shadow-xs'
+                      : 'border-slate-200 bg-slate-50/50 hover:border-slate-300 text-slate-700'
+                  }`}
+                >
+                  <div className="font-mono font-bold text-xs">{code}</div>
+                  <div className="text-[10px] text-slate-500 truncate">{station.name}</div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {/* Main Grid: Map (Left) & Station Detail Card (Right) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Map Container */}
-        <div className="lg:col-span-2 relative rounded-3xl overflow-hidden bg-slate-900 border border-slate-200 shadow-sm h-[540px]">
+        <div className="lg:col-span-2 relative rounded-3xl overflow-hidden bg-slate-900 border border-slate-200 shadow-sm h-[380px] sm:h-[460px] lg:h-[540px] min-w-0">
           <div ref={mapContainer} className="w-full h-full" />
 
+          {/* Mobile Legenda Toggle */}
+          <button
+            type="button"
+            onClick={() => setShowMobileLegend((prev) => !prev)}
+            className="sm:hidden absolute bottom-3 left-3 z-10 min-h-[44px] px-3.5 py-2 rounded-xl bg-white/95 backdrop-blur-md border border-slate-200 shadow-lg text-xs font-bold text-slate-800 flex items-center gap-2"
+          >
+            <Layers size={14} className="text-amber-500" />
+            <span>{showMobileLegend ? 'Tutup Legenda' : 'Legenda Peta'}</span>
+          </button>
+
           {/* Floating Legenda matching image4.jpeg */}
-          <div className="absolute bottom-4 left-4 z-10 bg-white/95 backdrop-blur-md rounded-2xl p-3.5 shadow-lg border border-slate-200 text-xs text-slate-700 max-w-xs space-y-2">
-            <div className="font-bold text-slate-900 text-xs border-b border-slate-100 pb-1 flex items-center justify-between">
+          <div
+            className={`${
+              showMobileLegend ? 'block' : 'hidden'
+            } sm:block absolute bottom-16 left-3 sm:bottom-4 sm:left-4 z-10 bg-white/95 backdrop-blur-md rounded-2xl p-3.5 shadow-lg border border-slate-200 text-xs text-slate-700 w-[min(17rem,calc(100%-1.5rem))] space-y-2`}
+          >
+            <div className="font-bold text-slate-900 text-xs border-b border-slate-100 pb-1 flex items-center justify-between gap-2">
               <span>Legenda</span>
               <span className="text-[10px] text-slate-400 font-normal">Pulau Tunda</span>
             </div>
@@ -310,12 +407,38 @@ export default function DeploymentMapLibre({
             </div>
 
             <button
-              onClick={() => alert(`Detail telemetri stasiun ${activeStation.name} sedang dimuat dari Supabase API.`)}
-              className="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors"
+              type="button"
+              onClick={() => setShowExtendedTelemetry((prev) => !prev)}
+              className="w-full min-h-[44px] py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors"
             >
-              <span>View Details</span>
-              <ChevronRight size={14} />
+              <span>{showExtendedTelemetry ? 'Sembunyikan Detail Telemetri' : 'View Details'}</span>
+              <ChevronRight size={14} className={showExtendedTelemetry ? 'rotate-90 transition-transform' : 'transition-transform'} />
             </button>
+
+            {showExtendedTelemetry && (
+              <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200/80 text-xs space-y-1.5 animate-fadeIn">
+                <div className="flex flex-wrap justify-between gap-2">
+                  <span className="text-slate-500">pH Laut</span>
+                  <span className="font-bold text-slate-800">{activeStation.ph}</span>
+                </div>
+                <div className="flex flex-wrap justify-between gap-2">
+                  <span className="text-slate-500">Oksigen Terlarut</span>
+                  <span className="font-bold text-slate-800">{activeStation.dissolved_oxygen_mg_l} mg/L</span>
+                </div>
+                <div className="flex flex-wrap justify-between gap-2">
+                  <span className="text-slate-500">Turbiditas / Kedalaman</span>
+                  <span className="font-bold text-cyan-700">
+                    {activeStation.turbidity_ntu} NTU ({activeStation.depth_m} m)
+                  </span>
+                </div>
+                <div className="flex flex-wrap justify-between gap-2">
+                  <span className="text-slate-500">Akustik / Status</span>
+                  <span className="font-bold text-emerald-700">
+                    {activeStation.sound_level_db} dB ({activeStation.status})
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Deployment Overview stats matching image4.jpeg */}
@@ -323,7 +446,7 @@ export default function DeploymentMapLibre({
             <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider">
               Deployment Overview
             </h4>
-            <div className="grid grid-cols-4 gap-2 text-center">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
               <div className="p-2 rounded-xl bg-blue-50/60 border border-blue-100">
                 <div className="text-lg font-black text-blue-700">12</div>
                 <div className="text-[10px] text-slate-500 font-medium">Total Stasiun</div>

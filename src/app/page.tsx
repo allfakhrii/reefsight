@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AppSidebar from '@/components/layout/AppSidebar';
 import AppHeader from '@/components/layout/AppHeader';
 import LoginModal from '@/components/auth/LoginModal';
@@ -16,6 +16,30 @@ export default function Home() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState<boolean>(false);
+
+  // Close mobile navigation drawer on Escape or when resizing to desktop
+  useEffect(() => {
+    if (!isMobileSidebarOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsMobileSidebarOpen(false);
+      }
+    };
+
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setIsMobileSidebarOpen(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [isMobileSidebarOpen]);
 
   // Handle Workspace Switching with RBAC Auto-routing
   const handleSelectWorkspace = (ws: WorkspaceMode) => {
@@ -59,18 +83,19 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-slate-800 antialiased selection:bg-orange-500 selection:text-white">
+    <div className="min-h-dvh bg-[#F8FAFC] text-slate-800 antialiased selection:bg-orange-500 selection:text-white overflow-x-clip">
       {/* Mobile Sidebar Overlay */}
       {isMobileSidebarOpen && (
         <div
           onClick={() => setIsMobileSidebarOpen(false)}
+          aria-hidden="true"
           className="fixed inset-0 z-40 bg-slate-950/50 backdrop-blur-xs lg:hidden animate-fadeIn"
         />
       )}
 
       {/* Main Application Sidebar */}
       <div
-        className={`fixed inset-y-0 left-0 z-40 lg:z-30 transition-transform duration-300 lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 lg:z-30 transition-transform duration-300 lg:translate-x-0 ${
           isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -84,13 +109,17 @@ export default function Home() {
           }}
           isCollapsed={isSidebarCollapsed}
           onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-          onOpenLogin={() => setIsLoginModalOpen(true)}
+          onCloseMobile={() => setIsMobileSidebarOpen(false)}
+          onOpenLogin={() => {
+            setIsMobileSidebarOpen(false);
+            setIsLoginModalOpen(true);
+          }}
         />
       </div>
 
       {/* Main Content Area */}
       <div
-        className={`flex flex-col min-h-screen transition-all duration-300 ${
+        className={`flex flex-col min-h-dvh min-w-0 transition-all duration-300 ${
           isSidebarCollapsed ? 'lg:ml-20' : 'lg:ml-64'
         }`}
       >
@@ -100,13 +129,14 @@ export default function Home() {
           onSelectWorkspace={handleSelectWorkspace}
           activeRole={activeRole}
           activeTab={activeTab}
+          onSelectTab={setActiveTab}
           onOpenLogin={() => setIsLoginModalOpen(true)}
           onLogout={handleLogout}
           onToggleMobileSidebar={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
         />
 
         {/* Dynamic Workspace Body */}
-        <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <main className="flex-1 w-full min-w-0 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6">
           {workspace === 'public' && (
             <PublicView
               activeTab={activeTab}
@@ -119,12 +149,16 @@ export default function Home() {
             <ResearchWorkspaceView
               activeRole={activeRole}
               onSwitchRole={handleRoleSelection}
+              activeTab={activeTab}
+              onSelectTab={setActiveTab}
             />
           )}
 
           {workspace === 'admin' && (
             <AdminWorkspaceView
               activeRole={activeRole}
+              activeTab={activeTab}
+              onSelectTab={setActiveTab}
             />
           )}
         </main>
