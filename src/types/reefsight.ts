@@ -170,6 +170,7 @@ export interface FishSpecies {
   relativeAbundance?: string;
   abundance_per_100m2?: number;
   imageUrl?: string;
+  image_url?: string;
   associated_coral_form?: string;
   associatedGrowthForms?: string[];
   ecological_role?: string;

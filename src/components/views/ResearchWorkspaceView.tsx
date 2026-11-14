@@ -7,7 +7,8 @@ import {
   PULAU_TUNDA_STATIONS,
   MOCK_RESEARCH_LOGBOOKS,
   FIELD_COLLECTIONS_MOCK,
-  USER_DIRECTORY
+  USER_DIRECTORY,
+  PULAU_TUNDA_TRANSECT_PHOTOS
 } from '@/data/mockData';
 import {
   Activity,
@@ -257,7 +258,7 @@ export default function ResearchWorkspaceView({
           <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 border border-slate-200 shadow-md">
             <div
               className="absolute inset-0 bg-cover bg-right opacity-30 mix-blend-luminosity"
-              style={{ backgroundImage: `url('/images/image24.jpeg')` }}
+              style={{ backgroundImage: `url('/images/coral-surveys/tunda_transect_13.jpg')` }}
             />
             <div className="relative z-10 p-6 sm:p-8 max-w-2xl text-white">
               <div className="inline-flex items-center gap-2 text-xs font-bold text-orange-400 uppercase tracking-widest mb-2">
@@ -368,7 +369,7 @@ export default function ResearchWorkspaceView({
           <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 border border-slate-200 shadow-md">
             <div
               className="absolute inset-0 bg-cover bg-right opacity-30 mix-blend-luminosity"
-              style={{ backgroundImage: `url('/images/image25.png')` }}
+              style={{ backgroundImage: `url('/images/coral-surveys/tunda_transect_14.jpg')` }}
             />
             <div className="relative z-10 p-6 sm:p-8 max-w-2xl text-white">
               <div className="inline-flex items-center gap-2 text-xs font-bold text-orange-400 uppercase tracking-widest mb-2">
@@ -489,12 +490,32 @@ export default function ResearchWorkspaceView({
                 </span>
               </div>
 
-              <div className="h-36 rounded-2xl overflow-hidden bg-slate-900">
+              <div className="h-40 rounded-2xl overflow-hidden bg-slate-900 relative">
                 <img
-                  src="/images/image25.png"
+                  src={
+                    selectedCollection.collectionType === 'Acoustic'
+                      ? '/soundscape/reef_spectrograms.png'
+                      : '/images/coral-surveys/tunda_transect_02.jpg'
+                  }
                   alt="Inspection"
                   className="w-full h-full object-cover"
                 />
+                <span className="absolute bottom-2 left-2 px-2 py-0.5 rounded-lg bg-black/70 text-white text-[10px] font-bold backdrop-blur-xs">
+                  {selectedCollection.collectionType === 'Acoustic' ? 'Spektrogram Akustik' : 'Dokumentasi Lapangan UPT'}
+                </span>
+              </div>
+
+              <div className="space-y-1.5 pt-1">
+                <span className="text-[11px] font-bold text-slate-700 block">
+                  Foto Transek Terkait ({PULAU_TUNDA_TRANSECT_PHOTOS.length} sampel)
+                </span>
+                <div className="grid grid-cols-4 gap-1.5">
+                  {PULAU_TUNDA_TRANSECT_PHOTOS.slice(0, 4).map((tp) => (
+                    <div key={tp.id} className="h-11 rounded-lg overflow-hidden border border-slate-200 bg-slate-100 group relative">
+                      <img src={tp.file} alt={tp.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
+                    </div>
+                  ))}
+                </div>
               </div>
 
               <div className="space-y-2 text-xs text-slate-600">
@@ -649,7 +670,7 @@ export default function ResearchWorkspaceView({
           <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 border border-slate-200 shadow-md">
             <div
               className="absolute inset-0 bg-cover bg-right opacity-30 mix-blend-luminosity"
-              style={{ backgroundImage: `url('/images/image29.png')` }}
+              style={{ backgroundImage: `url('/images/coral-surveys/tunda_transect_15.jpg')` }}
             />
             <div className="relative z-10 p-6 sm:p-8 max-w-2xl text-white">
               <div className="inline-flex items-center gap-2 text-xs font-bold text-orange-400 uppercase tracking-widest mb-2">
@@ -777,12 +798,19 @@ export default function ResearchWorkspaceView({
                 </span>
               </div>
 
-              <div className="h-36 rounded-2xl overflow-hidden bg-slate-900">
+              <div className="h-40 rounded-2xl overflow-hidden bg-slate-900 relative">
                 <img
-                  src="/images/image29.png"
+                  src={
+                    selectedValidationItem.collectionType === 'Acoustic'
+                      ? '/soundscape/reef_spectrograms.png'
+                      : '/images/coral-surveys/tunda_transect_04.jpg'
+                  }
                   alt="Validation Preview"
                   className="w-full h-full object-cover"
                 />
+                <span className="absolute bottom-2 left-2 px-2 py-0.5 rounded-lg bg-black/70 text-white text-[10px] font-bold backdrop-blur-xs">
+                  {selectedValidationItem.collectionType === 'Acoustic' ? 'Spektrogram Akustik' : 'Citra Bawah Air UPT'}
+                </span>
               </div>
 
               <div className="space-y-2 text-xs text-slate-600">
@@ -854,11 +882,69 @@ export default function ResearchWorkspaceView({
         </div>
       )}
 
+      {/* 04. TAB: RESEARCH LOGBOOK */}
+      {activeTab === 'research-logbook' && (
+        <div className="space-y-6 animate-fadeIn">
+          <div className="p-6 sm:p-8 rounded-3xl bg-slate-900 text-white space-y-3">
+            <div className="text-xs font-bold text-orange-400 uppercase tracking-widest">
+              RESEARCH LOGBOOK & EXPEDITION ARCHIVE
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
+              Logbook Riset & Catatan Ekspedisi Pulau Tunda
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
+              Arsip kronologis catatan teknis lapangan operator buoy, sampling oseanografi perairan, dan inspeksi foto transek kuadrat terumbu karang.
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            {MOCK_RESEARCH_LOGBOOKS.map((log, i) => (
+              <div
+                key={log.id}
+                className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm flex flex-col md:flex-row gap-6 items-start justify-between"
+              >
+                <div className="space-y-2.5 max-w-3xl">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="font-mono text-xs font-bold px-2.5 py-0.5 rounded-lg bg-slate-100 text-slate-700">
+                      {log.id}
+                    </span>
+                    <span className="px-2.5 py-0.5 rounded-lg bg-orange-100 text-orange-700 text-xs font-semibold">
+                      {log.category}
+                    </span>
+                    <span className="text-xs text-slate-400 flex items-center gap-1">
+                      <Calendar size={12} />
+                      {log.date}
+                    </span>
+                    {log.station_id && (
+                      <span className="text-xs text-blue-600 font-semibold flex items-center gap-1">
+                        <MapPin size={12} />
+                        {log.station_id}
+                      </span>
+                    )}
+                  </div>
+                  <h4 className="text-base font-bold text-slate-900">{log.title}</h4>
+                  <p className="text-xs text-slate-600 leading-relaxed">{log.content}</p>
+                  <div className="text-xs text-slate-400 pt-2 border-t border-slate-100">
+                    Pelapor: <span className="font-semibold text-slate-700">{log.author}</span>
+                  </div>
+                </div>
+                <div className="w-full md:w-52 h-32 rounded-2xl overflow-hidden bg-slate-900 border border-slate-100 flex-shrink-0">
+                  <img
+                    src={PULAU_TUNDA_TRANSECT_PHOTOS[i % PULAU_TUNDA_TRANSECT_PHOTOS.length].file}
+                    alt={log.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Tabs fallback for remaining modules */}
       {(activeTab === 'environmental-data' ||
         activeTab === 'coral-analysis' ||
         activeTab === 'ecological-dynamics' ||
-        activeTab === 'research-logbook' ||
         activeTab === 'scientific-reports') && (
         <div className="p-8 rounded-3xl bg-white border border-slate-200 shadow-sm text-center space-y-3">
           <div className="w-12 h-12 rounded-2xl bg-orange-50 text-orange-600 flex items-center justify-center mx-auto text-xl">

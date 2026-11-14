@@ -17,13 +17,14 @@ export const metadata: Metadata = {
   description: "Platform Kecerdasan Ekologis untuk Analisis Dinamika dan Tekanan Lingkungan Terumbu Karang di Pulau Tunda, Kabupaten Serang, Banten. Mengintegrasikan IoT EchoVision, WebGIS MapLibre, Bioakustik, dan Pemodelan Karang.",
   icons: {
     icon: [
-      { url: '/brand/reefsight-icon.svg', type: 'image/svg+xml' },
+      { url: '/brand/logo.jpg', type: 'image/jpeg' },
+      { url: '/brand/logo-badge.jpg', type: 'image/jpeg' },
       { url: '/favicon.ico', sizes: 'any' },
     ],
     apple: [
-      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+      { url: '/brand/logo.jpg', sizes: '180x180', type: 'image/jpeg' },
     ],
-    shortcut: '/favicon.ico',
+    shortcut: '/brand/logo.jpg',
   },
 };
 
@@ -35,9 +36,9 @@ export default function RootLayout({
   return (
     <html lang="id">
       <head>
-        <link rel="icon" href="/brand/reefsight-icon.svg" type="image/svg+xml" />
+        <link rel="icon" href="/brand/logo.jpg" type="image/jpeg" />
         <link rel="alternate icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" href="/brand/logo.jpg" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#F8FAFC] text-slate-800 min-h-screen selection:bg-orange-500 selection:text-white`}

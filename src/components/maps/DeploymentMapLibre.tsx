@@ -39,7 +39,20 @@ export default function DeploymentMapLibre({
   const [showMobileLegend, setShowMobileLegend] = useState<boolean>(false);
   const [showDirectory, setShowDirectory] = useState<boolean>(false);
   const [showExtendedTelemetry, setShowExtendedTelemetry] = useState<boolean>(false);
+  const [showReefContour, setShowReefContour] = useState<boolean>(true);
   const markersRef = useRef<{ [key: string]: maplibregl.Marker }>({});
+
+  // Sync reef contour layer visibility with state
+  useEffect(() => {
+    if (!mapRef.current) return;
+    const map = mapRef.current;
+    if (map.getLayer('lyzenga-reef-fill')) {
+      map.setLayoutProperty('lyzenga-reef-fill', 'visibility', showReefContour ? 'visible' : 'none');
+    }
+    if (map.getLayer('lyzenga-reef-border')) {
+      map.setLayoutProperty('lyzenga-reef-border', 'visibility', showReefContour ? 'visible' : 'none');
+    }
+  }, [showReefContour]);
 
   useEffect(() => {
     if (!mapContainer.current) return;
@@ -122,6 +135,39 @@ export default function DeploymentMapLibre({
         }
       });
 
+      // Lyzenga 2026 benthic habitat GeoJSON layer
+      map.addSource('lyzenga-habitat-source', {
+        type: 'geojson',
+        data: '/data/gis/lyzenga_2026.geojson'
+      });
+
+      map.addLayer(
+        {
+          id: 'lyzenga-reef-fill',
+          type: 'fill',
+          source: 'lyzenga-habitat-source',
+          paint: {
+            'fill-color': '#10b981',
+            'fill-opacity': 0.28
+          }
+        },
+        'deployment-loop-glow'
+      );
+
+      map.addLayer(
+        {
+          id: 'lyzenga-reef-border',
+          type: 'line',
+          source: 'lyzenga-habitat-source',
+          paint: {
+            'line-color': '#059669',
+            'line-width': 1.5,
+            'line-opacity': 0.7
+          }
+        },
+        'deployment-loop-glow'
+      );
+
       // Add Buoy Station Pins matching image4.jpeg
       PULAU_TUNDA_STATIONS.forEach((station, index) => {
         const el = document.createElement('div');
@@ -191,7 +237,7 @@ export default function DeploymentMapLibre({
       <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 border border-slate-200 shadow-md">
         <div
           className="absolute inset-0 bg-cover bg-right opacity-30 mix-blend-luminosity"
-          style={{ backgroundImage: `url('/images/image4.jpeg')` }}
+          style={{ backgroundImage: `url('/images/coral-surveys/tunda_transect_11.jpg')` }}
         />
         <div className="relative z-10 p-6 sm:p-8 max-w-2xl text-white">
           <div className="inline-flex items-center gap-2 text-xs font-bold text-orange-400 uppercase tracking-widest mb-2">
@@ -231,6 +277,18 @@ export default function DeploymentMapLibre({
             >
               <Layers size={14} />
               {showDirectory ? 'Sembunyikan Direktori' : 'View Location Directory'}
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowReefContour((prev) => !prev)}
+              className={`min-h-[44px] px-4 py-2 rounded-xl font-semibold text-xs border flex items-center gap-2 transition-all ${
+                showReefContour
+                  ? 'bg-emerald-500/20 text-emerald-300 border-emerald-400/40 shadow-xs'
+                  : 'bg-white/10 text-white border-white/20 hover:bg-white/20'
+              }`}
+            >
+              <span>🪸</span>
+              {showReefContour ? 'Overlay Kontur Karang 2026: ON' : 'Overlay Kontur Karang 2026: OFF'}
             </button>
           </div>
           <p className="text-[11px] text-slate-300 font-medium mt-4 flex items-center gap-1.5">
@@ -351,13 +409,16 @@ export default function DeploymentMapLibre({
               </span>
             </div>
 
-            {/* Buoy 3D Concept Graphic Thumbnail */}
-            <div className="h-40 rounded-2xl bg-gradient-to-b from-slate-50 to-blue-50/50 border border-slate-100 flex items-center justify-center p-2 relative overflow-hidden">
+            {/* Buoy Monitoring Field Image */}
+            <div className="h-40 rounded-2xl bg-slate-900 border border-slate-100 flex items-center justify-center relative overflow-hidden">
               <img
-                src="/images/image3.jpeg"
-                alt="EchoVision Buoy"
-                className="h-full object-contain filter drop-shadow-md"
+                src="/images/coral-surveys/tunda_transect_08.jpg"
+                alt="EchoVision Buoy Mooring Location"
+                className="w-full h-full object-cover filter drop-shadow-md"
               />
+              <span className="absolute bottom-2 left-2 px-2 py-0.5 rounded-md bg-black/70 text-white text-[10px] font-bold backdrop-blur-xs">
+                Dokumentasi Bawah Air ASIK
+              </span>
             </div>
 
             {/* Station Telemetry Data */}

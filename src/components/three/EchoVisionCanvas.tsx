@@ -4,7 +4,25 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { PrototypeComponent } from '@/types/reefsight';
 import { formatRupiah } from '@/lib/utils';
-import { Layers, ZoomIn, ZoomOut, RotateCcw, AlertCircle, CheckCircle2, DollarSign, Activity } from 'lucide-react';
+import {
+  Layers,
+  ZoomIn,
+  ZoomOut,
+  RotateCcw,
+  Compass,
+  FileCode,
+  DollarSign,
+  Activity,
+  Waves,
+  Eye,
+  X,
+  Radio,
+  Send,
+  Sparkles,
+} from 'lucide-react';
+import { CORAL_SPECIES_3D, createSchoolOfFish, createMacrobenthos } from './coralReefGeometries';
+
+type ViewMode3D = 'hardware' | 'coral_reef' | 'island_3d' | 'simulation';
 
 interface Props {
   onSelectComponent?: (comp: PrototypeComponent | null) => void;
@@ -15,14 +33,30 @@ interface Props {
 export default function EchoVisionCanvas({
   onSelectComponent,
   selectedComponentId,
-  scenario = 'healthy'
+  scenario = 'healthy',
 }: Props) {
   const mountRef = useRef<HTMLDivElement>(null);
+
+  // Active 3D Mode
+  const [viewMode, setViewMode] = useState<ViewMode3D>('hardware');
+
+  // Hardware State
   const [components, setComponents] = useState<PrototypeComponent[]>([]);
   const [loading, setLoading] = useState(true);
-  const [exploded, setExploded] = useState(0); // 0 to 1
-  const [totalBom, setTotalBom] = useState<number>(2120000);
+  const [isExploded, setIsExploded] = useState(false);
   const [selectedComp, setSelectedComp] = useState<PrototypeComponent | null>(null);
+  const [totalBom, setTotalBom] = useState<number>(5250000);
+  const [showJsonModal, setShowJsonModal] = useState<boolean>(false);
+  const [jsonCopied, setJsonCopied] = useState<boolean>(false);
+
+  // Coral Reef 3D State
+  const [selectedCoralId, setSelectedCoralId] = useState<string | null>('acropora-millepora');
+
+  // Island 12 Buoys State
+  const [selectedStationId, setSelectedStationId] = useState<string>('ASIK-01');
+
+  // Simulation State
+  const [simScenario, setSimScenario] = useState<'normal' | 'thermal' | 'turbidity' | 'recovery'>('normal');
 
   // Three.js internal references
   const sceneRef = useRef<THREE.Scene | null>(null);
@@ -30,44 +64,57 @@ export default function EchoVisionCanvas({
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const groupMapRef = useRef<{ [key: number]: THREE.Group }>({});
   const compMapRef = useRef<{ [key: number]: PrototypeComponent }>({});
+  const fishGroupRef = useRef<THREE.Group | null>(null);
   const isDraggingRef = useRef(false);
   const prevMousePosRef = useRef({ x: 0, y: 0 });
-  const touchMovedRef = useRef(false);
-  const pinchDistRef = useRef<number | null>(null);
-  const cameraAngleRef = useRef({ theta: Math.PI / 4, phi: Math.PI / 3, radius: 2.8 });
+  const cameraAngleRef = useRef({ theta: Math.PI / 4, phi: Math.PI / 3, radius: 3.5 });
 
-  // Load 3D JSON Data
+  // Load Hardware JSON Data
   useEffect(() => {
     fetch('/data/echovision_prototype_3d.json')
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         setComponents(data.components || []);
         if (data.total_bom_rp) setTotalBom(data.total_bom_rp);
         setLoading(false);
       })
-      .catch(err => {
-        console.error('Failed to load 3d json:', err);
+      .catch((err) => {
+        console.error('Failed to load 3d hardware json:', err);
         setLoading(false);
       });
   }, []);
 
-  // Initialize Three.js Scene
+  const updateCameraPosition = () => {
+    if (!cameraRef.current) return;
+    const { theta, phi, radius } = cameraAngleRef.current;
+    const x = radius * Math.sin(phi) * Math.sin(theta);
+    const y = radius * Math.cos(phi);
+    const z = radius * Math.sin(phi) * Math.cos(theta);
+    cameraRef.current.position.set(x, y, z);
+    cameraRef.current.lookAt(0, -0.1, 0);
+  };
+
+  // Build Scene based on active viewMode
   useEffect(() => {
-    if (!mountRef.current || components.length === 0) return;
+    if (!mountRef.current) return;
 
     const width = mountRef.current.clientWidth;
     const height = mountRef.current.clientHeight;
+    if (width === 0 || height === 0) return;
 
-    // Scene
+    // 1. Scene & Renderer setup
     const scene = new THREE.Scene();
     sceneRef.current = scene;
 
-    // Camera
-    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 200);
     cameraRef.current = camera;
+    cameraAngleRef.current = {
+      theta: viewMode === 'island_3d' ? Math.PI / 3 : Math.PI / 4,
+      phi: viewMode === 'island_3d' ? Math.PI / 3.5 : Math.PI / 2.8,
+      radius: viewMode === 'island_3d' ? 12.0 : viewMode === 'coral_reef' ? 4.2 : 3.4,
+    };
     updateCameraPosition();
 
-    // Renderer
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -77,550 +124,677 @@ export default function EchoVisionCanvas({
     mountRef.current.innerHTML = '';
     mountRef.current.appendChild(renderer.domElement);
 
-    // Lights
-    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x1e3a5f, 1.2);
+    // 2. Lighting & Environment
+    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x0b3f56, 1.1);
     scene.add(hemiLight);
 
-    const dirLight = new THREE.DirectionalLight(0xffffff, 1.5);
-    dirLight.position.set(5, 8, 5);
+    const dirLight = new THREE.DirectionalLight(0xffffff, 1.4);
+    dirLight.position.set(6, 12, 6);
     dirLight.castShadow = true;
     scene.add(dirLight);
 
-    const fillLight = new THREE.DirectionalLight(0x0ea5e9, 0.8);
-    fillLight.position.set(-5, -2, -5);
-    scene.add(fillLight);
+    const ambientLight = new THREE.AmbientLight(0x0e7490, 0.6);
+    scene.add(ambientLight);
 
-    // Simulated Water Surface & Seabed
-    const waterGroup = new THREE.Group();
-    const waterMat = new THREE.MeshBasicMaterial({
-      color: 0x06b6d4,
-      transparent: true,
-      opacity: 0.25,
-      side: THREE.DoubleSide,
-      depthWrite: false
-    });
-    const waterSurface = new THREE.Mesh(new THREE.CircleGeometry(1.6, 64), waterMat);
-    waterSurface.rotation.x = -Math.PI / 2;
-    waterSurface.position.y = 0; // Waterline Y = 0
+    // MODE 1: ECHOVISION HARDWARE PROTOTYPE
+    if (viewMode === 'hardware' && components.length > 0) {
+      // Water column & Seabed
+      const waterMat = new THREE.MeshBasicMaterial({
+        color: 0x0ea5e9,
+        transparent: true,
+        opacity: 0.28,
+        side: THREE.DoubleSide,
+        depthWrite: false,
+      });
+      const waterSurface = new THREE.Mesh(new THREE.CircleGeometry(1.6, 48), waterMat);
+      waterSurface.rotation.x = -Math.PI / 2;
+      scene.add(waterSurface);
 
-    // Water Column cylinder
-    const waterColMat = new THREE.MeshBasicMaterial({
-      color: 0x0284c7,
-      transparent: true,
-      opacity: 0.12,
-      side: THREE.DoubleSide,
-      depthWrite: false
-    });
-    const waterColumn = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 1.6, 1.8, 64, 1, true), waterColMat);
-    waterColumn.position.y = -0.9;
+      const waterCol = new THREE.Mesh(
+        new THREE.CylinderGeometry(1.6, 1.6, 1.8, 48, 1, true),
+        new THREE.MeshBasicMaterial({ color: 0x0284c7, transparent: true, opacity: 0.14, side: THREE.DoubleSide })
+      );
+      waterCol.position.y = -0.9;
+      scene.add(waterCol);
 
-    // Seabed
-    const seabedMat = new THREE.MeshStandardMaterial({
-      color: 0x3b82f6,
-      roughness: 0.9,
-      metalness: 0.1
-    });
-    const seabed = new THREE.Mesh(new THREE.CircleGeometry(1.6, 64), seabedMat);
-    seabed.rotation.x = -Math.PI / 2;
-    seabed.position.y = -1.8;
+      const bed = new THREE.Mesh(
+        new THREE.CircleGeometry(1.6, 48),
+        new THREE.MeshStandardMaterial({ color: 0xc4b595, roughness: 1 })
+      );
+      bed.rotation.x = -Math.PI / 2;
+      bed.position.y = -1.8;
+      scene.add(bed);
 
-    waterGroup.add(waterSurface, waterColumn, seabed);
-    scene.add(waterGroup);
+      // Build 16 hardware components
+      groupMapRef.current = {};
+      compMapRef.current = {};
 
-    // Helper function to create solar panel texture
-    function createSolarTexture() {
-      const cv = document.createElement('canvas');
-      cv.width = 128;
-      cv.height = 128;
-      const ctx = cv.getContext('2d');
-      if (ctx) {
-        ctx.fillStyle = '#0f2952';
-        ctx.fillRect(0, 0, 128, 128);
-        ctx.strokeStyle = '#60a5fa';
-        ctx.lineWidth = 2;
-        for (let i = 0; i <= 128; i += 21) {
-          ctx.beginPath();
-          ctx.moveTo(i, 0);
-          ctx.lineTo(i, 128);
-          ctx.moveTo(0, i);
-          ctx.lineTo(128, i);
-          ctx.stroke();
+      const solarTex = (() => {
+        const c = document.createElement('canvas');
+        c.width = c.height = 128;
+        const ctx = c.getContext('2d');
+        if (ctx) {
+          ctx.fillStyle = '#1b3a78';
+          ctx.fillRect(0, 0, 128, 128);
+          ctx.strokeStyle = '#8fb0e8';
+          ctx.lineWidth = 2;
+          for (let i = 0; i <= 128; i += 21) {
+            ctx.beginPath();
+            ctx.moveTo(i, 0);
+            ctx.lineTo(i, 128);
+            ctx.moveTo(0, i);
+            ctx.lineTo(128, i);
+            ctx.stroke();
+          }
         }
-      }
-      return new THREE.CanvasTexture(cv);
+        return new THREE.CanvasTexture(c);
+      })();
+
+      components.forEach((comp) => {
+        const compGroup = new THREE.Group();
+        compGroup.userData = {
+          id: comp.id,
+          explode: comp.explode || [0, 0, 0],
+        };
+        groupMapRef.current[comp.id] = compGroup;
+        compMapRef.current[comp.id] = comp;
+
+        comp.parts.forEach((p: any) => {
+          let geo: THREE.BufferGeometry;
+          const s = p.size || [0.1, 0.1, 0.1];
+          if (p.type === 'cylinder') geo = new THREE.CylinderGeometry(s[0], s[0], s[1], 24);
+          else if (p.type === 'box') geo = new THREE.BoxGeometry(...s);
+          else if (p.type === 'sphere') geo = new THREE.SphereGeometry(s[0], 24, 16);
+          else if (p.type === 'torus') geo = new THREE.TorusGeometry(s[0], s[1], 10, 32);
+          else if (p.type === 'tube' && p.points) {
+            const pts = p.points.map((pt: any) => new THREE.Vector3(...pt));
+            geo = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 32, s[0], 6);
+          } else if (p.from && p.to) {
+            const A = new THREE.Vector3(...p.from);
+            const B = new THREE.Vector3(...p.to);
+            geo = new THREE.CylinderGeometry(s[0], s[0], A.distanceTo(B), 8);
+          } else {
+            geo = new THREE.BoxGeometry(0.1, 0.1, 0.1);
+          }
+
+          const op = p.opacity == null ? 1 : p.opacity;
+          const mat = new THREE.MeshStandardMaterial({
+            color: p.texture ? 0xffffff : p.color || 0x8d969b,
+            map: p.texture ? solarTex : null,
+            roughness: 0.45,
+            metalness: p.metal || 0.1,
+            transparent: op < 1,
+            opacity: op,
+            depthWrite: op >= 1,
+          });
+
+          const mesh = new THREE.Mesh(geo, mat);
+          if (p.type === 'rod' && p.from && p.to) {
+            const A = new THREE.Vector3(p.from[0], p.from[1], p.from[2]);
+            const B = new THREE.Vector3(p.to[0], p.to[1], p.to[2]);
+            mesh.position.copy(A).add(B).multiplyScalar(0.5);
+            mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), B.sub(A).normalize());
+          } else if (p.pos) {
+            mesh.position.set(p.pos[0], p.pos[1], p.pos[2]);
+            if (p.rot) {
+              mesh.rotation.set(
+                (p.rot[0] * Math.PI) / 180,
+                (p.rot[1] * Math.PI) / 180,
+                (p.rot[2] * Math.PI) / 180
+              );
+            }
+          }
+          if (p.edges) {
+            mesh.add(
+              new THREE.LineSegments(
+                new THREE.EdgesGeometry(geo),
+                new THREE.LineBasicMaterial({ color: 0x38bdf8 })
+              )
+            );
+          }
+          mesh.userData = { id: comp.id };
+          compGroup.add(mesh);
+        });
+
+        scene.add(compGroup);
+      });
     }
-    const solarTex = createSolarTexture();
 
-    // Helper: Build 3D mesh from part JSON
-    function buildPartMesh(part: any) {
-      let geo: THREE.BufferGeometry;
-      const s = part.size || [0.1, 0.1, 0.1];
+    // MODE 2: CORAL REEF ECOSYSTEM 3D
+    if (viewMode === 'coral_reef') {
+      // Sandy seabed with natural bathymetric slope
+      const bedGeo = new THREE.PlaneGeometry(16, 16, 32, 32);
+      bedGeo.rotateX(-Math.PI / 2);
+      const bedMat = new THREE.MeshStandardMaterial({
+        color: 0xcdb88c,
+        roughness: 0.95,
+      });
+      const seabed = new THREE.Mesh(bedGeo, bedMat);
+      seabed.position.y = -0.6;
+      scene.add(seabed);
 
-      if (part.type === 'cylinder') {
-        geo = new THREE.CylinderGeometry(s[0], s[0], s[1], 32);
-      } else if (part.type === 'box') {
-        geo = new THREE.BoxGeometry(s[0], s[1], s[2]);
-      } else if (part.type === 'sphere') {
-        geo = new THREE.SphereGeometry(s[0], 32, 16);
-      } else if (part.type === 'torus') {
-        geo = new THREE.TorusGeometry(s[0], s[1], 16, 48);
-      } else if (part.type === 'tube' && part.points) {
-        const pts = part.points.map((p: any) => new THREE.Vector3(p[0] || 0, p[1] || 0, p[2] || 0));
-        geo = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 40, s[0], 8, false);
-      } else if (part.from && part.to) {
-        const A = new THREE.Vector3(part.from[0] || 0, part.from[1] || 0, part.from[2] || 0);
-        const B = new THREE.Vector3(part.to[0] || 0, part.to[1] || 0, part.to[2] || 0);
-        const dist = A.distanceTo(B);
-        geo = new THREE.CylinderGeometry(s[0], s[0], dist, 12);
-      } else {
-        geo = new THREE.BoxGeometry(0.1, 0.1, 0.1);
-      }
-
-      const opacity = part.opacity !== undefined ? part.opacity : 1;
-      const mat = new THREE.MeshStandardMaterial({
-        color: part.texture ? 0xffffff : (part.color || 0xcccccc),
-        map: part.texture === 'solar' ? solarTex : null,
-        roughness: 0.35,
-        metalness: part.metal || 0.1,
-        transparent: opacity < 1,
-        opacity: opacity,
-        depthWrite: opacity >= 1
+      // Render the 8 coral species arranged in an organic reef cluster
+      CORAL_SPECIES_3D.forEach((coralSpec, idx) => {
+        const coralGeo = coralSpec.generate();
+        const coralMat = new THREE.MeshStandardMaterial({
+          vertexColors: true,
+          roughness: 0.75,
+          metalness: 0.05,
+        });
+        const coralMesh = new THREE.Mesh(coralGeo, coralMat);
+        const angle = (idx / CORAL_SPECIES_3D.length) * Math.PI * 2;
+        const radius = 1.35;
+        coralMesh.position.set(Math.cos(angle) * radius, -0.6, Math.sin(angle) * radius);
+        coralMesh.scale.setScalar(0.85);
+        coralMesh.userData = { coralId: coralSpec.id, name: coralSpec.name };
+        scene.add(coralMesh);
       });
 
-      const mesh = new THREE.Mesh(geo, mat);
+      // School of swimming reef fishes
+      const fishGroup = createSchoolOfFish(16);
+      fishGroup.position.y = 0.2;
+      fishGroupRef.current = fishGroup;
+      scene.add(fishGroup);
 
-      if (part.type === 'rod' && part.from && part.to) {
-        const A = new THREE.Vector3(part.from[0] || 0, part.from[1] || 0, part.from[2] || 0);
-        const B = new THREE.Vector3(part.to[0] || 0, part.to[1] || 0, part.to[2] || 0);
-        mesh.position.copy(A).add(B).multiplyScalar(0.5);
-        mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), B.clone().sub(A).normalize());
-      } else if (part.pos) {
-        mesh.position.set(part.pos[0] || 0, part.pos[1] || 0, part.pos[2] || 0);
-        if (part.rot) {
-          mesh.rotation.set(
-            ((part.rot[0] || 0) * Math.PI) / 180,
-            ((part.rot[1] || 0) * Math.PI) / 180,
-            ((part.rot[2] || 0) * Math.PI) / 180
-          );
-        }
-      }
+      // Macrobenthos (Linckia Star & Urchin)
+      const benthos = createMacrobenthos();
+      benthos.position.y = -0.58;
+      scene.add(benthos);
+    }
 
-      if (part.edges) {
-        const edges = new THREE.LineSegments(
-          new THREE.EdgesGeometry(geo),
-          new THREE.LineBasicMaterial({ color: 0x38bdf8 })
+    // MODE 3: 12 TITIK ASIK PULAU TUNDA 3D
+    if (viewMode === 'island_3d') {
+      // 3D Ocean Surface
+      const ocean = new THREE.Mesh(
+        new THREE.PlaneGeometry(40, 40),
+        new THREE.MeshStandardMaterial({ color: 0x1e7ba8, roughness: 0.4 })
+      );
+      ocean.rotation.x = -Math.PI / 2;
+      ocean.position.y = -0.1;
+      scene.add(ocean);
+
+      // Procedural Island Shape (Pulau Tunda central landmass)
+      const islandShape = new THREE.Shape();
+      const points = [
+        [-3.2, 0.4],
+        [-2.4, 0.9],
+        [-1.2, 1.3],
+        [0.4, 1.4],
+        [1.8, 1.1],
+        [2.9, 0.6],
+        [3.3, -0.2],
+        [2.6, -1.0],
+        [1.2, -1.3],
+        [-0.6, -1.4],
+        [-2.2, -1.1],
+        [-3.1, -0.4],
+      ];
+      islandShape.moveTo(points[0][0], points[0][1]);
+      points.slice(1).forEach((pt) => islandShape.lineTo(pt[0], pt[1]));
+
+      const islandGeo = new THREE.ExtrudeGeometry(islandShape, { depth: 0.45, bevelEnabled: false });
+      islandGeo.rotateX(-Math.PI / 2);
+      const islandMat = new THREE.MeshStandardMaterial({ color: 0x4f8a48, roughness: 0.8 });
+      const islandMesh = new THREE.Mesh(islandGeo, islandMat);
+      islandMesh.position.y = 0;
+      scene.add(islandMesh);
+
+      // 12 Buoy Deployment Stations in a ring around the island (simulating the 12 ASIK points)
+      for (let i = 1; i <= 12; i++) {
+        const code = `ASIK-${String(i).padStart(2, '0')}`;
+        const angle = ((i - 1) / 12) * Math.PI * 2;
+        const radius = 4.2;
+        const x = Math.cos(angle) * radius;
+        const z = Math.sin(angle) * radius;
+
+        const buoyGroup = new THREE.Group();
+        buoyGroup.position.set(x, 0, z);
+
+        // Yellow floating buoy
+        const buoy = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.18, 0.18, 0.28, 16),
+          new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.4 })
         );
-        mesh.add(edges);
-      }
+        buoy.position.y = 0.14;
+        buoyGroup.add(buoy);
 
-      return mesh;
+        // Antenna mast
+        const mast = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.015, 0.015, 0.5, 8),
+          new THREE.MeshStandardMaterial({ color: 0xffffff })
+        );
+        mast.position.y = 0.45;
+        buoyGroup.add(mast);
+
+        // Beacon light
+        const beacon = new THREE.Mesh(
+          new THREE.SphereGeometry(0.04, 8, 8),
+          new THREE.MeshBasicMaterial({ color: 0x38bdf8 })
+        );
+        beacon.position.y = 0.72;
+        buoyGroup.add(beacon);
+
+        // Mooring line to seabed
+        const mooring = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.008, 0.008, 1.8, 6),
+          new THREE.MeshBasicMaterial({ color: 0x94a3b8 })
+        );
+        mooring.position.y = -0.9;
+        buoyGroup.add(mooring);
+
+        buoyGroup.userData = { stationCode: code, index: i };
+        scene.add(buoyGroup);
+      }
     }
 
-    // Build Components
-    groupMapRef.current = {};
-    compMapRef.current = {};
+    // MODE 4: ECOLOGICAL SIMULATION
+    if (viewMode === 'simulation') {
+      // Water body
+      const waterColor =
+        simScenario === 'thermal'
+          ? 0xef4444
+          : simScenario === 'turbidity'
+          ? 0xb45309
+          : 0x0ea5e9;
+      const ocean = new THREE.Mesh(
+        new THREE.PlaneGeometry(16, 16),
+        new THREE.MeshBasicMaterial({ color: waterColor, transparent: true, opacity: 0.25, side: THREE.DoubleSide })
+      );
+      ocean.rotation.x = -Math.PI / 2;
+      scene.add(ocean);
 
-    components.forEach(comp => {
-      const compGroup = new THREE.Group();
-      compGroup.userData = {
-        id: comp.id,
-        explode: comp.explode || [0, 0, 0],
-        basePos: new THREE.Vector3(0, 0, 0)
-      };
+      // Central Smart Buoy
+      const buoy = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.4, 0.4, 0.4, 24),
+        new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.5 })
+      );
+      buoy.position.y = 0.2;
+      scene.add(buoy);
 
-      compMapRef.current[comp.id] = comp;
-      groupMapRef.current[comp.id] = compGroup;
+      // Acoustic Cone Scanning
+      const cone = new THREE.Mesh(
+        new THREE.ConeGeometry(2.2, 2.8, 32, 1, true),
+        new THREE.MeshBasicMaterial({
+          color: simScenario === 'thermal' ? 0xf43f5e : 0x10b981,
+          transparent: true,
+          opacity: 0.2,
+          side: THREE.DoubleSide,
+          depthWrite: false,
+        })
+      );
+      cone.position.y = -1.4;
+      scene.add(cone);
 
-      comp.parts.forEach(part => {
-        const mesh = buildPartMesh(part);
-        mesh.userData = { compId: comp.id };
-        compGroup.add(mesh);
-      });
+      // Coral seabed response
+      const bed = new THREE.Mesh(
+        new THREE.PlaneGeometry(16, 16),
+        new THREE.MeshStandardMaterial({
+          color: simScenario === 'thermal' ? 0xfef08a : 0x047857,
+          roughness: 0.9,
+        })
+      );
+      bed.rotation.x = -Math.PI / 2;
+      bed.position.y = -2.8;
+      scene.add(bed);
+    }
 
-      scene.add(compGroup);
-    });
-
-    // Animation Loop
+    // 3. Animation Loop
     let animId: number;
-    const clock = new THREE.Clock();
+    let prev = performance.now();
+    const ZERO = new THREE.Vector3(0, 0, 0);
 
-    const animate = () => {
+    const animate = (now: number) => {
       animId = requestAnimationFrame(animate);
-      const elapsed = clock.getElapsedTime();
+      const dt = Math.min((now - prev) / 1000, 0.1);
+      prev = now;
 
-      // Gentle buoy water bobbing motion
-      const bobbingY = Math.sin(elapsed * 1.5) * 0.015;
-      const rockingZ = Math.sin(elapsed * 0.9) * 0.01;
+      // Hardware explode lerp
+      if (viewMode === 'hardware') {
+        const k = 1 - Math.exp(-dt * 4.5);
+        for (const id in groupMapRef.current) {
+          const g = groupMapRef.current[id];
+          const target = isExploded ? new THREE.Vector3(...(g.userData.explode || [0, 0, 0])) : ZERO;
+          g.position.lerp(target, k);
+        }
+      }
 
-      // Apply bobbing to root if not dragging
-      waterSurface.position.y = Math.sin(elapsed * 1.2) * 0.005;
+      // Fish swimming rotation
+      if (viewMode === 'coral_reef' && fishGroupRef.current) {
+        fishGroupRef.current.children.forEach((f) => {
+          f.userData.angle += f.userData.speed * dt * 0.4;
+          const a = f.userData.angle;
+          const r = f.userData.radius;
+          f.position.x = Math.cos(a) * r;
+          f.position.z = Math.sin(a) * r;
+          f.position.y = f.userData.baseY + Math.sin(now * 0.003 + f.userData.radius) * 0.06;
+          f.rotation.y = -a + Math.PI / 2;
+        });
+      }
 
       renderer.render(scene, camera);
     };
-    animate();
 
-    // Resize Handler
-    const handleResize = () => {
-      if (!mountRef.current || !renderer || !camera) return;
+    animId = requestAnimationFrame(animate);
+
+    // 4. Pointer controls (Orbit & Touch)
+    const dom = mountRef.current;
+    const onPointerDown = (e: PointerEvent) => {
+      isDraggingRef.current = true;
+      prevMousePosRef.current = { x: e.clientX, y: e.clientY };
+    };
+
+    const onPointerMove = (e: PointerEvent) => {
+      if (!isDraggingRef.current) return;
+      const dx = e.clientX - prevMousePosRef.current.x;
+      const dy = e.clientY - prevMousePosRef.current.y;
+      prevMousePosRef.current = { x: e.clientX, y: e.clientY };
+
+      cameraAngleRef.current.theta -= dx * 0.006;
+      cameraAngleRef.current.phi = Math.max(
+        0.1,
+        Math.min(Math.PI / 2.05, cameraAngleRef.current.phi - dy * 0.005)
+      );
+      updateCameraPosition();
+    };
+
+    const onPointerUp = () => {
+      isDraggingRef.current = false;
+    };
+
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      const zoomFactor = e.deltaY * 0.003;
+      cameraAngleRef.current.radius = Math.max(
+        1.2,
+        Math.min(25.0, cameraAngleRef.current.radius + zoomFactor)
+      );
+      updateCameraPosition();
+    };
+
+    dom.addEventListener('pointerdown', onPointerDown);
+    window.addEventListener('pointermove', onPointerMove);
+    window.addEventListener('pointerup', onPointerUp);
+    dom.addEventListener('wheel', onWheel, { passive: false });
+
+    const resizeObserver = new ResizeObserver(() => {
+      if (!mountRef.current || !rendererRef.current || !cameraRef.current) return;
       const w = mountRef.current.clientWidth;
       const h = mountRef.current.clientHeight;
       if (w === 0 || h === 0) return;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
-    };
-    window.addEventListener('resize', handleResize);
-    const resizeObserver = new ResizeObserver(() => {
-      handleResize();
+      rendererRef.current.setSize(w, h);
+      cameraRef.current.aspect = w / h;
+      cameraRef.current.updateProjectionMatrix();
     });
-    resizeObserver.observe(mountRef.current);
+    resizeObserver.observe(dom);
 
     return () => {
       cancelAnimationFrame(animId);
       resizeObserver.disconnect();
-      window.removeEventListener('resize', handleResize);
+      dom.removeEventListener('pointerdown', onPointerDown);
+      window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('pointerup', onPointerUp);
+      dom.removeEventListener('wheel', onWheel);
       renderer.dispose();
-      if (mountRef.current) mountRef.current.innerHTML = '';
     };
-  }, [components]);
+  }, [viewMode, components, isExploded, simScenario]);
 
-  // Escape closes selected component detail card
-  useEffect(() => {
-    if (!selectedComp) return;
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setSelectedComp(null);
-        highlightComponent(-1);
-      }
-    };
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [selectedComp]);
-
-  // Handle Scenario lighting color shift
-  useEffect(() => {
-    if (!sceneRef.current) return;
-    const scene = sceneRef.current;
-    
-    // Adjust background / ambient tint based on ecological scenario
-    if (scenario === 'healthy') {
-      scene.fog = new THREE.FogExp2(0x0a2540, 0.08);
-    } else if (scenario === 'bleaching') {
-      scene.fog = new THREE.FogExp2(0x2d251e, 0.1);
-    } else if (scenario === 'low_fish') {
-      scene.fog = new THREE.FogExp2(0x131f2b, 0.12);
-    } else if (scenario === 'degradation') {
-      scene.fog = new THREE.FogExp2(0x261a1a, 0.14);
-    }
-  }, [scenario]);
-
-  // Update Camera Orbit Position
-  const updateCameraPosition = () => {
-    if (!cameraRef.current) return;
-    const { theta, phi, radius } = cameraAngleRef.current;
-    const x = radius * Math.sin(phi) * Math.sin(theta);
-    const y = radius * Math.cos(phi);
-    const z = radius * Math.sin(phi) * Math.cos(theta);
-    cameraRef.current.position.set(x, y, z);
-    cameraRef.current.lookAt(0, 0, 0);
-  };
-
-  // Mouse Orbit Drag Controls
-  const handleMouseDown = (e: React.MouseEvent) => {
-    isDraggingRef.current = true;
-    prevMousePosRef.current = { x: e.clientX, y: e.clientY };
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDraggingRef.current) return;
-    const deltaX = e.clientX - prevMousePosRef.current.x;
-    const deltaY = e.clientY - prevMousePosRef.current.y;
-    prevMousePosRef.current = { x: e.clientX, y: e.clientY };
-
-    cameraAngleRef.current.theta -= deltaX * 0.008;
-    cameraAngleRef.current.phi = Math.max(
-      0.15,
-      Math.min(Math.PI - 0.15, cameraAngleRef.current.phi - deltaY * 0.008)
-    );
+  const handleSelectHardwareComp = (comp: PrototypeComponent) => {
+    setSelectedComp(comp);
+    onSelectComponent?.(comp);
+    // Focus camera
+    cameraAngleRef.current.radius = 2.4;
     updateCameraPosition();
   };
 
-  const handleMouseUp = () => {
-    isDraggingRef.current = false;
+  const copyJsonToClipboard = () => {
+    navigator.clipboard.writeText(JSON.stringify({ components, total_bom_rp: totalBom }, null, 2));
+    setJsonCopied(true);
+    setTimeout(() => setJsonCopied(false), 2000);
   };
 
-  const handleWheel = (e: React.WheelEvent) => {
-    cameraAngleRef.current.radius = Math.max(
-      1.2,
-      Math.min(6.0, cameraAngleRef.current.radius + e.deltaY * 0.003)
-    );
-    updateCameraPosition();
-  };
-
-  // Shared Raycaster Selection Helper (Mouse & Tap)
-  const selectComponentAtPoint = (clientX: number, clientY: number) => {
-    if (!mountRef.current || !cameraRef.current || !sceneRef.current) return;
-    const rect = mountRef.current.getBoundingClientRect();
-    if (rect.width === 0 || rect.height === 0) return;
-    const x = ((clientX - rect.left) / rect.width) * 2 - 1;
-    const y = -((clientY - rect.top) / rect.height) * 2 + 1;
-
-    const raycaster = new THREE.Raycaster();
-    raycaster.setFromCamera(new THREE.Vector2(x, y), cameraRef.current);
-
-    const intersects = raycaster.intersectObjects(sceneRef.current.children, true);
-    for (const hit of intersects) {
-      if (hit.object.userData && hit.object.userData.compId) {
-        const comp = compMapRef.current[hit.object.userData.compId];
-        if (comp) {
-          setSelectedComp(comp);
-          if (onSelectComponent) onSelectComponent(comp);
-          highlightComponent(comp.id);
-          return;
-        }
-      }
-    }
-  };
-
-  // Touch Orbit, Pinch-Zoom & Tap Controls for Mobile/Tablet
-  const handleTouchStart = (e: React.TouchEvent) => {
-    if (e.touches.length === 1) {
-      isDraggingRef.current = true;
-      touchMovedRef.current = false;
-      pinchDistRef.current = null;
-      prevMousePosRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-    } else if (e.touches.length === 2) {
-      isDraggingRef.current = false;
-      const dx = e.touches[0].clientX - e.touches[1].clientX;
-      const dy = e.touches[0].clientY - e.touches[1].clientY;
-      pinchDistRef.current = Math.hypot(dx, dy);
-    }
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (e.touches.length === 1 && isDraggingRef.current) {
-      const t = e.touches[0];
-      const deltaX = t.clientX - prevMousePosRef.current.x;
-      const deltaY = t.clientY - prevMousePosRef.current.y;
-      if (Math.hypot(deltaX, deltaY) > 4) {
-        touchMovedRef.current = true;
-      }
-      prevMousePosRef.current = { x: t.clientX, y: t.clientY };
-
-      cameraAngleRef.current.theta -= deltaX * 0.008;
-      cameraAngleRef.current.phi = Math.max(
-        0.15,
-        Math.min(Math.PI - 0.15, cameraAngleRef.current.phi - deltaY * 0.008)
-      );
-      updateCameraPosition();
-    } else if (e.touches.length === 2 && pinchDistRef.current !== null) {
-      const dx = e.touches[0].clientX - e.touches[1].clientX;
-      const dy = e.touches[0].clientY - e.touches[1].clientY;
-      const newDist = Math.hypot(dx, dy);
-      const diff = newDist - pinchDistRef.current;
-      pinchDistRef.current = newDist;
-      cameraAngleRef.current.radius = Math.max(
-        1.2,
-        Math.min(6.0, cameraAngleRef.current.radius - diff * 0.01)
-      );
-      updateCameraPosition();
-    }
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    if (e.touches.length === 0) {
-      if (!touchMovedRef.current && e.changedTouches.length === 1) {
-        selectComponentAtPoint(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
-      }
-      isDraggingRef.current = false;
-      pinchDistRef.current = null;
-    }
-  };
-
-  // Handle Explode Animation/Slider
-  const handleExplodeChange = (val: number) => {
-    setExploded(val);
-    Object.keys(groupMapRef.current).forEach(idStr => {
-      const group = groupMapRef.current[Number(idStr)];
-      if (group && group.userData.explode) {
-        const ex = group.userData.explode;
-        group.position.set(ex[0] * val, ex[1] * val, ex[2] * val);
-      }
-    });
-  };
-
-  // Click Raycaster for Selecting Component
-  const handleClick = (e: React.MouseEvent) => {
-    selectComponentAtPoint(e.clientX, e.clientY);
-  };
-
-  const highlightComponent = (id: number) => {
-    Object.keys(groupMapRef.current).forEach(key => {
-      const g = groupMapRef.current[Number(key)];
-      const isTarget = Number(key) === id;
-      g.traverse((child: any) => {
-        if (child.isMesh && child.material) {
-          if (isTarget) {
-            child.material.emissive = new THREE.Color(0x06b6d4);
-            child.material.emissiveIntensity = 0.5;
-          } else {
-            child.material.emissive = new THREE.Color(0x000000);
-            child.material.emissiveIntensity = 0;
-          }
-        }
-      });
-    });
-  };
-
-  const resetView = () => {
-    cameraAngleRef.current = { theta: Math.PI / 4, phi: Math.PI / 3, radius: 2.8 };
-    updateCameraPosition();
-    handleExplodeChange(0);
-    setSelectedComp(null);
-    if (onSelectComponent) onSelectComponent(null);
-    highlightComponent(-1);
-  };
+  const activeCoral = CORAL_SPECIES_3D.find((c) => c.id === selectedCoralId) || CORAL_SPECIES_3D[0];
 
   return (
-    <div className="relative w-full h-[460px] sm:h-[560px] lg:h-[680px] bg-gradient-to-b from-slate-950 via-[#061b2e] to-slate-950 rounded-2xl overflow-hidden border border-cyan-500/20 shadow-2xl">
-      {/* 3D Canvas Mounting Area */}
+    <div className="relative w-full rounded-3xl overflow-hidden bg-gradient-to-b from-[#061e2d] via-[#09293b] to-[#041520] border border-cyan-500/30 shadow-2xl">
+      {/* Top Multi-Mode 3D Tab Switcher */}
+      <div className="absolute top-3 left-3 right-3 sm:top-4 sm:left-4 sm:right-auto z-20 flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-1.5 p-1.5 rounded-2xl bg-slate-900/90 backdrop-blur-md border border-cyan-500/40 shadow-xl text-xs font-bold text-white">
+          <button
+            type="button"
+            onClick={() => setViewMode('hardware')}
+            className={`min-h-[36px] px-3.5 py-1.5 rounded-xl transition-all flex items-center gap-1.5 ${
+              viewMode === 'hardware'
+                ? 'bg-orange-500 text-white shadow-sm ring-1 ring-orange-400'
+                : 'text-slate-300 hover:bg-slate-800'
+            }`}
+          >
+            <DollarSign size={13} className="text-white" />
+            <span>EchoVision 3D Hardware</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setViewMode('coral_reef')}
+            className={`min-h-[36px] px-3.5 py-1.5 rounded-xl transition-all flex items-center gap-1.5 ${
+              viewMode === 'coral_reef'
+                ? 'bg-cyan-500 text-slate-950 font-black shadow-sm ring-1 ring-cyan-400'
+                : 'text-slate-300 hover:bg-slate-800'
+            }`}
+          >
+            <Sparkles size={13} />
+            <span>Coral Reef Explorer (3D)</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setViewMode('island_3d')}
+            className={`min-h-[36px] px-3.5 py-1.5 rounded-xl transition-all flex items-center gap-1.5 ${
+              viewMode === 'island_3d'
+                ? 'bg-emerald-600 text-white shadow-sm ring-1 ring-emerald-400'
+                : 'text-slate-300 hover:bg-slate-800'
+            }`}
+          >
+            <Compass size={13} />
+            <span>12 Titik ASIK (3D)</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setViewMode('simulation')}
+            className={`min-h-[36px] px-3.5 py-1.5 rounded-xl transition-all flex items-center gap-1.5 ${
+              viewMode === 'simulation'
+                ? 'bg-purple-600 text-white shadow-sm ring-1 ring-purple-400'
+                : 'text-slate-300 hover:bg-slate-800'
+            }`}
+          >
+            <Activity size={13} />
+            <span>Simulasi Kondisi</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Main 3D Canvas Mount */}
       <div
         ref={mountRef}
-        style={{ touchAction: 'none' }}
-        className="w-full h-full cursor-grab active:cursor-grabbing"
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
-        onWheel={handleWheel}
-        onClick={handleClick}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
+        className="w-full h-[480px] sm:h-[580px] lg:h-[660px] cursor-grab active:cursor-grabbing block"
       />
 
-      {loading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm z-30">
-          <div className="flex flex-col items-center gap-3">
-            <div className="w-10 h-10 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin" />
-            <p className="text-sm font-medium text-cyan-200">Memuat Model 3D EchoVision...</p>
+      {/* Bottom Floating Controls based on active mode */}
+      {viewMode === 'hardware' && (
+        <div className="absolute bottom-4 left-4 right-4 z-20 flex flex-wrap items-center justify-between gap-3 pointer-events-none">
+          <div className="flex flex-wrap items-center gap-2 pointer-events-auto">
+            <button
+              type="button"
+              onClick={() => setIsExploded(!isExploded)}
+              className={`min-h-[44px] px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-lg flex items-center gap-2 ${
+                isExploded
+                  ? 'bg-orange-500 text-white ring-2 ring-orange-300'
+                  : 'bg-slate-900/90 text-slate-200 border border-slate-700 hover:bg-slate-800'
+              }`}
+            >
+              <Layers size={14} />
+              <span>{isExploded ? 'Gabungkan Komponen' : 'Mode Terurai (Exploded)'}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                cameraAngleRef.current = { theta: Math.PI / 4, phi: Math.PI / 2.8, radius: 3.4 };
+                updateCameraPosition();
+              }}
+              className="min-h-[44px] px-3.5 py-2 rounded-xl bg-slate-900/90 border border-slate-700 text-slate-200 hover:bg-slate-800 text-xs font-semibold flex items-center gap-1.5 transition-colors"
+            >
+              <RotateCcw size={14} />
+              <span>Reset Tampilan</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShowJsonModal(true)}
+              className="min-h-[44px] px-3.5 py-2 rounded-xl bg-slate-900/90 border border-slate-700 text-slate-200 hover:bg-slate-800 text-xs font-semibold flex items-center gap-1.5 transition-colors"
+            >
+              <FileCode size={14} />
+              <span>Lihat JSON Model</span>
+            </button>
+          </div>
+
+          <div className="px-4 py-2 rounded-xl bg-slate-900/90 border border-cyan-500/40 text-xs text-white shadow-lg pointer-events-auto flex items-center gap-3">
+            <span className="text-slate-400 font-semibold">Total BOM (16 Komponen):</span>
+            <span className="text-base font-black text-cyan-300 font-mono">
+              Rp {totalBom.toLocaleString('id-ID')}
+            </span>
           </div>
         </div>
       )}
 
-      {/* Floating Header Info */}
-      <div className="absolute top-3 left-3 sm:top-4 sm:left-4 right-16 sm:right-auto z-20 pointer-events-none">
-        <div className="bg-slate-900/80 backdrop-blur-md border border-cyan-500/30 rounded-xl p-2.5 sm:p-3 shadow-lg pointer-events-auto max-w-xs">
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse flex-shrink-0" />
-            <h2 className="text-[11px] sm:text-xs uppercase tracking-wider font-bold text-cyan-400 truncate">EchoVision 3D Hardware</h2>
+      {/* Coral Species Selection & Pinned Profile Drawer in Mode 2 */}
+      {viewMode === 'coral_reef' && (
+        <>
+          <div className="absolute bottom-4 left-4 right-4 z-20 flex flex-wrap items-center gap-2 max-w-full overflow-x-auto pb-1">
+            {CORAL_SPECIES_3D.map((c) => (
+              <button
+                key={c.id}
+                type="button"
+                onClick={() => setSelectedCoralId(c.id)}
+                className={`min-h-[36px] px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap shadow-md ${
+                  selectedCoralId === c.id
+                    ? 'bg-cyan-500 text-slate-950 ring-2 ring-cyan-300'
+                    : 'bg-slate-900/90 text-slate-300 border border-slate-700 hover:bg-slate-800'
+                }`}
+              >
+                {c.name}
+              </button>
+            ))}
           </div>
-          <p className="text-xs sm:text-sm font-semibold text-white mt-0.5 sm:mt-1 truncate">Prototipe Pemantau Nirawak Terpadu</p>
-          <p className="text-[11px] sm:text-xs text-slate-300 mt-0.5">BOM Total: <span className="text-emerald-400 font-bold">{formatRupiah(totalBom)}</span></p>
-        </div>
-      </div>
 
-      {/* Floating Controls Overlay */}
-      <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 flex flex-col gap-2">
-        <button
-          type="button"
-          onClick={resetView}
-          aria-label="Reset sudut pandang 3D"
-          title="Reset Sudut Pandang"
-          className="w-11 h-11 bg-slate-900/85 hover:bg-cyan-900/60 backdrop-blur-md border border-cyan-500/30 text-cyan-300 rounded-xl flex items-center justify-center transition-all"
-        >
-          <RotateCcw className="w-4 h-4" />
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            cameraAngleRef.current.radius = Math.max(1.2, cameraAngleRef.current.radius - 0.4);
-            updateCameraPosition();
-          }}
-          aria-label="Perbesar model 3D"
-          title="Zoom In"
-          className="w-11 h-11 bg-slate-900/85 hover:bg-cyan-900/60 backdrop-blur-md border border-cyan-500/30 text-cyan-300 rounded-xl flex items-center justify-center transition-all"
-        >
-          <ZoomIn className="w-4 h-4" />
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            cameraAngleRef.current.radius = Math.min(5.5, cameraAngleRef.current.radius + 0.4);
-            updateCameraPosition();
-          }}
-          aria-label="Perkecil model 3D"
-          title="Zoom Out"
-          className="w-11 h-11 bg-slate-900/85 hover:bg-cyan-900/60 backdrop-blur-md border border-cyan-500/30 text-cyan-300 rounded-xl flex items-center justify-center transition-all"
-        >
-          <ZoomOut className="w-4 h-4" />
-        </button>
-      </div>
+          {activeCoral && (
+            <div className="absolute top-20 right-4 z-20 w-[min(22rem,calc(100%-2rem))] p-4 rounded-2xl bg-slate-900/95 backdrop-blur-md border border-cyan-500/40 text-xs text-white shadow-2xl space-y-2">
+              <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                <div>
+                  <h4 className="text-sm font-black text-cyan-300 italic">{activeCoral.name}</h4>
+                  <span className="text-[10px] text-slate-400 font-semibold">{activeCoral.form}</span>
+                </div>
+                <span className="w-4 h-4 rounded-full" style={{ backgroundColor: '#' + activeCoral.colorHex.toString(16) }} />
+              </div>
 
-      {/* Bottom Explode Slider & Hint */}
-      <div className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4 z-20 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 sm:gap-3 pointer-events-none">
-        <div className="hidden sm:flex bg-slate-900/85 backdrop-blur-md border border-slate-700/60 rounded-xl px-4 py-2.5 text-xs text-slate-300 pointer-events-auto items-center gap-3">
-          <span className="text-cyan-400 font-semibold flex items-center gap-1.5">
-            <Activity className="w-3.5 h-3.5 flex-shrink-0" /> Putar: Geser · Zoom: Scroll/Cubit · Pilih Komponen
-          </span>
-        </div>
-
-        <div className="bg-slate-900/85 backdrop-blur-md border border-cyan-500/30 rounded-xl px-3.5 py-2.5 pointer-events-auto flex items-center justify-between sm:justify-start gap-2.5 min-h-[44px]">
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <Layers className="w-4 h-4 text-cyan-400" />
-            <label htmlFor="explode-slider" className="text-xs text-slate-200 font-medium">
-              Explode:
-            </label>
-          </div>
-          <input
-            id="explode-slider"
-            type="range"
-            min="0"
-            max="1"
-            step="0.05"
-            value={exploded}
-            onChange={(e) => handleExplodeChange(parseFloat(e.target.value))}
-            className="flex-1 sm:w-32 md:w-36 accent-cyan-400 cursor-pointer"
-          />
-          <span className="text-xs text-cyan-400 font-mono w-9 text-right">{Math.round(exploded * 100)}%</span>
-        </div>
-      </div>
-
-      {/* Selected Component Detail Card */}
-      {selectedComp && (
-        <div className="absolute top-24 sm:top-20 left-3 right-3 sm:left-4 sm:right-auto sm:w-80 max-h-[calc(100%-10rem)] overflow-y-auto bg-slate-900/95 backdrop-blur-xl border border-cyan-400/50 rounded-2xl p-4 text-white shadow-2xl z-30 animate-in fade-in slide-in-from-left duration-200">
-          <div className="flex items-start justify-between gap-2">
-            <div>
-              <span className="text-[10px] font-bold text-cyan-400 uppercase tracking-wider bg-cyan-950/80 px-2 py-0.5 rounded-full border border-cyan-800">
-                Komponen #{selectedComp.id}
-              </span>
-              <h3 className="text-base font-bold text-white mt-1.5">{selectedComp.name}</h3>
+              <div className="space-y-1.5 text-[11px] text-slate-300">
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Status Lokal:</span>
+                  <span className="font-bold text-slate-200">{activeCoral.tundaStatus}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Suhu Optimal:</span>
+                  <span className="font-bold text-amber-300 font-mono">{activeCoral.tempRange}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Kedalaman:</span>
+                  <span className="font-bold text-cyan-300 font-mono">{activeCoral.depthRange}</span>
+                </div>
+              </div>
             </div>
-            <button
-              type="button"
-              aria-label="Tutup detail komponen"
-              onClick={() => {
-                setSelectedComp(null);
-                highlightComponent(-1);
-              }}
-              className="w-10 h-10 -mt-1 -mr-1 rounded-xl text-slate-300 hover:text-white hover:bg-white/10 text-xl flex items-center justify-center flex-shrink-0"
-            >
-              ×
-            </button>
+          )}
+        </>
+      )}
+
+      {/* Mode 4: Ecological Condition Scenario Buttons */}
+      {viewMode === 'simulation' && (
+        <div className="absolute bottom-4 left-4 right-4 z-20 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-2">
+            {[
+              { id: 'normal', label: 'Kondisi Normal (Sehat)', col: 'bg-emerald-600' },
+              { id: 'thermal', label: 'Thermal Stress (+1.8°C)', col: 'bg-rose-600' },
+              { id: 'turbidity', label: 'High Turbidity (>10 NTU)', col: 'bg-amber-600' },
+              { id: 'recovery', label: 'Pemulihan Pasca-Stress', col: 'bg-cyan-600' },
+            ].map((sc) => (
+              <button
+                key={sc.id}
+                type="button"
+                onClick={() => setSimScenario(sc.id as any)}
+                className={`min-h-[40px] px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all shadow-md ${
+                  simScenario === sc.id
+                    ? `${sc.col} text-white ring-2 ring-white`
+                    : 'bg-slate-900/90 text-slate-300 border border-slate-700 hover:bg-slate-800'
+                }`}
+              >
+                {sc.label}
+              </button>
+            ))}
           </div>
+        </div>
+      )}
 
-          <p className="text-xs font-mono text-cyan-300 mt-1">{selectedComp.spec}</p>
+      {/* JSON Viewer Modal for Hardware Model */}
+      {showJsonModal && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Model 3D dalam JSON"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fadeIn"
+          onClick={() => setShowJsonModal(false)}
+        >
+          <div
+            className="w-full max-w-2xl max-h-[85dvh] overflow-y-auto bg-slate-900 border border-slate-700 rounded-3xl p-6 shadow-2xl space-y-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div>
+                <h3 className="text-base font-bold text-white">Model 3D dalam Format JSON</h3>
+                <p className="text-xs text-slate-400">
+                  Data geometri procedural EchoVision Prototype (echovision_prototype_3d.json).
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowJsonModal(false)}
+                className="w-10 h-10 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center"
+              >
+                <X size={18} />
+              </button>
+            </div>
 
-          <div className="my-2.5 p-2 bg-slate-800/60 rounded-lg border border-slate-700/50">
-            <span className="text-[11px] text-slate-400 block font-medium">Estimasi Biaya Komponen (BOM):</span>
-            <span className="text-sm font-bold text-emerald-400 flex items-center gap-1 mt-0.5">
-              <DollarSign className="w-3.5 h-3.5" /> {formatRupiah(selectedComp.price_rp || 0)}
-            </span>
+            <textarea
+              readOnly
+              value={JSON.stringify({ components, total_bom_rp: totalBom }, null, 2)}
+              className="w-full h-80 rounded-2xl bg-slate-950 border border-slate-800 p-4 font-mono text-xs text-cyan-300 focus:outline-none resize-none"
+            />
+
+            <div className="flex justify-end gap-2 pt-2">
+              <button
+                type="button"
+                onClick={copyJsonToClipboard}
+                className="min-h-[40px] px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs flex items-center gap-2"
+              >
+                <span>{jsonCopied ? 'Tersalin ke Clipboard!' : 'Salin JSON'}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowJsonModal(false)}
+                className="min-h-[40px] px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs"
+              >
+                Tutup
+              </button>
+            </div>
           </div>
-
-          <p className="text-xs text-slate-300 leading-relaxed">
-            {selectedComp.function || selectedComp.role || selectedComp.description}
-          </p>
         </div>
       )}
     </div>

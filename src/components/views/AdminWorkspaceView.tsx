@@ -147,7 +147,7 @@ export default function AdminWorkspaceView({
       accountStatus: 'Active' as const,
       lastActivity: 'Baru saja',
       createdAt: '14 Nov 2025',
-      avatarUrl: '/images/image18.png'
+      avatarUrl: ''
     };
 
     setUsers([newUser, ...users]);
@@ -198,7 +198,7 @@ export default function AdminWorkspaceView({
           <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 border border-slate-200 shadow-md">
             <div
               className="absolute inset-0 bg-cover bg-right opacity-30 mix-blend-luminosity"
-              style={{ backgroundImage: `url('/images/image17.jpeg')` }}
+              style={{ backgroundImage: `url('/images/coral-surveys/tunda_transect_16.jpg')` }}
             />
             <div className="relative z-10 p-6 sm:p-8 max-w-2xl text-white">
               <div className="inline-flex items-center gap-2 text-xs font-bold text-orange-400 uppercase tracking-widest mb-2">
@@ -405,7 +405,7 @@ export default function AdminWorkspaceView({
           <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 border border-slate-200 shadow-md">
             <div
               className="absolute inset-0 bg-cover bg-right opacity-30 mix-blend-luminosity"
-              style={{ backgroundImage: `url('/images/image18.png')` }}
+              style={{ backgroundImage: `url('/images/coral-surveys/tunda_transect_01.jpg')` }}
             />
             <div className="relative z-10 p-6 sm:p-8 max-w-2xl text-white">
               <div className="inline-flex items-center gap-2 text-xs font-bold text-orange-400 uppercase tracking-widest mb-2">
@@ -738,7 +738,7 @@ export default function AdminWorkspaceView({
           <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 border border-slate-200 shadow-md">
             <div
               className="absolute inset-0 bg-cover bg-right opacity-30 mix-blend-luminosity"
-              style={{ backgroundImage: `url('/images/image23.png')` }}
+              style={{ backgroundImage: `url('/images/coral-surveys/tunda_transect_10.jpg')` }}
             />
             <div className="relative z-10 p-6 sm:p-8 max-w-2xl text-white">
               <div className="inline-flex items-center gap-2 text-xs font-bold text-orange-400 uppercase tracking-widest mb-2">
@@ -911,7 +911,7 @@ export default function AdminWorkspaceView({
 
               <div className="h-36 rounded-2xl overflow-hidden bg-slate-900">
                 <img
-                  src="/images/image23.png"
+                  src="/images/coral-surveys/tunda_transect_10.jpg"
                   alt="Alert Detail"
                   className="w-full h-full object-cover"
                 />

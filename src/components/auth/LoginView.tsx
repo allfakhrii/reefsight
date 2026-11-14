@@ -155,7 +155,7 @@ export default function LoginView({
         <div
           className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 scale-100 hover:scale-105"
           style={{
-            backgroundImage: `url('/images/login_hero_bg.jpeg')`
+            backgroundImage: `url('/images/biodiversity/ikan-karang-hero.jpg')`
           }}
         />
 
@@ -213,11 +213,11 @@ export default function LoginView({
         <div className="max-w-md w-full mx-auto my-auto space-y-5">
           {/* Brand Header with Clean Emblem from image1.jpeg */}
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl overflow-hidden shadow-xs flex-shrink-0">
+            <div className="w-12 h-12 rounded-2xl overflow-hidden shadow-xs flex-shrink-0 bg-slate-900 border border-slate-700/20">
               <img
-                src="/brand/reefsight-icon.svg"
+                src="/brand/logo.jpg"
                 alt="REEFSIGHT Coral Logo"
-                className="w-full h-full object-contain"
+                className="w-full h-full object-cover"
               />
             </div>
             <div className="flex flex-col">

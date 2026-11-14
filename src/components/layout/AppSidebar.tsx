@@ -14,6 +14,7 @@ import {
   Palmtree,
   BookOpen,
   Info,
+  Mail,
   Users,
   Cpu,
   Database,
@@ -62,9 +63,9 @@ export default function AppSidebar({
     { id: 'acoustic-intelligence', label: 'Acoustic Intelligence', icon: Mic2, desc: 'Soundscape & Waveform' },
     { id: 'prototype-3d', label: 'Prototype Intelligence', icon: Cpu, desc: 'EchoVision 3D Hardware' },
     { id: 'eco-tourism', label: 'Eco-Tourism & Conservation', icon: Palmtree, desc: 'Suitability Planner' },
-    { id: 'research-logbook', label: 'Research & Publications', icon: BookOpen, desc: 'Scientific Documents' },
+    { id: 'research-logbook', label: 'Research & Publications', icon: BookOpen, desc: 'Logbook & Dokumen' },
     { id: 'system-architecture', label: 'ERD & Architecture', icon: Database, desc: 'System Database' },
-    { id: 'about', label: 'About REEFSIGHT', icon: Info, desc: 'Vision & Partners' }
+    { id: 'contact', label: 'Kontak Kami', icon: Mail, desc: 'Contact & Collaboration' }
   ];
 
   const researchNavItems = [
@@ -118,11 +119,11 @@ export default function AppSidebar({
           className="flex items-center gap-3 text-left overflow-hidden min-h-[44px] group"
         >
           {/* Coral Logo Icon */}
-          <div className="w-10 h-10 rounded-xl overflow-hidden shadow-md shadow-orange-500/20 group-hover:scale-105 transition-transform flex-shrink-0">
+          <div className="w-10 h-10 rounded-xl overflow-hidden shadow-md shadow-orange-500/20 group-hover:scale-105 transition-transform flex-shrink-0 bg-slate-900 border border-slate-700/20">
             <img
-              src="/brand/reefsight-icon.svg"
+              src="/brand/logo.jpg"
               alt="REEFSIGHT"
-              className="w-full h-full object-contain"
+              className="w-full h-full object-cover"
             />
           </div>
           <div className={`flex flex-col ${isCollapsed ? 'lg:hidden' : ''}`}>
@@ -232,11 +233,11 @@ export default function AppSidebar({
       {/* Footer Area with Pulau Tunda Coordinates and Watermark */}
       <div className="p-3 border-t border-slate-100 bg-slate-50/50 flex-shrink-0">
         <div className={`p-3 rounded-xl bg-gradient-to-br from-cyan-900 via-blue-900 to-indigo-950 text-white relative overflow-hidden shadow-inner ${isCollapsed ? 'lg:hidden' : ''}`}>
-          <div className="absolute -right-3 -bottom-3 w-16 h-16 opacity-15 pointer-events-none">
+          <div className="absolute -right-3 -bottom-3 w-16 h-16 opacity-20 pointer-events-none rounded-xl overflow-hidden">
             <img
-              src="/brand/reefsight-icon.svg"
+              src="/brand/logo.jpg"
               alt=""
-              className="w-full h-full object-contain filter brightness-200"
+              className="w-full h-full object-cover filter brightness-150"
             />
           </div>
           <div className="flex items-center gap-1.5 text-[10px] text-cyan-300 font-semibold uppercase tracking-wider mb-1">

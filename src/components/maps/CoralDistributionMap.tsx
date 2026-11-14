@@ -1,317 +1,638 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import * as maplibregl from 'maplibre-gl';
-import 'maplibre-gl/dist/maplibre-gl.css';
+import 'leaflet/dist/leaflet.css';
+import { CORAL_LYZENGA_EXTENTS } from '@/data/coralExtents';
 import {
   Layers,
-  Sliders,
-  Info,
-  TrendingDown,
   TrendingUp,
   ArrowRightLeft,
-  Eye,
   Download,
   Calendar,
   Compass,
   FileCode,
   FileSpreadsheet,
   CheckCircle2,
-  X
+  X,
+  Thermometer,
+  Waves,
+  Eye,
+  Sparkles,
 } from 'lucide-react';
+
+export type GisLayerType = 'lyzenga' | 'sst' | 'chl';
+export type GisYear = 2022 | 2023 | 2024 | 2025 | 2026;
+
+interface LayerConfig {
+  id: GisLayerType;
+  title: string;
+  badge: string;
+  unit: string;
+  description: string;
+  resolution: string;
+  source: string;
+}
+
+const LAYER_CONFIGS: LayerConfig[] = [
+  {
+    id: 'lyzenga',
+    title: 'Lyzenga Bentik & Tutupan Karang',
+    badge: 'Habitat Benthic Model',
+    unit: 'Hektar (ha)',
+    description:
+      'Klasifikasi dasar perairan terumbu karang menggunakan algoritma koreksi kolom air Lyzenga pada citra Sentinel-2/Landsat-8.',
+    resolution: '10 m / piksel',
+    source: 'Sentinel-2 Level-2A (ESA) & Algoritma Lyzenga',
+  },
+  {
+    id: 'sst',
+    title: 'Sea Surface Temperature (SST)',
+    badge: 'Ocean Thermal Metric',
+    unit: '°C (Derajat Celcius)',
+    description:
+      'Distribusi spasial anomali suhu permukaan laut harian perairan Pulau Tunda yang mempengaruhi bleaching karang.',
+    resolution: '1 km / piksel',
+    source: 'NOAA Coral Reef Watch (CRW) Daily 5km SST Blended',
+  },
+  {
+    id: 'chl',
+    title: 'Klorofil-a (CHL & Fitoplankton)',
+    badge: 'Biochemical Metric',
+    unit: 'mg/m³',
+    description:
+      'Konsentrasi klorofil-a sebagai indikator biomassa fitoplankton, produktivitas primer laut, dan kejernihan air.',
+    resolution: '300 m / piksel',
+    source: 'MODIS-Aqua / Sentinel-3 OLCI Ocean Color',
+  },
+];
+
+const ANNUAL_STATS: Record<
+  GisLayerType,
+  Record<
+    GisYear,
+    {
+      primaryValue: string;
+      primaryUnit: string;
+      secondaryLabel: string;
+      secondaryValue: string;
+      trendNote: string;
+      classBreakdown: { label: string; pct: number; color: string }[];
+    }
+  >
+> = {
+  lyzenga: {
+    2022: {
+      primaryValue: '1.877,85',
+      primaryUnit: 'ha',
+      secondaryLabel: 'Tutupan Karang Hidup',
+      secondaryValue: '48,2%',
+      trendNote: 'Kondisi stabil pra-gelombang panas laut.',
+      classBreakdown: [
+        { label: 'Substrat Terumbu & Karang Keras', pct: 48.2, color: '#10B981' },
+        { label: 'Pasir & Laguna Dangkal', pct: 51.8, color: '#0EA5E9' },
+      ],
+    },
+    2023: {
+      primaryValue: '1.833,92',
+      primaryUnit: 'ha',
+      secondaryLabel: 'Tutupan Karang Hidup',
+      secondaryValue: '46,1%',
+      trendNote: 'Penurunan marginal akibat anomali termal lokal.',
+      classBreakdown: [
+        { label: 'Substrat Terumbu & Karang Keras', pct: 46.1, color: '#10B981' },
+        { label: 'Pasir & Laguna Dangkal', pct: 53.9, color: '#0EA5E9' },
+      ],
+    },
+    2024: {
+      primaryValue: '581,23',
+      primaryUnit: 'ha',
+      secondaryLabel: 'Tutupan Terumbu Zona Inti',
+      secondaryValue: '52,4%',
+      trendNote: 'Fokus pemetaan zona konservasi inti (marine protected zone).',
+      classBreakdown: [
+        { label: 'Zona Inti Karang Sehat', pct: 52.4, color: '#10B981' },
+        { label: 'Substrat Transisi & Runtuhan', pct: 47.6, color: '#0EA5E9' },
+      ],
+    },
+    2025: {
+      primaryValue: '581,23',
+      primaryUnit: 'ha',
+      secondaryLabel: 'Tutupan Terumbu Zona Inti',
+      secondaryValue: '54,1%',
+      trendNote: 'Tren pemulihan terumbu di stasiun pengamatan barat laut.',
+      classBreakdown: [
+        { label: 'Zona Inti Karang Sehat', pct: 54.1, color: '#10B981' },
+        { label: 'Substrat Transisi & Runtuhan', pct: 45.9, color: '#0EA5E9' },
+      ],
+    },
+    2026: {
+      primaryValue: '875,61',
+      primaryUnit: 'ha',
+      secondaryLabel: 'Tutupan Terumbu Re-analisis',
+      secondaryValue: '59,8%',
+      trendNote: 'Ekspansi restorasi substrat buatan dan rekrutmen karang muda.',
+      classBreakdown: [
+        { label: 'Substrat Terumbu & Karang Keras', pct: 59.8, color: '#10B981' },
+        { label: 'Pasir & Laguna Dangkal', pct: 40.2, color: '#0EA5E9' },
+      ],
+    },
+  },
+  sst: {
+    2022: {
+      primaryValue: '28,9',
+      primaryUnit: '°C',
+      secondaryLabel: 'Anomali Rata-rata',
+      secondaryValue: '+0,2 °C',
+      trendNote: 'Suhu optimal untuk fotosintesis zooxanthellae.',
+      classBreakdown: [
+        { label: '< 28,5 °C (Sejuk)', pct: 22, color: '#06B6D4' },
+        { label: '28,5–29,0 °C (Normal)', pct: 58, color: '#3B82F6' },
+        { label: '29,0–29,8 °C (Hangat)', pct: 20, color: '#EAB308' },
+      ],
+    },
+    2023: {
+      primaryValue: '29,4',
+      primaryUnit: '°C',
+      secondaryLabel: 'Anomali Rata-rata',
+      secondaryValue: '+0,7 °C',
+      trendNote: 'Peningkatan termal musiman El Niño lemah.',
+      classBreakdown: [
+        { label: '< 29,0 °C (Optimal)', pct: 30, color: '#3B82F6' },
+        { label: '29,0–29,6 °C (Waspada)', pct: 50, color: '#EAB308' },
+        { label: '> 29,6 °C (Stres Termal)', pct: 20, color: '#F97316' },
+      ],
+    },
+    2024: {
+      primaryValue: '29,8',
+      primaryUnit: '°C',
+      secondaryLabel: 'Anomali Rata-rata',
+      secondaryValue: '+1,1 °C',
+      trendNote: 'Bulan terpanas Mei 2024 mencapai 30,2 °C di laguna timur.',
+      classBreakdown: [
+        { label: '29,0–29,5 °C (Sedang)', pct: 25, color: '#EAB308' },
+        { label: '29,5–30,0 °C (Kritis)', pct: 55, color: '#F97316' },
+        { label: '> 30,0 °C (Bleaching Watch)', pct: 20, color: '#EF4444' },
+      ],
+    },
+    2025: {
+      primaryValue: '29,1',
+      primaryUnit: '°C',
+      secondaryLabel: 'Anomali Rata-rata',
+      secondaryValue: '+0,4 °C',
+      trendNote: 'Penurunan suhu pasca puncak fase panas.',
+      classBreakdown: [
+        { label: '< 28,8 °C (Sejuk)', pct: 35, color: '#06B6D4' },
+        { label: '28,8–29,3 °C (Normal)', pct: 45, color: '#3B82F6' },
+        { label: '> 29,3 °C (Hangat)', pct: 20, color: '#EAB308' },
+      ],
+    },
+    2026: {
+      primaryValue: '28,7',
+      primaryUnit: '°C',
+      secondaryLabel: 'Anomali Rata-rata',
+      secondaryValue: 'Baseline',
+      trendNote: 'Suhu laut sangat stabil, mendukung percepatan kalsifikasi.',
+      classBreakdown: [
+        { label: '< 28,5 °C (Optimal)', pct: 42, color: '#06B6D4' },
+        { label: '28,5–29,0 °C (Ideal)', pct: 50, color: '#3B82F6' },
+        { label: '> 29,0 °C (Maksimal)', pct: 8, color: '#EAB308' },
+      ],
+    },
+  },
+  chl: {
+    2022: {
+      primaryValue: '0,38',
+      primaryUnit: 'mg/m³',
+      secondaryLabel: 'Status Tropik',
+      secondaryValue: 'Mesotrofik',
+      trendNote: 'Produktivitas perairan seimbang untuk rantai makanan karang.',
+      classBreakdown: [
+        { label: '0,1–0,2 mg/m³ (Oligotrofik)', pct: 30, color: '#0284C7' },
+        { label: '0,2–0,4 mg/m³ (Optimal)', pct: 55, color: '#10B981' },
+        { label: '> 0,4 mg/m³ (Tinggi)', pct: 15, color: '#84CC16' },
+      ],
+    },
+    2023: {
+      primaryValue: '0,42',
+      primaryUnit: 'mg/m³',
+      secondaryLabel: 'Status Tropik',
+      secondaryValue: 'Mesotrofik',
+      trendNote: 'Peningkatan klorofil di perairan selat akibat upwelling angin timur.',
+      classBreakdown: [
+        { label: '0,1–0,3 mg/m³', pct: 28, color: '#0284C7' },
+        { label: '0,3–0,5 mg/m³', pct: 52, color: '#10B981' },
+        { label: '> 0,5 mg/m³', pct: 20, color: '#84CC16' },
+      ],
+    },
+    2024: {
+      primaryValue: '0,31',
+      primaryUnit: 'mg/m³',
+      secondaryLabel: 'Status Tropik',
+      secondaryValue: 'Oligotrofik-Meso',
+      trendNote: 'Kejernihan air tinggi, penetrasi sinar fotosintesis optimal.',
+      classBreakdown: [
+        { label: '< 0,25 mg/m³ (Jernih)', pct: 40, color: '#0284C7' },
+        { label: '0,25–0,40 mg/m³', pct: 48, color: '#10B981' },
+        { label: '> 0,40 mg/m³', pct: 12, color: '#84CC16' },
+      ],
+    },
+    2025: {
+      primaryValue: '0,35',
+      primaryUnit: 'mg/m³',
+      secondaryLabel: 'Status Tropik',
+      secondaryValue: 'Mesotrofik',
+      trendNote: 'Distribusi fitoplankton merata di paparan laguna selatan.',
+      classBreakdown: [
+        { label: '< 0,3 mg/m³', pct: 38, color: '#0284C7' },
+        { label: '0,3–0,45 mg/m³', pct: 50, color: '#10B981' },
+        { label: '> 0,45 mg/m³', pct: 12, color: '#84CC16' },
+      ],
+    },
+    2026: {
+      primaryValue: '0,33',
+      primaryUnit: 'mg/m³',
+      secondaryLabel: 'Status Tropik',
+      secondaryValue: 'Optimal',
+      trendNote: 'Nilai standar ideal untuk ekosistem terumbu karang kepulauan.',
+      classBreakdown: [
+        { label: '0,1–0,3 mg/m³ (Jernih)', pct: 45, color: '#0284C7' },
+        { label: '0,3–0,45 mg/m³ (Subur)', pct: 45, color: '#10B981' },
+        { label: '> 0,45 mg/m³ (Tinggi)', pct: 10, color: '#84CC16' },
+      ],
+    },
+  },
+};
 
 export default function CoralDistributionMap() {
   const mapContainer = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<maplibregl.Map | null>(null);
+  const mapRef = useRef<any>(null);
+  const leafletModuleRef = useRef<any>(null);
 
-  // States matching image5.jpeg
-  const [selectedYear, setSelectedYear] = useState<number>(2024);
-  const [isSwipeMode, setIsSwipeMode] = useState<boolean>(false);
-  const [swipePosition, setSwipePosition] = useState<number>(50); // percentage 0 - 100
+  // Layer groups
+  const extentGroupRef = useRef<any>(null);
+  const gisGroupRef = useRef<any>(null);
+  const beaconsGroupRef = useRef<any>(null);
+
+  const [activeLayer, setActiveLayer] = useState<GisLayerType>('lyzenga');
+  const [selectedYear, setSelectedYear] = useState<GisYear>(2026);
   const [showMobileLegend, setShowMobileLegend] = useState<boolean>(false);
   const [downloadNotice, setDownloadNotice] = useState<string | null>(null);
-  const [activeLayer, setActiveLayer] = useState<{ [key: string]: boolean }>({
-    distribusi: true,
-    batasPulau: false,
-    zonaDangkal: false,
-    citraDasar: true
-  });
+  const [hoveredInfo, setHoveredInfo] = useState<string | null>(null);
+  const [showRedExtent, setShowRedExtent] = useState<boolean>(true);
+  const [isLeafletReady, setIsLeafletReady] = useState<boolean>(false);
 
+  const currentStats = ANNUAL_STATS[activeLayer][selectedYear];
+  const geojsonUrl = `/data/gis/${activeLayer}_${selectedYear}.geojson`;
+
+  // Helper to build custom animated HTML Beacon Marker
+  const createBeaconMarker = (L: any, lat: number, lng: number, label: string, areaLabel: string) => {
+    const icon = L.divIcon({
+      className: 'bg-transparent border-none',
+      iconSize: [220, 36],
+      iconAnchor: [110, 18],
+      html: `
+        <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-red-950/90 border-2 border-red-500 shadow-2xl backdrop-blur-md text-white transition-all transform hover:scale-110">
+          <span class="relative flex h-2.5 w-2.5">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+          </span>
+          <span class="text-[11px] font-black tracking-tight text-red-100 whitespace-nowrap">${label}: ${areaLabel}</span>
+        </div>
+      `
+    });
+    return L.marker([lat, lng], { icon });
+  };
+
+  // 1. Initialize Leaflet Map (Safe dynamic import for SSR)
   useEffect(() => {
-    if (!mapContainer.current) return;
+    let isMounted = true;
 
-    const initialCenter: [number, number] = [106.274, -5.813];
+    async function initLeaflet() {
+      if (!mapContainer.current || mapRef.current || typeof window === 'undefined') return;
 
-    const map = new maplibregl.Map({
-      container: mapContainer.current,
-      style: {
-        version: 8,
-        sources: {
-          'esri-satellite': {
-            type: 'raster',
-            tiles: [
-              'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
-            ],
-            tileSize: 256,
-            attribution: '© Esri, Maxar'
-          }
-        },
-        layers: [
-          {
-            id: 'satellite-basemap',
-            type: 'raster',
-            source: 'esri-satellite'
-          }
-        ]
-      },
-      center: initialCenter,
-      zoom: 13.5,
-      pitch: 20
-    });
+      const L = (await import('leaflet')).default;
+      if (!isMounted || !mapContainer.current) return;
+      leafletModuleRef.current = L;
 
-    mapRef.current = map;
-    map.addControl(new maplibregl.NavigationControl({ showCompass: true }), 'top-right');
+      // Pulau Tunda geographical coordinates: Lat -5.8125, Lng 106.2755
+      const center: [number, number] = [-5.8125, 106.2755];
 
-    map.on('load', () => {
-      // 1. Add Source 2023 / 2024
-      map.addSource('coral-2023-source', {
-        type: 'geojson',
-        data: '/data/coral_tunda_2023.geojson'
+      const map = L.map(mapContainer.current, {
+        center,
+        zoom: 14,
+        zoomControl: false,
+        attributionControl: false
       });
 
-      // 2. Add Source 2020
-      map.addSource('coral-2020-source', {
-        type: 'geojson',
-        data: '/data/coral_tunda_2020.geojson'
-      });
-
-      // Layer 2024 Fill (Matching image5.jpeg colors: Red for HC, Orange for SC, Yellow for DC, Purple for Sand, Blue for Water)
-      map.addLayer({
-        id: 'coral-2023-fill',
-        type: 'fill',
-        source: 'coral-2023-source',
-        paint: {
-          'fill-color': [
-            'match',
-            ['get', 'kondisi'],
-            'Sehat', '#EF4444', // Karang Keras (HC) in mockup is red
-            'Sedang', '#F97316', // Karang Lunak (SC) is orange
-            'Bleaching', '#EAB308', // Karang Mati (DC) is yellow
-            'Degradasi', '#A855F7', // Pasir is purple
-            '#3B82F6' // Perairan is blue
-          ],
-          'fill-opacity': 0.75
+      // Esri World Imagery Satellite Tiles
+      L.tileLayer(
+        'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+        {
+          maxZoom: 18,
+          attribution: '© Esri, Maxar, Earthstar Geographics'
         }
-      });
+      ).addTo(map);
 
-      // Layer Outline
-      map.addLayer({
-        id: 'coral-2023-line',
-        type: 'line',
-        source: 'coral-2023-source',
-        paint: {
-          'line-color': '#FFFFFF',
-          'line-width': 1.2,
-          'line-opacity': 0.7
-        }
-      });
+      // Add Zoom Control to top-right
+      L.control.zoom({ position: 'topright' }).addTo(map);
 
-      // Layer 2020 Fill & Line (Baseline Comparison)
-      map.addLayer({
-        id: 'coral-2020-fill',
-        type: 'fill',
-        source: 'coral-2020-source',
-        layout: {
-          visibility: 'none'
-        },
-        paint: {
-          'fill-color': [
-            'match',
-            ['get', 'kondisi'],
-            'Sehat', '#EF4444',
-            'Sedang', '#F97316',
-            'Bleaching', '#EAB308',
-            'Degradasi', '#A855F7',
-            '#3B82F6'
-          ],
-          'fill-opacity': 0.72
-        }
-      });
+      // Initialize Layer Groups
+      const extentGroup = L.layerGroup().addTo(map);
+      const gisGroup = L.layerGroup().addTo(map);
+      const beaconsGroup = L.layerGroup().addTo(map);
 
-      map.addLayer({
-        id: 'coral-2020-line',
-        type: 'line',
-        source: 'coral-2020-source',
-        layout: {
-          visibility: 'none'
-        },
-        paint: {
-          'line-color': '#FDE68A',
-          'line-width': 1.2,
-          'line-opacity': 0.75
-        }
-      });
-    });
+      extentGroupRef.current = extentGroup;
+      gisGroupRef.current = gisGroup;
+      beaconsGroupRef.current = beaconsGroup;
+      mapRef.current = map;
 
-    const resizeObserver = new ResizeObserver(() => {
-      map.resize();
-    });
-    resizeObserver.observe(mapContainer.current);
+      setIsLeafletReady(true);
+    }
+
+    initLeaflet();
 
     return () => {
-      resizeObserver.disconnect();
-      map.remove();
+      isMounted = false;
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
     };
   }, []);
 
-  // Sync year switcher & distribusi visibility with MapLibre layers
+  // 2. Render Red Spread Extent Envelope and Beacons when selectedYear or showRedExtent changes
   useEffect(() => {
-    const map = mapRef.current;
-    if (!map || !map.isStyleLoaded()) return;
+    if (!isLeafletReady || !leafletModuleRef.current) return;
+    const L = leafletModuleRef.current;
+    const extentGroup = extentGroupRef.current;
+    const beaconsGroup = beaconsGroupRef.current;
+    if (!extentGroup || !beaconsGroup) return;
 
-    const showDist = activeLayer.distribusi;
-    const isBaselineYear = selectedYear === 2020;
+    extentGroup.clearLayers();
+    beaconsGroup.clearLayers();
 
-    const setVis = (id: string, visible: boolean) => {
-      if (map.getLayer(id)) {
-        map.setLayoutProperty(id, 'visibility', visible ? 'visible' : 'none');
-      }
-    };
+    if (!showRedExtent) return;
 
-    setVis('coral-2023-fill', showDist && !isBaselineYear);
-    setVis('coral-2023-line', showDist && !isBaselineYear);
-    setVis('coral-2020-fill', showDist && isBaselineYear);
-    setVis('coral-2020-line', showDist && isBaselineYear);
-  }, [selectedYear, activeLayer.distribusi]);
+    const extGeo = CORAL_LYZENGA_EXTENTS[selectedYear] || CORAL_LYZENGA_EXTENTS[2026];
+    const areaLabel = extGeo?.properties?.area_label || `${extGeo?.properties?.area_ha || 875.61} ha`;
 
-  const handleDownload = (format: string) => {
-    setDownloadNotice(`Menyiapkan ekspor data spasial (${format}) untuk Pulau Tunda...`);
-    setTimeout(() => setDownloadNotice(null), 4000);
+    if (extGeo) {
+      // Outer Glowing Line (Soft halo wash)
+      const glowLayer = L.geoJSON(extGeo, {
+        style: {
+          color: '#f87171',
+          weight: 12,
+          opacity: 0.55,
+          fillColor: '#ef4444',
+          fillOpacity: 0.32,
+          lineCap: 'round',
+          lineJoin: 'round'
+        }
+      });
+      extentGroup.addLayer(glowLayer);
+
+      // Inner Core Crimson Boundary Line with dashed styling
+      const lineLayer = L.geoJSON(extGeo, {
+        style: {
+          color: '#dc2626',
+          weight: 4,
+          dashArray: '8, 5',
+          opacity: 1.0,
+          fill: false,
+          lineCap: 'round',
+          lineJoin: 'round'
+        }
+      });
+      extentGroup.addLayer(lineLayer);
+    }
+
+    // 4 Perimeter Radar Beacons (Pulau Tunda perimeter)
+    const beaconCoords: [number, number, string][] = [
+      [-5.798, 106.275, 'Batas Terumbu Utara'],
+      [-5.813, 106.310, 'Tubir Karang Timur'],
+      [-5.824, 106.275, 'Paparan Karang Selatan'],
+      [-5.812, 106.244, 'Karang Tepi Barat']
+    ];
+
+    beaconCoords.forEach(([lat, lng, label]) => {
+      const beaconMarker = createBeaconMarker(L, lat, lng, label, areaLabel);
+      beaconsGroup.addLayer(beaconMarker);
+    });
+  }, [isLeafletReady, selectedYear, showRedExtent]);
+
+  // 3. Fetch and Render Active GIS Dataset Layer (Lyzenga, SST, CHL)
+  useEffect(() => {
+    if (!isLeafletReady || !leafletModuleRef.current) return;
+    const L = leafletModuleRef.current;
+    const gisGroup = gisGroupRef.current;
+    if (!gisGroup) return;
+
+    gisGroup.clearLayers();
+
+    const origin = typeof window !== 'undefined' ? window.location.origin : '';
+    fetch(`${origin}/data/gis/${activeLayer}_${selectedYear}.geojson`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((geo) => {
+        if (!geo) return;
+
+        const gisLayer = L.geoJSON(geo, {
+          style: (feature: any) => {
+            const gridcode = feature?.properties?.gridcode;
+            let fillColor = '#10B981';
+            let strokeColor = '#059669';
+
+            if (activeLayer === 'lyzenga') {
+              fillColor = gridcode === 1 ? '#10B981' : '#0EA5E9';
+              strokeColor = gridcode === 1 ? '#059669' : '#0284C7';
+            } else if (activeLayer === 'sst') {
+              const colors = ['#06B6D4', '#3B82F6', '#EAB308', '#F97316', '#EF4444'];
+              fillColor = colors[(gridcode - 1) % colors.length] || '#3B82F6';
+              strokeColor = '#ffffff';
+            } else {
+              // chl
+              const colors = ['#0284C7', '#0D9488', '#10B981', '#84CC16', '#EAB308'];
+              fillColor = colors[(gridcode - 1) % colors.length] || '#10B981';
+              strokeColor = '#ffffff';
+            }
+
+            return {
+              fillColor,
+              fillOpacity: 0.72,
+              color: strokeColor,
+              weight: 1.0,
+              opacity: 0.8
+            };
+          },
+          onEachFeature: (feature: any, layer: any) => {
+            const p = feature?.properties || {};
+            layer.on({
+              mouseover: (e: any) => {
+                const target = e.target;
+                target.setStyle({ weight: 2.5, color: '#ffffff', fillOpacity: 0.9 });
+                target.bringToFront();
+
+                const code = p?.gridcode;
+                const area = p?.Shape_Area ? Math.round(p.Shape_Area) + ' m²' : '';
+                setHoveredInfo(`Gridcode: ${code} · Luas: ${area}`);
+              },
+              mouseout: (e: any) => {
+                gisLayer.resetStyle(e.target);
+                setHoveredInfo(null);
+              }
+            });
+          }
+        });
+
+        gisGroup.addLayer(gisLayer);
+      })
+      .catch((err) => console.warn('Could not load GIS dataset in Leaflet:', err));
+  }, [isLeafletReady, activeLayer, selectedYear]);
+
+  // Handle Reset View
+  const handleResetView = () => {
+    if (!mapRef.current) return;
+    mapRef.current.flyTo([-5.8125, 106.2755], 14, { duration: 1 });
   };
 
-  const handleExploreMap = () => {
-    mapContainer.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    mapRef.current?.flyTo({
-      center: [106.274, -5.813],
-      zoom: 14.2,
-      pitch: 25,
-      essential: true
-    });
+  const handleDownloadGeoJson = () => {
+    const a = document.createElement('a');
+    a.href = geojsonUrl;
+    a.download = `reefsight_${activeLayer}_${selectedYear}.geojson`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setDownloadNotice(
+      `File GeoJSON reefsight_${activeLayer}_${selectedYear}.geojson berhasil diunduh.`
+    );
+    setTimeout(() => setDownloadNotice(null), 4000);
   };
 
   return (
     <div className="space-y-6">
-      {/* Top Banner matching image5.jpeg */}
+      {/* Top Banner with Layer Controls */}
       <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 border border-slate-200 shadow-md">
         <div
           className="absolute inset-0 bg-cover bg-right opacity-30 mix-blend-luminosity"
-          style={{ backgroundImage: `url('/images/image5.jpeg')` }}
+          style={{ backgroundImage: `url('/images/coral-surveys/tunda_transect_12.jpg')` }}
         />
-        <div className="relative z-10 p-6 sm:p-8 max-w-2xl text-white">
+        <div className="relative z-10 p-6 sm:p-8 max-w-3xl text-white">
           <div className="inline-flex items-center gap-2 text-xs font-bold text-orange-400 uppercase tracking-widest mb-2">
             <span className="w-4 h-0.5 bg-orange-400" />
-            Spatial Coral Reef Analysis
+            ArcGIS & Satellite Multi-Temporal Intelligence · Leaflet Engine
           </div>
           <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mb-2">
-            Mapping the Coral Reef Distribution of Pulau Tunda
+            Mapping & Spatio-Temporal Analysis Pulau Tunda
           </h2>
           <p className="text-xs sm:text-sm text-slate-200 leading-relaxed mb-4">
-            Explore the spatial distribution of coral reef areas through interpreted mapping results, spatial classification, and multi-temporal analysis derived from available ArcGIS datasets.
+            Akses dataset spasial multi-tahun (2022–2026) tutupan karang Lyzenga, dinamika Suhu
+            Permukaan Laut (SST), dan sebaran konsentrasi Klorofil-a (CHL) terverifikasi berbasis Leaflet.
           </p>
-          <div className="flex flex-wrap items-center gap-3">
-            <button
-              type="button"
-              onClick={handleExploreMap}
-              className="min-h-[44px] px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs flex items-center gap-2 shadow-sm transition-all"
-            >
-              <Compass size={14} />
-              Explore Coral Map
-            </button>
-            <button
-              type="button"
-              onClick={() => setIsSwipeMode(!isSwipeMode)}
-              className="min-h-[44px] px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs border border-white/20 flex items-center gap-2 transition-all"
-            >
-              <ArrowRightLeft size={14} />
-              {isSwipeMode ? 'Selesai Bandingkan' : 'Compare Observation Years'}
-            </button>
+
+          {/* Layer Switcher Buttons */}
+          <div className="flex flex-wrap items-center gap-2 pt-1">
+            {LAYER_CONFIGS.map((cfg) => {
+              const active = activeLayer === cfg.id;
+              return (
+                <button
+                  key={cfg.id}
+                  type="button"
+                  onClick={() => setActiveLayer(cfg.id)}
+                  className={`min-h-[44px] px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all shadow-xs ${
+                    active
+                      ? 'bg-orange-500 hover:bg-orange-600 text-white shadow-orange-500/30 ring-2 ring-orange-400'
+                      : 'bg-white/10 hover:bg-white/20 text-slate-200 border border-white/20'
+                  }`}
+                >
+                  {cfg.id === 'lyzenga' ? (
+                    <Layers size={14} />
+                  ) : cfg.id === 'sst' ? (
+                    <Thermometer size={14} />
+                  ) : (
+                    <Waves size={14} />
+                  )}
+                  <span>{cfg.title}</span>
+                </button>
+              );
+            })}
           </div>
-          {isSwipeMode && (
-            <div className="mt-3 p-3 rounded-xl bg-white/10 border border-white/20 text-[11px] text-slate-100 flex flex-wrap items-center gap-2">
-              <span className="font-bold text-orange-300">Mode Perbandingan Aktif:</span>
-              <button
-                type="button"
-                onClick={() => setSelectedYear(2020)}
-                className={`min-h-[36px] px-3 py-1 rounded-lg font-semibold ${
-                  selectedYear === 2020 ? 'bg-orange-500 text-white' : 'bg-white/15 text-slate-100 hover:bg-white/25'
-                }`}
-              >
-                Lihat 2020
-              </button>
-              <button
-                type="button"
-                onClick={() => setSelectedYear(2024)}
-                className={`min-h-[36px] px-3 py-1 rounded-lg font-semibold ${
-                  selectedYear !== 2020 ? 'bg-orange-500 text-white' : 'bg-white/15 text-slate-100 hover:bg-white/25'
-                }`}
-              >
-                Lihat 2024
-              </button>
-            </div>
-          )}
-          <p className="text-[11px] text-slate-300 font-medium mt-4 flex items-center gap-1.5">
-            <Info size={13} className="text-orange-400" />
-            Pulau Tunda, Kabupaten Serang, Banten
-          </p>
         </div>
       </div>
 
-      {/* Main Grid: WebGIS Map (Left) & Area/Change Analytics (Right) matching image5.jpeg */}
+      {/* Main Grid: WebGIS Map (Left) & Area/Change Analytics (Right) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Map Container */}
-        <div className="lg:col-span-2 relative rounded-3xl overflow-hidden bg-slate-900 border border-slate-200 shadow-sm h-[380px] sm:h-[460px] lg:h-[540px] min-w-0">
-          {/* Top Map Toolbar */}
-          <div className="absolute top-3 left-3 sm:top-4 sm:left-4 right-14 sm:right-auto z-10 flex items-center gap-2">
-            <div className="flex items-center gap-2 px-3 py-1.5 min-h-[40px] rounded-xl bg-white/95 backdrop-blur-md border border-slate-200 shadow-md text-xs font-semibold text-slate-800 max-w-full">
+        <div className="lg:col-span-2 relative rounded-3xl overflow-hidden bg-slate-900 border border-slate-200 shadow-sm h-[400px] sm:h-[480px] lg:h-[560px] min-w-0 select-none">
+          {/* Top Map Toolbar: Year Selector (2022 to 2026) */}
+          <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-[400] flex flex-wrap items-center gap-2 max-w-[calc(100%-4rem)] pointer-events-auto">
+            <div className="flex items-center gap-1.5 px-3 py-1.5 min-h-[40px] rounded-xl bg-white/95 backdrop-blur-md border border-slate-200 shadow-md text-xs font-bold text-slate-800">
               <Calendar size={14} className="text-orange-500 flex-shrink-0" />
-              <label htmlFor="coral-year-select" className="hidden sm:inline">Tahun Pengamatan</label>
-              <label htmlFor="coral-year-select" className="sm:hidden">Tahun</label>
-              <select
-                id="coral-year-select"
-                value={selectedYear}
-                onChange={(e) => setSelectedYear(Number(e.target.value))}
-                className="bg-transparent font-bold text-slate-900 focus:outline-none cursor-pointer"
-              >
-                <option value={2024}>2024 (Terkini)</option>
-                <option value={2022}>2022</option>
-                <option value={2020}>2020 (Baseline)</option>
-              </select>
+              <span className="hidden sm:inline">Tahun:</span>
+              <div className="flex items-center gap-1">
+                {([2022, 2023, 2024, 2025, 2026] as GisYear[]).map((yr) => (
+                  <button
+                    key={yr}
+                    type="button"
+                    onClick={() => setSelectedYear(yr)}
+                    className={`min-h-[30px] px-2 py-1 rounded-lg text-xs font-bold transition-all ${
+                      selectedYear === yr
+                        ? 'bg-orange-500 text-white shadow-xs'
+                        : 'text-slate-600 hover:bg-slate-100'
+                    }`}
+                  >
+                    {yr}
+                  </button>
+                ))}
+              </div>
             </div>
+
+            {/* Toggle Red Spread Perimeter */}
+            <button
+              type="button"
+              onClick={() => setShowRedExtent(!showRedExtent)}
+              aria-pressed={showRedExtent}
+              className={`min-h-[40px] px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-md backdrop-blur-md border ${
+                showRedExtent
+                  ? 'bg-red-50 text-red-700 border-red-300 ring-1 ring-red-400/40'
+                  : 'bg-white/95 text-slate-500 border-slate-200 hover:text-slate-800'
+              }`}
+              title="Tampilkan / Sembunyikan Garis Merah Batas Luas Sebaran Terumbu Karang"
+            >
+              <span className={`w-2.5 h-2.5 rounded-full ${showRedExtent ? 'bg-red-500 animate-pulse' : 'bg-slate-400'}`} />
+              <span>Batas Sebaran (Merah)</span>
+            </button>
+
+            {hoveredInfo && (
+              <div className="hidden sm:inline-flex items-center px-3 py-1.5 min-h-[40px] rounded-xl bg-slate-950/85 backdrop-blur-md border border-slate-700 text-cyan-300 text-xs font-mono shadow-md animate-fadeIn">
+                {hoveredInfo}
+              </div>
+            )}
           </div>
 
-          {/* Interactive MapLibre canvas */}
-          <div ref={mapContainer} className="w-full h-full" />
+          {/* Interactive Leaflet canvas */}
+          <div ref={mapContainer} className="w-full h-full z-0" />
 
           {/* Mobile Legend Toggle (< md) */}
           <button
             type="button"
             onClick={() => setShowMobileLegend((prev) => !prev)}
-            className="md:hidden absolute bottom-3 left-3 z-10 min-h-[44px] px-3.5 py-2 rounded-xl bg-white/95 backdrop-blur-md border border-slate-200 shadow-lg text-xs font-bold text-slate-800 flex items-center gap-2"
+            className="md:hidden absolute bottom-3 left-3 z-[400] min-h-[44px] px-3.5 py-2 rounded-xl bg-white/95 backdrop-blur-md border border-slate-200 shadow-lg text-xs font-bold text-slate-800 flex items-center gap-2"
           >
             <Layers size={14} className="text-blue-600" />
-            <span>{showMobileLegend ? 'Tutup Legenda' : 'Layer & Legenda'}</span>
+            <span>{showMobileLegend ? 'Tutup Legenda' : 'Legenda Spasial'}</span>
           </button>
 
-          {/* Floating Layer & Legend Box (Responsive drawer on < md, anchored top-right on md+) */}
+          {/* Floating Layer & Legend Box */}
           <div
             className={`${
               showMobileLegend ? 'block' : 'hidden'
-            } md:block absolute bottom-16 left-3 md:bottom-auto md:left-auto md:top-4 md:right-14 z-10 bg-white/95 backdrop-blur-md rounded-2xl p-4 shadow-lg border border-slate-200 text-xs text-slate-700 w-[min(16rem,calc(100%-1.5rem))] space-y-3`}
+            } md:block absolute bottom-16 left-3 md:bottom-auto md:left-auto md:top-4 md:right-14 z-[400] bg-white/95 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-slate-200 text-xs text-slate-700 w-[min(18rem,calc(100%-1.5rem))] space-y-2.5`}
           >
             <div className="font-bold text-slate-900 text-xs border-b border-slate-100 pb-1.5 flex items-center justify-between gap-2">
               <span className="flex items-center gap-2">
                 <Layers size={14} className="text-blue-600" />
-                <span>Layer & Legend</span>
+                <span>
+                  Legenda: {activeLayer.toUpperCase()} ({selectedYear})
+                </span>
               </span>
               <button
                 type="button"
@@ -323,347 +644,179 @@ export default function CoralDistributionMap() {
               </button>
             </div>
 
-            {/* Checkbox Layers */}
-            <div className="space-y-2 text-[11px]">
-              <label className="flex items-center gap-2 cursor-pointer font-medium text-slate-800 min-h-[32px]">
-                <input
-                  type="checkbox"
-                  checked={activeLayer.distribusi}
-                  onChange={(e) =>
-                    setActiveLayer({ ...activeLayer, distribusi: e.target.checked })
-                  }
-                  className="w-4 h-4 rounded border-slate-300 text-blue-600"
-                />
-                <span>Distribusi Terumbu Karang</span>
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer text-slate-600 min-h-[32px]">
-                <input
-                  type="checkbox"
-                  checked={activeLayer.batasPulau}
-                  onChange={(e) =>
-                    setActiveLayer({ ...activeLayer, batasPulau: e.target.checked })
-                  }
-                  className="w-4 h-4 rounded border-slate-300 text-blue-600"
-                />
-                <span>Batas Pulau Tunda</span>
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer text-slate-600 min-h-[32px]">
-                <input
-                  type="checkbox"
-                  checked={activeLayer.zonaDangkal}
-                  onChange={(e) =>
-                    setActiveLayer({ ...activeLayer, zonaDangkal: e.target.checked })
-                  }
-                  className="w-4 h-4 rounded border-slate-300 text-blue-600"
-                />
-                <span>Zona Perairan Dangkal</span>
-              </label>
+            {/* Dynamic Color Classes */}
+            <div className="space-y-1.5 text-[11px]">
+              {currentStats.classBreakdown.map((item, idx) => (
+                <div key={idx} className="flex items-center justify-between gap-2">
+                  <span className="flex items-center gap-2 min-w-0">
+                    <span
+                      className="w-3.5 h-3.5 rounded-md flex-shrink-0 border border-black/10"
+                      style={{ backgroundColor: item.color }}
+                    />
+                    <span className="truncate">{item.label}</span>
+                  </span>
+                  <span className="font-mono font-bold text-slate-800 flex-shrink-0">
+                    {item.pct}%
+                  </span>
+                </div>
+              ))}
             </div>
 
-            {/* Classification Color Legend */}
-            <div className="pt-2 border-t border-slate-100 space-y-1 text-[11px]">
-              <div className="font-bold text-slate-800 text-[10px] uppercase tracking-wider mb-1">
-                Legenda Klasifikasi
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="w-3.5 h-3.5 rounded bg-[#EF4444] flex-shrink-0" />
-                <span>Karang Keras (HC)</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="w-3.5 h-3.5 rounded bg-[#F97316] flex-shrink-0" />
-                <span>Karang Lunak (SC)</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="w-3.5 h-3.5 rounded bg-[#EAB308] flex-shrink-0" />
-                <span>Karang Mati (DC)</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="w-3.5 h-3.5 rounded bg-[#A855F7] flex-shrink-0" />
-                <span>Pasir (Sand)</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="w-3.5 h-3.5 rounded bg-[#3B82F6] flex-shrink-0" />
-                <span>Perairan (Water)</span>
+            {/* Red Spread Perimeter Indicator */}
+            <div className="pt-2 border-t border-slate-100">
+              <div className="flex items-center justify-between text-[11px] p-2 rounded-xl bg-red-50 border border-red-200">
+                <span className="flex items-center gap-1.5 font-medium text-red-800">
+                  <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse flex-shrink-0" />
+                  Batas Luas Sebaran:
+                </span>
+                <span className="font-mono font-bold text-red-700">
+                  {CORAL_LYZENGA_EXTENTS[selectedYear]?.properties?.area_label || `${CORAL_LYZENGA_EXTENTS[selectedYear]?.properties?.area_ha || 875.61} ha`}
+                </span>
               </div>
             </div>
+
+            <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400">
+              <span>Resolusi: {LAYER_CONFIGS.find((l) => l.id === activeLayer)?.resolution}</span>
+              <span className="font-semibold text-slate-600">Leaflet Map</span>
+            </div>
           </div>
+
+          {/* Reset View Button */}
+          <button
+            type="button"
+            onClick={handleResetView}
+            title="Fokus Ulang ke Pulau Tunda"
+            aria-label="Fokus Ulang Peta"
+            className="absolute bottom-3 right-3 z-[400] w-10 h-10 min-w-[40px] min-h-[40px] rounded-xl bg-white/95 hover:bg-white text-slate-700 border border-slate-200 shadow-md flex items-center justify-center transition-all hover:scale-105 pointer-events-auto"
+          >
+            <Compass size={18} className="text-orange-500" />
+          </button>
         </div>
 
-        {/* Right Column: Donut Chart & Coral Change Analytics */}
-        <div className="space-y-5 min-w-0">
-          {/* Card: Luas Area per Kelas (2024) matching image5.jpeg */}
-          <div className="p-5 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
-            <h3 className="text-sm font-bold text-slate-900 flex flex-wrap items-center justify-between gap-2">
-              <span>Luas Area per Kelas ({selectedYear})</span>
-              <span className="text-[10px] font-semibold text-slate-400">Sentinel-2 10m</span>
-            </h3>
-
-            {/* Circular Donut Diagram Display */}
-            <div className="flex flex-col sm:flex-row items-center gap-4">
-              <div className="relative w-28 h-28 flex items-center justify-center flex-shrink-0">
-                <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
-                  {/* Background Circle */}
-                  <circle
-                    cx="18"
-                    cy="18"
-                    r="15.915"
-                    fill="transparent"
-                    stroke="#F1F5F9"
-                    strokeWidth="3.8"
-                  />
-                  {/* Segments */}
-                  <circle
-                    cx="18"
-                    cy="18"
-                    r="15.915"
-                    fill="transparent"
-                    stroke="#EF4444"
-                    strokeWidth="4"
-                    strokeDasharray="38.58 61.42"
-                    strokeDashoffset="0"
-                  />
-                  <circle
-                    cx="18"
-                    cy="18"
-                    r="15.915"
-                    fill="transparent"
-                    stroke="#F97316"
-                    strokeWidth="4"
-                    strokeDasharray="15.81 84.19"
-                    strokeDashoffset="-38.58"
-                  />
-                  <circle
-                    cx="18"
-                    cy="18"
-                    r="15.915"
-                    fill="transparent"
-                    stroke="#EAB308"
-                    strokeWidth="4"
-                    strokeDasharray="9.90 90.10"
-                    strokeDashoffset="-54.39"
-                  />
-                  <circle
-                    cx="18"
-                    cy="18"
-                    r="15.915"
-                    fill="transparent"
-                    stroke="#A855F7"
-                    strokeWidth="4"
-                    strokeDasharray="28.80 71.20"
-                    strokeDashoffset="-64.29"
-                  />
-                </svg>
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                  <span className="text-[9px] text-slate-400 font-bold uppercase leading-none">
-                    Total
-                  </span>
-                  <span className="text-xs font-black text-slate-900 leading-tight">
-                    292,36 ha
-                  </span>
-                </div>
+        {/* Right Column: Dynamic Statistics Card */}
+        <div className="space-y-4">
+          <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                  Distribusi {activeLayer.toUpperCase()} ({selectedYear})
+                </span>
+                <h3 className="text-base font-bold text-slate-900">
+                  {LAYER_CONFIGS.find((l) => l.id === activeLayer)?.title}
+                </h3>
               </div>
-
-              {/* Class Metric Breakdown */}
-              <div className="w-full flex-1 space-y-1.5 text-xs min-w-0">
-                <div className="flex items-center justify-between text-slate-700">
-                  <span className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#EF4444]" />
-                    <span className="text-[11px]">Karang Keras (HC)</span>
-                  </span>
-                  <span className="font-bold text-slate-900 text-[11px]">112,74 ha (38,58%)</span>
-                </div>
-                <div className="flex items-center justify-between text-slate-700">
-                  <span className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#F97316]" />
-                    <span className="text-[11px]">Karang Lunak (SC)</span>
-                  </span>
-                  <span className="font-bold text-slate-900 text-[11px]">46,21 ha (15,81%)</span>
-                </div>
-                <div className="flex items-center justify-between text-slate-700">
-                  <span className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#EAB308]" />
-                    <span className="text-[11px]">Karang Mati (DC)</span>
-                  </span>
-                  <span className="font-bold text-slate-900 text-[11px]">28,95 ha (9,90%)</span>
-                </div>
-                <div className="flex items-center justify-between text-slate-700">
-                  <span className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#A855F7]" />
-                    <span className="text-[11px]">Pasir (Sand)</span>
-                  </span>
-                  <span className="font-bold text-slate-900 text-[11px]">84,17 ha (28,80%)</span>
-                </div>
-                <div className="flex items-center justify-between text-slate-700">
-                  <span className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#3B82F6]" />
-                    <span className="text-[11px]">Perairan</span>
-                  </span>
-                  <span className="font-bold text-slate-900 text-[11px]">20,29 ha (6,94%)</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Card: Coral Change Analysis (Perubahan 2020 - 2024) matching image5.jpeg */}
-          <div className="p-5 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-3">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
-                <TrendingUp size={14} className="text-emerald-500" />
-                Coral Change Analysis
-              </h4>
-              <span className="text-[10px] text-slate-500 font-semibold">
-                Perubahan 2020 - 2024
+              <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                Sentinel-2 & NOAA
               </span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-center">
-              <div className="p-2.5 rounded-2xl bg-emerald-50/70 border border-emerald-100">
-                <div className="text-xs font-black text-emerald-700">+6,21 ha</div>
-                <div className="text-[10px] font-semibold text-emerald-800">Karang Keras</div>
-                <div className="text-[9px] text-emerald-600 font-medium mt-0.5">(+5,83%)</div>
+            {/* Key Stat Block */}
+            <div className="p-4 rounded-2xl bg-gradient-to-br from-slate-50 to-blue-50/40 border border-slate-100 text-center space-y-1">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                Total Luas Terpetakan
+              </span>
+              <div className="text-3xl font-black text-slate-900 tracking-tight flex items-baseline justify-center gap-1.5">
+                <span>{currentStats.primaryValue}</span>
+                <span className="text-sm font-bold text-slate-500">
+                  {currentStats.primaryUnit}
+                </span>
               </div>
-              <div className="p-2.5 rounded-2xl bg-rose-50/70 border border-rose-100">
-                <div className="text-xs font-black text-rose-700">-4,17 ha</div>
-                <div className="text-[10px] font-semibold text-rose-800">Karang Lunak</div>
-                <div className="text-[9px] text-rose-600 font-medium mt-0.5">(-8,27%)</div>
-              </div>
-              <div className="p-2.5 rounded-2xl bg-amber-50/70 border border-amber-100">
-                <div className="text-xs font-black text-amber-700">-2,63 ha</div>
-                <div className="text-[10px] font-semibold text-amber-800">Karang Mati</div>
-                <div className="text-[9px] text-amber-600 font-medium mt-0.5">(-8,33%)</div>
-              </div>
+              <p className="text-[11px] text-slate-500 font-medium">
+                62 polygon geometri spasial
+              </p>
             </div>
-          </div>
-        </div>
-      </div>
 
-      {/* Bottom Row matching image5.jpeg: Map Swipe, Classification Methodology, Dataset & Metadata, Export Data */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        {/* Card 1: Map Swipe Slider */}
-        <div className="p-5 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-3">
-          <h4 className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-            <ArrowRightLeft size={14} className="text-blue-600" />
-            Map Swipe: Perbandingan
-          </h4>
-          <div className="relative h-28 rounded-2xl overflow-hidden bg-slate-900 border border-slate-100 group">
-            <img
-              src="/images/image5.jpeg"
-              alt="Swipe Preview"
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-slate-950/20 flex items-center justify-center">
-              <div className="px-3 py-1 rounded-full bg-white/95 text-slate-900 font-bold text-xs shadow-md flex items-center gap-2">
-                <span>2020</span>
-                <span className="text-orange-500 font-black">⮂</span>
-                <span>2024</span>
+            {/* Breakdown Bars */}
+            <div className="space-y-2 pt-1 text-xs">
+              <div className="flex justify-between items-center text-slate-600">
+                <span className="font-medium">Substrat Terumbu & Karang</span>
+                <span className="font-bold text-slate-900">
+                  523,6 ha ({currentStats.classBreakdown[0]?.pct || 59.8}%)
+                </span>
+              </div>
+              <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-emerald-500 rounded-full transition-all duration-500"
+                  style={{ width: `${currentStats.classBreakdown[0]?.pct || 59.8}%` }}
+                />
+              </div>
+
+              <div className="flex justify-between items-center text-slate-600 pt-2">
+                <span className="font-medium">Pasir & Laguna Dangkal</span>
+                <span className="font-bold text-slate-900">
+                  352,0 ha ({currentStats.classBreakdown[1]?.pct || 40.2}%)
+                </span>
+              </div>
+              <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-sky-500 rounded-full transition-all duration-500"
+                  style={{ width: `${currentStats.classBreakdown[1]?.pct || 40.2}%` }}
+                />
               </div>
             </div>
           </div>
-          <div className="flex items-center justify-between text-[11px] text-slate-500">
-            <span>Baseline 2020</span>
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={swipePosition}
-              onChange={(e) => setSwipePosition(Number(e.target.value))}
-              className="w-24 accent-orange-500 cursor-pointer"
-            />
-            <span>Terkini 2024</span>
-          </div>
-        </div>
 
-        {/* Card 2: Classification Methodology */}
-        <div className="p-5 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-2.5 text-xs text-slate-600">
-          <h4 className="font-bold text-slate-900 flex items-center gap-1.5">
-            <Sliders size={14} className="text-orange-600" />
-            Classification Methodology
-          </h4>
-          <div className="space-y-1.5 text-[11px]">
-            <div className="flex justify-between border-b border-slate-100 pb-1">
-              <span className="text-slate-400">Metode</span>
-              <span className="font-semibold text-slate-800">Supervised SVM</span>
+          {/* Multi-Year Trend Card */}
+          <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-3">
+            <div className="flex items-center justify-between">
+              <h4 className="text-xs font-bold text-slate-900 flex items-center gap-2">
+                <TrendingUp size={14} className="text-emerald-500" />
+                <span>Tren 5 Tahun (2022–2026)</span>
+              </h4>
+              <span className="text-[10px] text-slate-400">Multi-Temporal</span>
             </div>
-            <div className="flex justify-between border-b border-slate-100 pb-1">
-              <span className="text-slate-400">Citra Satelit</span>
-              <span className="font-semibold text-slate-800">Sentinel-2 MSI (10m)</span>
-            </div>
-            <div className="flex justify-between border-b border-slate-100 pb-1">
-              <span className="text-slate-400">Pra-pengolahan</span>
-              <span className="font-semibold text-slate-800">DOS Atmospheric</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-400">Overall Accuracy</span>
-              <span className="font-bold text-emerald-600">87,42%</span>
-            </div>
-          </div>
-        </div>
 
-        {/* Card 3: Dataset & Metadata */}
-        <div className="p-5 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-2.5 text-xs text-slate-600">
-          <h4 className="font-bold text-slate-900 flex items-center gap-1.5">
-            <Info size={14} className="text-purple-600" />
-            Dataset & Metadata
-          </h4>
-          <div className="space-y-1.5 text-[11px]">
-            <div className="flex justify-between border-b border-slate-100 pb-1">
-              <span className="text-slate-400">Sumber Data</span>
-              <span className="font-semibold text-slate-800">ESA Copernicus</span>
-            </div>
-            <div className="flex justify-between border-b border-slate-100 pb-1">
-              <span className="text-slate-400">Tahun Observasi</span>
-              <span className="font-semibold text-slate-800">2020, 2022, 2024</span>
-            </div>
-            <div className="flex justify-between border-b border-slate-100 pb-1">
-              <span className="text-slate-400">Sistem Koordinat</span>
-              <span className="font-semibold text-slate-800">WGS 84 / UTM 48S</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-400">Tanggal Olah</span>
-              <span className="font-semibold text-slate-800">12 Okt 2026</span>
+            <div className="grid grid-cols-5 gap-1.5 pt-1 text-center">
+              {([2022, 2023, 2024, 2025, 2026] as GisYear[]).map((yr) => {
+                const isSelected = selectedYear === yr;
+                return (
+                  <button
+                    key={yr}
+                    type="button"
+                    onClick={() => setSelectedYear(yr)}
+                    className={`p-2 rounded-xl text-center transition-all cursor-pointer ${
+                      isSelected
+                        ? 'bg-orange-50 border border-orange-300 text-orange-900 font-bold scale-105 shadow-xs'
+                        : 'bg-slate-50 border border-slate-100 text-slate-600 hover:bg-slate-100'
+                    }`}
+                  >
+                    <div className="text-[10px] text-slate-400">{yr}</div>
+                    <div className="text-xs font-extrabold mt-0.5">
+                      {ANNUAL_STATS[activeLayer][yr].primaryValue}
+                    </div>
+                    <div className="text-[9px] text-slate-400">
+                      {ANNUAL_STATS[activeLayer][yr].primaryUnit}
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           </div>
-        </div>
 
-        {/* Card 4: Export Data matching image5.jpeg */}
-        <div className="p-5 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-2.5">
-          <h4 className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-            <Download size={14} className="text-orange-500" />
-            Export Data
-          </h4>
-          <p className="text-[11px] text-slate-500 leading-snug">
-            Unduh hasil klasifikasi, peta, atau tabel luas area untuk keperluan analisis lebih lanjut.
-          </p>
-          <div className="space-y-2 pt-1">
+          {/* Download GeoJSON Button */}
+          <div className="p-4 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-2">
+            <div className="flex items-center justify-between text-xs">
+              <span className="font-bold text-slate-800 flex items-center gap-1.5">
+                <Download size={14} className="text-blue-600" />
+                <span>Unduh Dataset Spasial</span>
+              </span>
+              <span className="text-[10px] text-emerald-600 font-semibold">• Ready</span>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleDownloadGeoJson}
+              className="w-full min-h-[44px] px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-sm"
+            >
+              <FileCode size={14} className="text-cyan-400" />
+              <span>Unduh GeoJSON ({activeLayer}_{selectedYear}.geojson)</span>
+            </button>
+
             {downloadNotice && (
-              <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-[11px] font-semibold text-emerald-800">
+              <div className="text-[11px] text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl p-2 text-center animate-fadeIn">
                 {downloadNotice}
               </div>
             )}
-            <button
-              type="button"
-              onClick={() => handleDownload('Shapefile .shp')}
-              className="w-full min-h-[40px] py-2 px-3 rounded-xl border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-[11px] font-semibold text-slate-700 flex items-center justify-between transition-colors"
-            >
-              <span>Shapefile (.shp)</span>
-              <Download size={12} className="text-slate-400" />
-            </button>
-            <button
-              type="button"
-              onClick={() => handleDownload('GeoJSON .geojson')}
-              className="w-full min-h-[40px] py-2 px-3 rounded-xl border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-[11px] font-semibold text-slate-700 flex items-center justify-between transition-colors"
-            >
-              <span>GeoJSON (.geojson)</span>
-              <Download size={12} className="text-slate-400" />
-            </button>
-            <button
-              type="button"
-              onClick={() => handleDownload('Tabel Area .csv')}
-              className="w-full min-h-[40px] py-2 px-3 rounded-xl border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-[11px] font-semibold text-slate-700 flex items-center justify-between transition-colors"
-            >
-              <span>Tabel Area (.csv)</span>
-              <Download size={12} className="text-slate-400" />
-            </button>
           </div>
         </div>
       </div>

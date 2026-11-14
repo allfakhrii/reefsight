@@ -17,6 +17,17 @@ export default function Home() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState<boolean>(false);
 
+  // Sync initial tab from URL query param if present
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const tabParam = params.get('tab');
+      if (tabParam) {
+        setActiveTab(tabParam);
+      }
+    }
+  }, []);
+
   // Close mobile navigation drawer on Escape or when resizing to desktop
   useEffect(() => {
     if (!isMobileSidebarOpen) return;
@@ -168,9 +179,9 @@ export default function Home() {
           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
             <div className="flex items-center gap-2.5">
               <img
-                src="/brand/reefsight-icon.svg"
+                src="/brand/logo.jpg"
                 alt="REEFSIGHT"
-                className="w-6 h-6 object-contain"
+                className="w-6 h-6 rounded-md object-cover border border-slate-700/20"
               />
               <span className="font-extrabold text-slate-800 tracking-tight text-sm">
                 REEF<span className="text-[#F05A28]">SIGHT</span>

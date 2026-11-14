@@ -1,14 +1,34 @@
 'use client';
 
 import React, { useState } from 'react';
+import dynamic from 'next/dynamic';
 import EchoVisionCanvas from '@/components/three/EchoVisionCanvas';
 import DeploymentMapLibre from '@/components/maps/DeploymentMapLibre';
-import CoralDistributionMap from '@/components/maps/CoralDistributionMap';
 import SoundscapeExplorer from '@/components/audio/SoundscapeExplorer';
 import EnvironmentalCharts from '@/components/charts/EnvironmentalCharts';
+
+const CoralDistributionMap = dynamic(() => import('@/components/maps/CoralDistributionMap'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-[520px] rounded-3xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 text-xs animate-pulse">
+      Memuat Peta Distribusi Leaflet...
+    </div>
+  ),
+});
+
+const CoralProjectionMap = dynamic(() => import('@/components/maps/CoralProjectionMap'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-[520px] rounded-3xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 text-xs animate-pulse">
+      Memuat Peta Proyeksi Leaflet...
+    </div>
+  ),
+});
 import {
   CORAL_LIFE_FORMS,
   REEF_FISH_CATALOG,
+  MACROBENTHOS_CATALOG,
+  PULAU_TUNDA_TRANSECT_PHOTOS,
   MOCK_PUBLICATIONS,
   MOCK_RESEARCH_LOGBOOKS,
   ECO_TOURISM_ZONES,
@@ -61,12 +81,18 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
   const [projScenario, setProjScenario] = useState<'baseline' | 'high_pressure' | 'recovery'>('baseline');
 
   // Biodiversity subtabs matching image10.jpeg
-  const [bioTab, setBioTab] = useState<'growth_form' | 'thermal' | 'fish' | 'relationship'>('growth_form');
+  const [bioTab, setBioTab] = useState<
+    'growth_form' | 'thermal' | 'fish' | 'benthos' | 'relationship' | 'transects'
+  >('growth_form');
   const [selectedGrowthForm, setSelectedGrowthForm] = useState<string>('Acropora Branching');
+  const [selectedTransect, setSelectedTransect] = useState<any | null>(null);
 
   // Eco-tourism subtabs matching image12.jpeg
   const [ecoTab, setEcoTab] = useState<'suitability' | 'rehabilitation' | 'recommendation'>('suitability');
   const [selectedEcoZone, setSelectedEcoZone] = useState(ECO_TOURISM_ZONES[0]);
+
+  // Logbook & Profile subtabs
+  const [logbookTab, setLogbookTab] = useState<'profile' | 'logbook' | 'publications'>('profile');
 
   // Contact Form state
   const [contactName, setContactName] = useState('');
@@ -104,7 +130,7 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
             {/* Background Coral Reef Image */}
             <div
               className="absolute inset-0 bg-cover bg-center opacity-45 mix-blend-luminosity"
-              style={{ backgroundImage: `url('/images/image2.jpeg')` }}
+              style={{ backgroundImage: `url('/images/biodiversity/ikan-karang-hero.jpg')` }}
             />
             <div className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/60 to-transparent" />
 
@@ -155,7 +181,7 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
               { id: 'bio-growth', label: 'Coral Growth Forms', icon: '🌿', tab: 'biodiversity' },
               { id: 'bio-diversity', label: 'Marine Biodiversity', icon: '🐟', tab: 'biodiversity' },
               { id: 'bio-assessment', label: 'Habitat Characteristics', icon: '📊', tab: 'ecological-assessment' },
-              { id: 'bio-profile', label: 'Pulau Tunda Profile', icon: '📍', tab: 'about' },
+              { id: 'bio-profile', label: 'Pulau Tunda Profile', icon: '📍', tab: 'research-logbook' },
               { id: 'bio-research', label: 'Research Approach', icon: '🔬', tab: 'prototype-3d' }
             ].map((sub) => (
               <button
@@ -188,7 +214,7 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
 
               <div className="relative h-44 rounded-2xl overflow-hidden border border-slate-100 group">
                 <img
-                  src="/images/image2.jpeg"
+                  src="/images/biodiversity/ikan-karang-hero.jpg"
                   alt="Coral Reef"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
@@ -222,12 +248,12 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
 
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3">
                 {[
-                  { name: 'Branching', sub: '(Bercabang)', img: '/images/image2.jpeg' },
-                  { name: 'Massive', sub: '(Masif)', img: '/images/image2.jpeg' },
-                  { name: 'Encrusting', sub: '(Menempel)', img: '/images/image2.jpeg' },
-                  { name: 'Foliose', sub: '(Berlembar)', img: '/images/image2.jpeg' },
-                  { name: 'Tabular', sub: '(Meja)', img: '/images/image2.jpeg' },
-                  { name: 'Submassive', sub: '(Setengah Masif)', img: '/images/image2.jpeg' }
+                  { name: 'Branching', sub: '(Bercabang)', img: '/images/biodiversity/branching.jpg' },
+                  { name: 'Massive', sub: '(Masif)', img: '/images/biodiversity/massive.jpg' },
+                  { name: 'Encrusting', sub: '(Menempel)', img: '/images/biodiversity/encrusting.jpg' },
+                  { name: 'Foliose', sub: '(Berlembar)', img: '/images/biodiversity/foliose.jpg' },
+                  { name: 'Tabular', sub: '(Meja)', img: '/images/coral-surveys/tunda_transect_03.jpg' },
+                  { name: 'Submassive', sub: '(Setengah Masif)', img: '/images/coral-surveys/tunda_transect_07.jpg' }
                 ].map((form) => (
                   <button
                     key={form.name}
@@ -276,21 +302,21 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-center">
                 <div className="p-2 rounded-2xl border border-slate-100 bg-slate-50/50">
                   <div className="h-14 rounded-xl overflow-hidden mb-1">
-                    <img src="/images/image2.jpeg" alt="Ikan Karang" className="w-full h-full object-cover" />
+                    <img src="/images/biodiversity/ikan-karang-hero.jpg" alt="Ikan Karang" className="w-full h-full object-cover" />
                   </div>
                   <div className="text-[10px] font-bold text-slate-800">Ikan Karang</div>
                   <div className="text-[9px] text-slate-500">(Reef Fish)</div>
                 </div>
                 <div className="p-2 rounded-2xl border border-slate-100 bg-slate-50/50">
                   <div className="h-14 rounded-xl overflow-hidden mb-1">
-                    <img src="/images/image2.jpeg" alt="Echinodermata" className="w-full h-full object-cover" />
+                    <img src="/images/biodiversity/echinodermata.jpg" alt="Echinodermata" className="w-full h-full object-cover" />
                   </div>
                   <div className="text-[10px] font-bold text-slate-800">Echinodermata</div>
                   <div className="text-[9px] text-slate-500">(Bintang Laut)</div>
                 </div>
                 <div className="p-2 rounded-2xl border border-slate-100 bg-slate-50/50">
                   <div className="h-14 rounded-xl overflow-hidden mb-1">
-                    <img src="/images/image2.jpeg" alt="Moluska" className="w-full h-full object-cover" />
+                    <img src="/images/biodiversity/moluska.jpg" alt="Moluska" className="w-full h-full object-cover" />
                   </div>
                   <div className="text-[10px] font-bold text-slate-800">Moluska</div>
                   <div className="text-[9px] text-slate-500">(Kima, Siput)</div>
@@ -315,7 +341,7 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
                   Profil Ekologis Pulau Tunda
                 </div>
                 <button
-                  onClick={() => onSelectTab('about')}
+                  onClick={() => onSelectTab('research-logbook')}
                   className="text-xs font-semibold text-slate-500 hover:text-orange-600 flex items-center gap-1"
                 >
                   <span>Learn More</span>
@@ -326,7 +352,7 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                 <div className="w-full sm:w-32 h-36 sm:h-24 rounded-2xl overflow-hidden bg-slate-100 flex-shrink-0">
                   <img
-                    src="/images/image2.jpeg"
+                    src="/images/coral-surveys/tunda_transect_02.jpg"
                     alt="Aerial Pulau Tunda"
                     className="w-full h-full object-cover"
                   />
@@ -477,7 +503,7 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
           <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 border border-slate-200 shadow-md">
             <div
               className="absolute inset-0 bg-cover bg-right opacity-30 mix-blend-luminosity"
-              style={{ backgroundImage: `url('/images/image3.jpeg')` }}
+              style={{ backgroundImage: `url('/images/coral-surveys/tunda_transect_01.jpg')` }}
             />
             <div className="relative z-10 p-6 sm:p-8 max-w-3xl text-white">
               <div className="inline-flex items-center gap-2 text-xs font-bold text-orange-400 uppercase tracking-widest mb-2">
@@ -697,7 +723,7 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
           <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 border border-slate-200 shadow-md">
             <div
               className="absolute inset-0 bg-cover bg-right opacity-30 mix-blend-luminosity"
-              style={{ backgroundImage: `url('/images/image6.jpeg')` }}
+              style={{ backgroundImage: `url('/images/coral-surveys/tunda_transect_02.jpg')` }}
             />
             <div className="relative z-10 p-6 sm:p-8 max-w-2xl text-white">
               <div className="inline-flex items-center gap-2 text-xs font-bold text-orange-400 uppercase tracking-widest mb-2">
@@ -734,50 +760,59 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
 
           {/* Projection Visual Area & Charts matching image6.jpeg */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Simulated Map Display */}
+            {/* Interactive Spatial Projection MapLibre Map */}
             <div className="lg:col-span-2 p-5 sm:p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <h3 className="text-sm font-bold text-slate-900">
-                  Peta Proyeksi Sebaran Karang (+{projPeriod} Tahun)
-                </h3>
+                <div>
+                  <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                    <span>🗺️</span>
+                    <span>Peta Proyeksi Sebaran Spasial Karang (+{projPeriod} Tahun)</span>
+                  </h3>
+                  <p className="text-[11px] text-slate-500 mt-0.5">
+                    Model spasial Cellular Automata (CA) & Rantai Markov berbasis baseline tutupan terumbu karang Pulau Tunda.
+                  </p>
+                </div>
                 <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-blue-100 text-blue-700">
-                  Model: Cellular Automata (CA)
+                  Model: Cellular Automata (CA) · R² = 0,87
                 </span>
               </div>
 
-              <div className="relative h-64 sm:h-72 rounded-2xl overflow-hidden bg-slate-950 border border-slate-100">
-                <img
-                  src="/images/image6.jpeg"
-                  alt="Coral Projection Map"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute bottom-3 left-3 bg-slate-900/90 backdrop-blur-xs text-white p-2.5 rounded-xl text-[10px] space-y-1">
-                  <div className="font-bold text-orange-400">Luas Area (+{projPeriod} Thn):</div>
-                  <div>HC: {projPeriod === 5 ? '115,42 ha (39,51%)' : projPeriod === 10 ? '118,10 ha (40,39%)' : '121,05 ha (41,40%)'}</div>
-                  <div>SC: {projPeriod === 5 ? '43,88 ha (15,03%)' : projPeriod === 10 ? '42,15 ha (14,42%)' : '40,70 ha (13,92%)'}</div>
-                  <div>DC: {projPeriod === 5 ? '24,71 ha (8,46%)' : projPeriod === 10 ? '22,30 ha (7,63%)' : '20,18 ha (6,90%)'}</div>
-                </div>
-              </div>
+              {/* Dynamic Interactive Map Component */}
+              <CoralProjectionMap
+                period={projPeriod as 5 | 10 | 15}
+                onSelectPeriod={(p) => setProjPeriod(p)}
+              />
             </div>
 
-            {/* Trajectory & Delta Comparison matching image6.jpeg */}
+            {/* Trajectory & Delta Comparison */}
             <div className="space-y-4">
               <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-3">
-                <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-                  Perbandingan Kondisi Karang
-                </h4>
+                <div className="flex items-center justify-between">
+                  <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+                    Perbandingan Kondisi Karang
+                  </h4>
+                  <span className="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-md">
+                    +{projPeriod} Tahun
+                  </span>
+                </div>
                 <div className="space-y-2 text-xs">
                   <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-between">
                     <span className="font-semibold text-emerald-900">Karang Keras (HC)</span>
-                    <span className="font-extrabold text-emerald-700">+2,68 ha (+2,38%)</span>
+                    <span className="font-extrabold text-emerald-700">
+                      {projPeriod === 5 ? '+2,68 ha (+2,38%)' : projPeriod === 10 ? '+5,36 ha (+4,75%)' : '+8,31 ha (+7,37%)'}
+                    </span>
                   </div>
                   <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-100 flex items-center justify-between">
                     <span className="font-semibold text-rose-900">Karang Lunak (SC)</span>
-                    <span className="font-extrabold text-rose-700">-2,33 ha (-5,04%)</span>
+                    <span className="font-extrabold text-rose-700">
+                      {projPeriod === 5 ? '-2,33 ha (-5,04%)' : projPeriod === 10 ? '-4,06 ha (-8,78%)' : '-5,51 ha (-11,92%)'}
+                    </span>
                   </div>
                   <div className="p-2.5 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-between">
                     <span className="font-semibold text-amber-900">Karang Mati (DC)</span>
-                    <span className="font-extrabold text-amber-700">-3,12 ha (-11,21%)</span>
+                    <span className="font-extrabold text-amber-700">
+                      {projPeriod === 5 ? '-3,12 ha (-11,21%)' : projPeriod === 10 ? '-5,53 ha (-19,87%)' : '-7,65 ha (-27,49%)'}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -805,7 +840,7 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
           <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 border border-slate-200 shadow-md">
             <div
               className="absolute inset-0 bg-cover bg-right opacity-30 mix-blend-luminosity"
-              style={{ backgroundImage: `url('/images/image10.jpeg')` }}
+              style={{ backgroundImage: `url('/images/coral-surveys/tunda_transect_04.jpg')` }}
             />
             <div className="relative z-10 p-6 sm:p-8 max-w-2xl text-white">
               <div className="inline-flex items-center gap-2 text-xs font-bold text-orange-400 uppercase tracking-widest mb-2">
@@ -877,7 +912,18 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
                   : 'hover:bg-slate-100 text-slate-600'
               }`}
             >
-              Reef Fish & Associated Biodiversity
+              Reef Fish (6 Spesies)
+            </button>
+            <button
+              type="button"
+              onClick={() => setBioTab('benthos')}
+              className={`min-h-[44px] px-4 py-2 rounded-xl whitespace-nowrap transition-all ${
+                bioTab === 'benthos'
+                  ? 'bg-slate-900 text-white shadow-xs'
+                  : 'hover:bg-slate-100 text-slate-600'
+              }`}
+            >
+              Makrobentos Bentik
             </button>
             <button
               type="button"
@@ -888,7 +934,18 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
                   : 'hover:bg-slate-100 text-slate-600'
               }`}
             >
-              Biodiversity Relationship Explorer
+              Matriks Asosiasi Ekologis
+            </button>
+            <button
+              type="button"
+              onClick={() => setBioTab('transects')}
+              className={`min-h-[44px] px-4 py-2 rounded-xl whitespace-nowrap transition-all ${
+                bioTab === 'transects'
+                  ? 'bg-orange-600 text-white shadow-xs font-bold'
+                  : 'hover:bg-slate-100 text-slate-600'
+              }`}
+            >
+              Galeri Foto Survei Lapangan (16 Transek)
             </button>
           </div>
 
@@ -900,11 +957,11 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
                   key={coral.name}
                   className="p-5 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-3"
                 >
-                  <div className="h-40 rounded-2xl overflow-hidden bg-slate-100">
+                  <div className="h-44 rounded-2xl overflow-hidden bg-slate-900 border border-slate-100">
                     <img
                       src={coral.image_url}
                       alt={coral.name}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                     />
                   </div>
                   <div>
@@ -938,6 +995,13 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
                   key={fish.id}
                   className="p-5 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-3"
                 >
+                  <div className="h-44 rounded-2xl overflow-hidden bg-slate-900 border border-slate-100">
+                    <img
+                      src={fish.image_url || '/images/biodiversity/ikan-karang-hero.jpg'}
+                      alt={fish.common_name}
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
                   <div className="flex items-center justify-between">
                     <span className="px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-700 text-[10px] font-bold">
                       {fish.trophic_group}
@@ -958,6 +1022,71 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
                   </div>
                 </div>
               ))}
+            </div>
+          )}
+
+          {bioTab === 'benthos' && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {MACROBENTHOS_CATALOG.map((b) => (
+                <div
+                  key={b.id}
+                  className="p-5 sm:p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-3"
+                >
+                  <div className="h-56 rounded-2xl overflow-hidden bg-slate-900 border border-slate-100">
+                    <img
+                      src={b.image_url}
+                      alt={b.name}
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                  <div>
+                    <h4 className="text-lg font-bold text-slate-900">{b.name}</h4>
+                    <p className="text-xs text-cyan-600 font-semibold italic mt-0.5">{b.taxa}</p>
+                  </div>
+                  <p className="text-xs text-slate-600 leading-relaxed">{b.role}</p>
+                  <div className="pt-2 border-t border-slate-100 text-xs text-slate-500">
+                    <span className="font-semibold text-slate-700">Kedalaman:</span> {b.depth}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {bioTab === 'transects' && (
+            <div className="space-y-4">
+              <div className="p-4 rounded-2xl bg-orange-50 border border-orange-200 text-xs text-orange-900 flex items-center justify-between">
+                <div>
+                  <span className="font-bold">Dokumentasi Survei Lapangan Pulau Tunda:</span>{' '}
+                  16 titik transek pengamatan visual dasar laut, kuadrat karang keras, dan kesehatan terumbu.
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {PULAU_TUNDA_TRANSECT_PHOTOS.map((tr) => (
+                  <div
+                    key={tr.id}
+                    onClick={() => setSelectedTransect(tr)}
+                    className="group rounded-2xl overflow-hidden bg-white border border-slate-200 shadow-xs hover:border-orange-400 cursor-pointer transition-all"
+                  >
+                    <div className="h-44 overflow-hidden bg-slate-900 relative">
+                      <img
+                        src={tr.file}
+                        alt={tr.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <span className="absolute top-2 left-2 px-2 py-0.5 rounded-lg bg-black/70 text-white text-[10px] font-bold backdrop-blur-xs">
+                        {tr.station}
+                      </span>
+                    </div>
+                    <div className="p-3">
+                      <h5 className="text-xs font-bold text-slate-900 line-clamp-1">{tr.title}</h5>
+                      <span className="text-[10px] text-emerald-600 font-semibold mt-0.5 block">
+                        ● {tr.condition}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
@@ -1011,7 +1140,7 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
           <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 border border-slate-200 shadow-md">
             <div
               className="absolute inset-0 bg-cover bg-right opacity-30 mix-blend-luminosity"
-              style={{ backgroundImage: `url('/images/image11.jpeg')` }}
+              style={{ backgroundImage: `url('/images/coral-surveys/tunda_transect_05.jpg')` }}
             />
             <div className="relative z-10 p-6 sm:p-8 max-w-2xl text-white">
               <div className="inline-flex items-center gap-2 text-xs font-bold text-orange-400 uppercase tracking-widest mb-2">
@@ -1069,12 +1198,12 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
                 <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100">
                   <div className="text-[10px] text-slate-400 font-bold">Coral Diversity</div>
                   <div className="text-lg font-black text-purple-600">44 Taksa</div>
-                  <div className="text-[9px] text-slate-400">H' = 2.86</div>
+                  <div className="text-[9px] text-slate-400">H&apos; = 2.86</div>
                 </div>
                 <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100">
                   <div className="text-[10px] text-slate-400 font-bold">Fish Diversity</div>
                   <div className="text-lg font-black text-blue-600">68 Spesies</div>
-                  <div className="text-[9px] text-slate-400">H' = 3.21</div>
+                  <div className="text-[9px] text-slate-400">H&apos; = 3.21</div>
                 </div>
                 <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100">
                   <div className="text-[10px] text-slate-400 font-bold">Fish Abundance</div>
@@ -1106,7 +1235,7 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
           <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 border border-slate-200 shadow-md">
             <div
               className="absolute inset-0 bg-cover bg-right opacity-30 mix-blend-luminosity"
-              style={{ backgroundImage: `url('/images/image13.jpeg')` }}
+              style={{ backgroundImage: `url('/images/coral-surveys/tunda_transect_06.jpg')` }}
             />
             <div className="relative z-10 p-6 sm:p-8 max-w-2xl text-white">
               <div className="inline-flex items-center gap-2 text-xs font-bold text-orange-400 uppercase tracking-widest mb-2">
@@ -1136,7 +1265,7 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
           <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 border border-slate-200 shadow-md">
             <div
               className="absolute inset-0 bg-cover bg-right opacity-30 mix-blend-luminosity"
-              style={{ backgroundImage: `url('/images/image14.jpeg')` }}
+              style={{ backgroundImage: `url('/soundscape/reef_spectrograms.png')` }}
             />
             <div className="relative z-10 p-6 sm:p-8 max-w-2xl text-white">
               <div className="inline-flex items-center gap-2 text-xs font-bold text-orange-400 uppercase tracking-widest mb-2">
@@ -1166,7 +1295,7 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
           <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 border border-slate-200 shadow-md">
             <div
               className="absolute inset-0 bg-cover bg-right opacity-30 mix-blend-luminosity"
-              style={{ backgroundImage: `url('/images/image12.jpeg')` }}
+              style={{ backgroundImage: `url('/images/coral-surveys/tunda_transect_08.jpg')` }}
             />
             <div className="relative z-10 p-6 sm:p-8 max-w-2xl text-white">
               <div className="inline-flex items-center gap-2 text-xs font-bold text-orange-400 uppercase tracking-widest mb-2">
@@ -1285,7 +1414,7 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
       )}
 
       {/* ======================================================== */}
-      {/* 11. TAB: RESEARCH & PUBLICATIONS - image8 & image9       */}
+      {/* 11. TAB: RESEARCH & PUBLICATIONS - Logbook & About Info  */}
       {/* ======================================================== */}
       {activeTab === 'research-logbook' && (
         <div className="space-y-8 animate-fadeIn">
@@ -1293,7 +1422,7 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
           <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 border border-slate-200 shadow-md">
             <div
               className="absolute inset-0 bg-cover bg-right opacity-30 mix-blend-luminosity"
-              style={{ backgroundImage: `url('/images/image8.jpeg')` }}
+              style={{ backgroundImage: `url('/images/coral-surveys/tunda_transect_09.jpg')` }}
             />
             <div className="relative z-10 p-6 sm:p-8 max-w-2xl text-white">
               <div className="inline-flex items-center gap-2 text-xs font-bold text-orange-400 uppercase tracking-widest mb-2">
@@ -1301,61 +1430,294 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
                 RESEARCH & PUBLICATION CENTER
               </div>
               <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mb-2">
-                Research Logbook & Scientific Documents
+                Research Logbook, Profile & Publications
               </h2>
               <p className="text-xs sm:text-sm text-slate-200 leading-relaxed mb-4">
-                Dokumentasi kronologis kegiatan ekspedisi lapangan, pemasangan sensor prototipe, serta pusat publikasi dokumen ilmiah terumbu karang Pulau Tunda.
+                Dokumentasi kronologis ekspedisi lapangan, profil ekologis terumbu karang Pulau Tunda, metodologi sains IoUT, dan publikasi ilmiah resmi.
               </p>
             </div>
           </div>
 
-          {/* Publications List matching image9.jpeg */}
-          <div className="space-y-4">
-            <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-              <BookOpen size={18} className="text-orange-500" />
-              <span>Dokumen Publikasi Ilmiah Resmi (Open Access)</span>
-            </h3>
+          {/* Subtabs Switcher */}
+          <div className="flex flex-wrap items-center gap-2 p-1.5 bg-slate-100 rounded-2xl w-fit">
+            {[
+              { id: 'profile' as const, label: 'Visi & Profil Ekologis', icon: '🪸' },
+              { id: 'logbook' as const, label: 'Logbook Lapangan Kronologis', icon: '📝' },
+              { id: 'publications' as const, label: 'Publikasi Ilmiah Open Access', icon: '📄' }
+            ].map((sub) => (
+              <button
+                key={sub.id}
+                type="button"
+                onClick={() => setLogbookTab(sub.id)}
+                className={`min-h-[40px] px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all ${
+                  logbookTab === sub.id
+                    ? 'bg-white text-orange-600 shadow-sm'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+                }`}
+              >
+                <span>{sub.icon}</span>
+                <span>{sub.label}</span>
+              </button>
+            ))}
+          </div>
 
-            {downloadToast && (
-              <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center gap-2">
-                <CheckCircle2 size={16} className="text-emerald-600 flex-shrink-0" />
-                <span>{downloadToast}</span>
-              </div>
-            )}
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-              {MOCK_PUBLICATIONS.map((pub) => (
-                <div
-                  key={pub.id}
-                  className="p-5 sm:p-6 rounded-3xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between space-y-4"
-                >
-                  <div className="space-y-2">
-                    <span className="px-2.5 py-1 rounded-full bg-blue-100 text-blue-700 font-bold text-[10px]">
-                      {pub.category} · {pub.year}
-                    </span>
-                    <h4 className="text-sm font-bold text-slate-900 leading-snug line-clamp-2">
-                      {pub.title}
-                    </h4>
-                    <p className="text-xs text-slate-500 line-clamp-3 leading-relaxed">
-                      {pub.abstract}
+          {/* Subtab 1: Visi, Latar Belakang & Profil Ekologis (About Content) */}
+          {logbookTab === 'profile' && (
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Latar Belakang & Visi */}
+                <div className="lg:col-span-2 p-6 sm:p-8 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
+                  <div className="flex items-center gap-2 text-xs font-bold text-orange-600 uppercase tracking-wider">
+                    <span className="w-2.5 h-1 bg-orange-500 rounded-full" />
+                    Latar Belakang & Visi Riset
+                  </div>
+                  <h3 className="text-lg sm:text-xl font-bold text-slate-900">
+                    Kecerdasan Ekologis untuk Perlindungan Terumbu Karang Pulau Tunda
+                  </h3>
+                  <div className="space-y-3 text-xs sm:text-sm text-slate-600 leading-relaxed">
+                    <p>
+                      Pulau Tunda merupakan ekosistem terumbu karang kepulauan penting di Teluk Banten yang menghadapi tekanan ganda: fluktuasi oseanografi dinamis dari dinamika Selat Sunda dan sedimentasi serta aktivitas perikanan pesisir.
+                    </p>
+                    <p>
+                      Platform REEFSIGHT dikembangkan sebagai ekosistem komputasi kecerdasan buatan dan Internet of Underwater Things (IoUT) untuk menjembatani observasi bioakustik bawah air, pemodelan tutupan karang berbasis penginderaan jauh satelit, serta WebGIS telemetri waktu-nyata bagi peneliti, pemerintah daerah, dan konservator.
+                    </p>
+                    <p>
+                      Melalui 12 stasiun pemantauan terintegrasi (ASIK-01 hingga ASIK-12) yang melingkari pulau, REEFSIGHT menyediakan transparansi data ilmiah, peringatan dini anomali lingkungan, dan proyeksi pemulihan terumbu karang untuk mendukung konservasi berkelanjutan.
                     </p>
                   </div>
 
-                  <div className="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
-                    <span className="text-[11px] text-slate-500">{pub.download_count} Unduhan</span>
-                    <button
-                      type="button"
-                      onClick={() => handleDownloadPdf(pub.title)}
-                      className="min-h-[40px] px-3.5 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs flex items-center gap-1.5 transition-colors"
-                    >
-                      <Download size={13} />
-                      <span>Unduh PDF</span>
-                    </button>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4 border-t border-slate-100">
+                    <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100">
+                      <div className="text-[10px] text-slate-400 font-semibold">Tipe Ekosistem</div>
+                      <div className="text-sm font-black text-slate-800 mt-0.5">Fringing Reef</div>
+                      <div className="text-[10px] text-slate-500">Terumbu Karang Tepi</div>
+                    </div>
+                    <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100">
+                      <div className="text-[10px] text-slate-400 font-semibold">Luas Daratan & Pesisir</div>
+                      <div className="text-sm font-black text-slate-800 mt-0.5">± 2.8 km² / 7.2 km</div>
+                      <div className="text-[10px] text-slate-500">Garis Pantai Melingkar</div>
+                    </div>
+                    <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100">
+                      <div className="text-[10px] text-slate-400 font-semibold">Jaringan Buoy Telemetri</div>
+                      <div className="text-sm font-black text-emerald-600 mt-0.5">12 Stasiun Aktif</div>
+                      <div className="text-[10px] text-slate-500">EchoVision Hardware</div>
+                    </div>
                   </div>
                 </div>
-              ))}
+
+                {/* Mitra Strategis & Kolaborator */}
+                <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4 flex flex-col justify-between">
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2 text-xs font-bold text-orange-600 uppercase tracking-wider">
+                      <span className="w-2.5 h-1 bg-orange-500 rounded-full" />
+                      Mitra Konservasi & Kolaborator
+                    </div>
+                    <h4 className="text-sm font-bold text-slate-900">
+                      Kolaborasi Lintas Disiplin & Pemberdayaan Pesisir
+                    </h4>
+                    <p className="text-xs text-slate-500 leading-relaxed">
+                      Pengembangan dan operasional REEFSIGHT melibatkan sinergi akademisi, otoritas kelautan, serta kelompok masyarakat pesisir Pulau Tunda.
+                    </p>
+                    <div className="space-y-2.5 pt-2">
+                      {[
+                        { name: 'DKP Provinsi Banten', role: 'Regulator & Otoritas Konservasi Kelautan Daerah' },
+                        { name: 'Pokdarwis Pulau Tunda', role: 'Operator Lapangan & Mitra Eduwisata Ramah Lingkungan' },
+                        { name: 'Laboratorium Bioakustik Laut', role: 'Validasi Sinyal Akustik Hydrophone & ACI' },
+                        { name: 'Konsorsium Komputasi Ekologi', role: 'Infrastruktur Big Data Spasial & PostGIS' }
+                      ].map((m, i) => (
+                        <div key={i} className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 text-xs">
+                          <span className="font-bold text-slate-800 block">{m.name}</span>
+                          <span className="text-[10px] text-slate-500">{m.role}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => onSelectTab('contact')}
+                    className="w-full min-h-[44px] py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-xs"
+                  >
+                    <span>Ajukan Kolaborasi Riset</span>
+                    <ArrowRight size={14} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Metodologi Sains REEFSIGHT */}
+              <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
+                <h4 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                  <span>🔬</span>
+                  <span>4 Pilar Metodologi Sains Ekologis REEFSIGHT</span>
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {[
+                    {
+                      pilar: '01. Bioakustik Hydrophone',
+                      desc: 'Perekaman audio bawah air 24/7 untuk menghitung Acoustic Complexity Index (ACI) dan mendeteksi aktivitas snaps udang pistol serta vokal ikan karang.',
+                      icon: '🎙️'
+                    },
+                    {
+                      pilar: '02. UPT Citra Optik',
+                      desc: 'Underwater Photo Transect (UPT) kuadrat 1×1m untuk verifikasi bentuk pertumbuhan karang, rekrutmen koloni, dan deteksi dini pemutihan (bleaching).',
+                      icon: '📷'
+                    },
+                    {
+                      pilar: '03. WebGIS Multi-Temporal',
+                      desc: 'Integrasi citra satelit resolusi tinggi dengan algoritma Lyzenga, Sea Surface Temperature (SST), dan Chlorophyll-a (CHL) deret 2022–2026.',
+                      icon: '🗺️'
+                    },
+                    {
+                      pilar: '04. Verifikasi QA/QC Terpisah',
+                      desc: 'Pemisahan tugas (Separation of Duties): Operator pengumpul data tidak dapat memvalidasi datanya sendiri demi menjamin integritas saintifik.',
+                      icon: '🛡️'
+                    }
+                  ].map((p, i) => (
+                    <div key={i} className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                      <div className="text-xl">{p.icon}</div>
+                      <div className="text-xs font-bold text-slate-900">{p.pilar}</div>
+                      <p className="text-[11px] text-slate-500 leading-relaxed">{p.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-          </div>
+          )}
+
+          {/* Subtab 2: Logbook Lapangan Kronologis */}
+          {logbookTab === 'logbook' && (
+            <div className="space-y-6">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                    <BookOpen size={18} className="text-orange-500" />
+                    <span>Catatan Kronologis Riset & Ekspedisi Lapangan Pulau Tunda</span>
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Log aktivitas operasional, pemasangan sensor, dan temuan observasi terumbu karang.
+                  </p>
+                </div>
+                <span className="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-200">
+                  ● Semua Data Terverifikasi QA/QC
+                </span>
+              </div>
+
+              <div className="space-y-4">
+                {MOCK_RESEARCH_LOGBOOKS.map((log) => {
+                  const samplePhoto = PULAU_TUNDA_TRANSECT_PHOTOS.find((p) =>
+                    p.station.toLowerCase().includes(log.station_id?.toLowerCase() || '')
+                  ) || PULAU_TUNDA_TRANSECT_PHOTOS[0];
+
+                  return (
+                    <div
+                      key={log.id}
+                      className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm flex flex-col md:flex-row gap-6 items-start justify-between"
+                    >
+                      <div className="space-y-3 max-w-3xl">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="font-mono text-xs font-bold px-2.5 py-0.5 rounded-lg bg-slate-100 text-slate-700">
+                            {log.id}
+                          </span>
+                          <span className="px-2.5 py-0.5 rounded-lg bg-orange-100 text-orange-700 text-xs font-semibold">
+                            {log.category}
+                          </span>
+                          <span className="text-xs text-slate-400 flex items-center gap-1">
+                            <Calendar size={12} />
+                            {log.date}
+                          </span>
+                          {log.station_id && (
+                            <span className="text-xs text-blue-600 font-semibold flex items-center gap-1">
+                              <MapPin size={12} />
+                              {log.station_id}
+                            </span>
+                          )}
+                        </div>
+
+                        <h4 className="text-base font-bold text-slate-900 leading-snug">
+                          {log.title}
+                        </h4>
+
+                        <p className="text-xs text-slate-600 leading-relaxed">
+                          {log.content}
+                        </p>
+
+                        <div className="flex items-center gap-2 text-xs text-slate-500 pt-2 border-t border-slate-100">
+                          <span className="font-semibold text-slate-700">Pelapor / Peneliti:</span>
+                          <span>{log.author}</span>
+                        </div>
+                      </div>
+
+                      {/* Photo Thumbnail */}
+                      <div
+                        onClick={() => setSelectedTransect(samplePhoto)}
+                        className="w-full md:w-56 h-36 rounded-2xl overflow-hidden bg-slate-900 border border-slate-200 relative group cursor-pointer flex-shrink-0"
+                      >
+                        <img
+                          src={samplePhoto.file}
+                          alt={samplePhoto.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-2.5 text-white">
+                          <span className="text-[10px] font-bold truncate">{samplePhoto.station}</span>
+                          <span className="text-[9px] text-slate-300">Klik untuk preview foto UPT</span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Subtab 3: Dokumen Publikasi Ilmiah Resmi (Open Access) */}
+          {logbookTab === 'publications' && (
+            <div className="space-y-4">
+              <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                <BookOpen size={18} className="text-orange-500" />
+                <span>Dokumen Publikasi Ilmiah Resmi (Open Access)</span>
+              </h3>
+
+              {downloadToast && (
+                <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center gap-2">
+                  <CheckCircle2 size={16} className="text-emerald-600 flex-shrink-0" />
+                  <span>{downloadToast}</span>
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+                {MOCK_PUBLICATIONS.map((pub) => (
+                  <div
+                    key={pub.id}
+                    className="p-5 sm:p-6 rounded-3xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between space-y-4"
+                  >
+                    <div className="space-y-2">
+                      <span className="px-2.5 py-1 rounded-full bg-blue-100 text-blue-700 font-bold text-[10px]">
+                        {pub.category} · {pub.year}
+                      </span>
+                      <h4 className="text-sm font-bold text-slate-900 leading-snug line-clamp-2">
+                        {pub.title}
+                      </h4>
+                      <p className="text-xs text-slate-500 line-clamp-3 leading-relaxed">
+                        {pub.abstract}
+                      </p>
+                    </div>
+
+                    <div className="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
+                      <span className="text-[11px] text-slate-500">{pub.download_count} Unduhan</span>
+                      <button
+                        type="button"
+                        onClick={() => handleDownloadPdf(pub.title)}
+                        className="min-h-[40px] px-3.5 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs flex items-center gap-1.5 transition-colors"
+                      >
+                        <Download size={13} />
+                        <span>Unduh PDF</span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -1425,93 +1787,329 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
       )}
 
       {/* ======================================================== */}
-      {/* 13. TAB: ABOUT REEFSIGHT & CONTACT - image15 & image16   */}
+      {/* 13. TAB: KONTAK & KOLABORASI REEFSIGHT                   */}
       {/* ======================================================== */}
-      {activeTab === 'about' && (
+      {(activeTab === 'contact' || activeTab === 'about') && (
         <div className="space-y-8 animate-fadeIn">
-          {/* Header Banner matching image15.jpeg */}
+          {/* Header Banner */}
           <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 border border-slate-200 shadow-md">
             <div
               className="absolute inset-0 bg-cover bg-right opacity-30 mix-blend-luminosity"
-              style={{ backgroundImage: `url('/images/image15.jpeg')` }}
+              style={{ backgroundImage: `url('/images/coral-surveys/tunda_transect_10.jpg')` }}
             />
             <div className="relative z-10 p-6 sm:p-8 max-w-2xl text-white">
               <div className="inline-flex items-center gap-2 text-xs font-bold text-orange-400 uppercase tracking-widest mb-2">
                 <span className="w-4 h-0.5 bg-orange-400" />
-                ABOUT REEFSIGHT
+                KONTAK & KOLABORASI REEFSIGHT
               </div>
               <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mb-2">
-                About REEFSIGHT & Pulau Tunda
+                Hubungi Kami & Kemitraan Riset
               </h2>
               <p className="text-xs sm:text-sm text-slate-200 leading-relaxed mb-4">
-                Platform Kecerdasan Ekologis untuk Analisis Dinamika dan Tekanan Lingkungan Terumbu Karang di Pulau Tunda, Serang, Banten.
+                Pusat komunikasi resmi tim pengembang, peneliti ekologi terumbu karang, dan koordinator operasional stasiun pemantauan Pulau Tunda.
               </p>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Project Overview */}
-            <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-3 text-xs text-slate-600">
-              <h3 className="text-sm font-bold text-slate-900">Latar Belakang & Visi</h3>
-              <p className="leading-relaxed">
-                Pulau Tunda merupakan ekosistem terumbu karang kepulauan penting di Teluk Banten yang menghadapi tekanan ganda dari fluktuasi oseanografi Selat Sunda dan aktivitas antropogenik.
-              </p>
-              <p className="leading-relaxed">
-                REEFSIGHT hadir sebagai jembatan antara teknologi Internet of Underwater Things (IoUT), bioakustik kecerdasan buatan, dan WebGIS spasial untuk mendukung konservasi berkelanjutan.
-              </p>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Informasi Kontak & Stasiun Lapangan */}
+            <div className="p-6 sm:p-7 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-5">
+              <div>
+                <div className="flex items-center gap-2 text-xs font-bold text-orange-600 uppercase tracking-wider mb-1">
+                  <span className="w-2.5 h-1 bg-orange-500 rounded-full" />
+                  Informasi Kontak Resmi
+                </div>
+                <h3 className="text-base font-bold text-slate-900">
+                  Stasiun Riset & Laboratorium
+                </h3>
+              </div>
+
+              <div className="space-y-3.5 text-xs text-slate-600">
+                <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                  <span className="font-bold text-slate-800 flex items-center gap-1.5">
+                    <MapPin size={14} className="text-orange-500" />
+                    Stasiun Lapangan Pulau Tunda:
+                  </span>
+                  <p className="text-slate-500 leading-relaxed pl-5">
+                    Dermaga Barat, Desa Wargasara, Kecamatan Tirtayasa, Kabupaten Serang, Banten 42193
+                  </p>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                  <span className="font-bold text-slate-800 flex items-center gap-1.5">
+                    <MapPin size={14} className="text-blue-500" />
+                    Pusat Laboratorium Komputasi:
+                  </span>
+                  <p className="text-slate-500 leading-relaxed pl-5">
+                    Gedung Riset Sains Kelautan Terpadu, Jl. Raya Jakarta - Serang Km. 4, Kota Serang, Banten
+                  </p>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                  <span className="font-bold text-slate-800 block">Surat Elektronik (Email):</span>
+                  <div className="space-y-1 pl-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-500">Riset & Sains:</span>
+                      <a href="mailto:riset@reefsight.id" className="font-mono text-orange-600 font-bold hover:underline">
+                        riset@reefsight.id
+                      </a>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-500">Kemitraan & CSR:</span>
+                      <a href="mailto:kolaborasi@reefsight.id" className="font-mono text-blue-600 font-bold hover:underline">
+                        kolaborasi@reefsight.id
+                      </a>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-500">Layanan Umum:</span>
+                      <a href="mailto:info@reefsight.id" className="font-mono text-slate-700 font-bold hover:underline">
+                        info@reefsight.id
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                  <span className="font-bold text-slate-800 block">Hotline Operasional (WhatsApp):</span>
+                  <p className="font-mono text-emerald-700 font-bold pl-1">
+                    +62 812-3456-7890 (Koordinator Lapangan)
+                  </p>
+                  <p className="text-[10px] text-slate-400 pl-1">
+                    Layanan konsultasi: Senin - Jumat 08:30 - 17:00 WIB
+                  </p>
+                </div>
+              </div>
             </div>
 
-            {/* Contact & Collaboration Form matching image16.jpeg */}
-            <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
-              <h3 className="text-sm font-bold text-slate-900">Formulir Kontak & Kerja Sama Riset</h3>
+            {/* Formulir Kontak & Pengajuan Kerja Sama */}
+            <div className="lg:col-span-2 p-6 sm:p-7 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
+              <div>
+                <div className="flex items-center gap-2 text-xs font-bold text-orange-600 uppercase tracking-wider mb-1">
+                  <span className="w-2.5 h-1 bg-orange-500 rounded-full" />
+                  Formulir Interaktif
+                </div>
+                <h3 className="text-base font-bold text-slate-900">
+                  Formulir Pengajuan Kemitraan & Pertanyaan Ilmiah
+                </h3>
+                <p className="text-xs text-slate-500 mt-1">
+                  Kirimkan permohonan kolaborasi riset, izin kunjungan stasiun, atau integrasi data telemetri.
+                </p>
+              </div>
+
               {contactSent ? (
-                <div className="p-4 rounded-2xl bg-emerald-50 text-emerald-800 text-xs font-semibold flex items-center gap-2">
-                  <CheckCircle2 size={16} className="text-emerald-600" />
-                  Pesan Anda telah berhasil dikirimkan ke Tim Pengembang REEFSIGHT.
+                <div className="p-6 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 space-y-3 animate-fadeIn">
+                  <div className="flex items-center gap-2 font-bold text-sm text-emerald-900">
+                    <CheckCircle2 size={20} className="text-emerald-600" />
+                    Pesan Anda Berhasil Terkirim ke Tim REEFSIGHT!
+                  </div>
+                  <p className="text-xs leading-relaxed text-emerald-700">
+                    Terima kasih atas minat dan dukungan Anda terhadap konservasi ekosistem terumbu karang Pulau Tunda. Koordinator riset kami akan menghubungi Anda melalui email dalam waktu 1×24 jam kerja.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setContactSent(false)}
+                    className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-colors"
+                  >
+                    Kirim Pesan Lainnya
+                  </button>
                 </div>
               ) : (
-                <form onSubmit={handleContactSubmit} className="space-y-3 text-xs">
-                  <div>
-                    <label className="block font-semibold text-slate-700 mb-1">Nama Lengkap</label>
-                    <input
-                      type="text"
-                      required
-                      value={contactName}
-                      onChange={(e) => setContactName(e.target.value)}
-                      placeholder="Masukkan nama lengkap Anda"
-                      className="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
-                    />
+                <form onSubmit={handleContactSubmit} className="space-y-4 text-xs">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block font-semibold text-slate-700 mb-1">Nama Lengkap</label>
+                      <input
+                        type="text"
+                        required
+                        value={contactName}
+                        onChange={(e) => setContactName(e.target.value)}
+                        placeholder="Contoh: Dr. Budi Santoso"
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 text-xs"
+                      />
+                    </div>
+                    <div>
+                      <label className="block font-semibold text-slate-700 mb-1">Email Instansi</label>
+                      <input
+                        type="email"
+                        required
+                        value={contactEmail}
+                        onChange={(e) => setContactEmail(e.target.value)}
+                        placeholder="nama@instansi.ac.id"
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 text-xs"
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <label className="block font-semibold text-slate-700 mb-1">Email Instansi</label>
-                    <input
-                      type="email"
-                      required
-                      value={contactEmail}
-                      onChange={(e) => setContactEmail(e.target.value)}
-                      placeholder="nama@universitas.ac.id"
-                      className="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
-                    />
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block font-semibold text-slate-700 mb-1">Nama Instansi / Organisasi</label>
+                      <input
+                        type="text"
+                        required
+                        value={contactInstitution}
+                        onChange={(e) => setContactInstitution(e.target.value)}
+                        placeholder="Contoh: Universitas Sultan Ageng Tirtayasa"
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 text-xs"
+                      />
+                    </div>
+                    <div>
+                      <label className="block font-semibold text-slate-700 mb-1">Kategori Minat / Kemitraan</label>
+                      <select
+                        value={contactCategory}
+                        onChange={(e) => setContactCategory(e.target.value)}
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 text-xs bg-white text-slate-800"
+                      >
+                        <option value="Kolaborasi Penelitian">Riset Akademik & Penelitian Skripsi/Tesis</option>
+                        <option value="Kemitraan Konservasi">Program Restorasi Terumbu Karang & CSR</option>
+                        <option value="Akses Data Telemetri">Permohonan Data Telemetri & API WebGIS</option>
+                        <option value="Kunjungan Lapangan">Kunjungan Ekspedisi & Eduwisata Pulau Tunda</option>
+                        <option value="Hardware EchoVision">Konsultasi Teknis Perangkat EchoVision</option>
+                        <option value="Lainnya">Lainnya</option>
+                      </select>
+                    </div>
                   </div>
+
                   <div>
-                    <label className="block font-semibold text-slate-700 mb-1">Pesan / Minat Kolaborasi</label>
+                    <label className="block font-semibold text-slate-700 mb-1">Pesan / Uraian Rencana Kerja Sama</label>
                     <textarea
-                      rows={3}
+                      rows={4}
                       required
                       value={contactMsg}
                       onChange={(e) => setContactMsg(e.target.value)}
-                      placeholder="Deskripsikan rencana penelitian atau bentuk kerja sama..."
-                      className="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
+                      placeholder="Jelaskan secara ringkas maksud, jadwal penelitian, atau bentuk kemitraan yang diharapkan..."
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 text-xs"
                     />
                   </div>
-                  <button
-                    type="submit"
-                    className="w-full py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs shadow-sm transition-all"
-                  >
-                    Kirim Permohonan Kolaborasi
-                  </button>
+
+                  <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+                    <p className="text-[11px] text-slate-400">
+                      🔒 Informasi Anda dilindungi dan hanya digunakan untuk keperluan koordinasi ilmiah.
+                    </p>
+                    <button
+                      type="submit"
+                      className="min-h-[44px] px-6 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs shadow-sm transition-all"
+                    >
+                      Kirim Permohonan Kolaborasi
+                    </button>
+                  </div>
                 </form>
               )}
+            </div>
+          </div>
+
+          {/* Panduan Rute & Aksesibilitas Menuju Pulau Tunda */}
+          <div className="p-6 sm:p-7 rounded-3xl bg-slate-900 text-white space-y-4">
+            <div className="flex items-center gap-2 text-xs font-bold text-orange-400 uppercase tracking-wider">
+              <span>⛵</span>
+              <span>Panduan Aksesibilitas & Rute Penyeberangan Pulau Tunda</span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-1.5">
+                <div className="font-bold text-orange-300">1. Titik Keberangkatan</div>
+                <p className="text-slate-300 leading-relaxed">
+                  Pelabuhan Perikanan Karangantu, Kasemen, Kota Serang. Berjarak ± 15 menit dari gerbang tol Serang Timur.
+                </p>
+              </div>
+              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-1.5">
+                <div className="font-bold text-orange-300">2. Transportasi Laut</div>
+                <p className="text-slate-300 leading-relaxed">
+                  Kapal motor kayu penumpang harian (waktu tempuh ± 2 jam) atau speedboat sewa khusus riset (± 45 menit).
+                </p>
+              </div>
+              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-1.5">
+                <div className="font-bold text-orange-300">3. Izin Operasional Lapangan</div>
+                <p className="text-slate-300 leading-relaxed">
+                  Peneliti wajib menunjukkan surat tugas dari instansi asal dan melakukan registrasi di posko Pokdarwis Desa Wargasara.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Transect Survey Photo Lightbox Modal */}
+      {selectedTransect && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Detail Foto Transek Lapangan"
+          className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 animate-fadeIn"
+          onClick={() => setSelectedTransect(null)}
+        >
+          <div
+            className="bg-white rounded-3xl max-w-3xl w-full overflow-hidden shadow-2xl border border-slate-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100 bg-slate-50/80">
+              <div className="flex items-center gap-2">
+                <span className="px-2.5 py-1 rounded-lg bg-orange-100 text-orange-700 font-bold text-xs">
+                  {selectedTransect.station}
+                </span>
+                <span className="text-xs font-mono font-bold text-slate-500">
+                  {selectedTransect.id}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedTransect(null)}
+                aria-label="Tutup preview"
+                className="w-10 h-10 min-w-[40px] min-h-[40px] rounded-full flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="relative bg-slate-950 flex items-center justify-center max-h-[60vh] overflow-hidden">
+              <img
+                src={selectedTransect.file}
+                alt={selectedTransect.title}
+                className="w-full h-full max-h-[60vh] object-contain"
+              />
+            </div>
+
+            <div className="p-5 sm:p-6 space-y-3 bg-white">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <h4 className="text-sm sm:text-base font-bold text-slate-900">
+                  {selectedTransect.title}
+                </h4>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 w-fit">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  {selectedTransect.condition}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 pt-2 text-xs text-slate-600 border-t border-slate-100">
+                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                  <div className="text-[10px] text-slate-400 font-semibold">Lokasi Sampling</div>
+                  <div className="font-bold text-slate-800">{selectedTransect.station}</div>
+                </div>
+                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                  <div className="text-[10px] text-slate-400 font-semibold">Metodologi</div>
+                  <div className="font-bold text-slate-800">Underwater Photo Transect (UPT)</div>
+                </div>
+                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 col-span-2 sm:col-span-1">
+                  <div className="text-[10px] text-slate-400 font-semibold">Format Resolusi</div>
+                  <div className="font-bold text-slate-800">High-Res Field Survey JPEG</div>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-2">
+                <a
+                  href={selectedTransect.file}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="min-h-[44px] px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold inline-flex items-center gap-2 transition-colors"
+                >
+                  Buka Gambar Asli ↗
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setSelectedTransect(null)}
+                  className="min-h-[44px] px-4 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold transition-colors"
+                >
+                  Tutup
+                </button>
+              </div>
             </div>
           </div>
         </div>

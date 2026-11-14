@@ -49,9 +49,9 @@ const SEARCH_INDEX: SearchEntry[] = [
   { id: 'acoustic', title: 'Acoustic & Underwater Intelligence', subtitle: 'Audio Hydrophone, Waveform & FFT Spectrogram', targetWorkspace: 'public', tabId: 'acoustic-intelligence', keywords: ['acoustic', 'bioakustik', 'hydrophone', 'soundscape', 'suara', 'audio'] },
   { id: 'proto', title: 'EchoVision 3D Hardware', subtitle: 'Visualisasi 3D Interaktif & Komponen Buoy', targetWorkspace: 'public', tabId: 'prototype-3d', keywords: ['3d', 'echovision', 'prototype', 'hardware', 'sensor', 'kamera'] },
   { id: 'eco', title: 'Eco-Tourism & Conservation', subtitle: 'Zonasi Ekowisata & Rehabilitasi Karang', targetWorkspace: 'public', tabId: 'eco-tourism', keywords: ['ekowisata', 'tourism', 'konservasi', 'diving', 'zonasi'] },
-  { id: 'pub', title: 'Research & Scientific Publications', subtitle: 'Publikasi Ilmiah Open Access & Logbook', targetWorkspace: 'public', tabId: 'research-logbook', keywords: ['riset', 'publikasi', 'jurnal', 'pdf', 'dokumen', 'logbook'] },
+  { id: 'pub', title: 'Research & Scientific Publications', subtitle: 'Visi, Logbook Kronologis & Dokumen Riset', targetWorkspace: 'public', tabId: 'research-logbook', keywords: ['riset', 'publikasi', 'jurnal', 'pdf', 'dokumen', 'logbook', 'about', 'tentang'] },
   { id: 'erd', title: 'ERD & System Architecture', subtitle: 'Skema PostgreSQL PostGIS & Separation of Duties', targetWorkspace: 'public', tabId: 'system-architecture', keywords: ['erd', 'database', 'supabase', 'postgis', 'arsitektur'] },
-  { id: 'about', title: 'About REEFSIGHT & Collaboration', subtitle: 'Visi Riset & Formulir Kolaborasi', targetWorkspace: 'public', tabId: 'about', keywords: ['about', 'tentang', 'kontak', 'kolaborasi'] }
+  { id: 'contact', title: 'Kontak REEFSIGHT & Kolaborasi', subtitle: 'Formulir Kontak, Alamat & Hotline Riset', targetWorkspace: 'public', tabId: 'contact', keywords: ['kontak', 'contact', 'email', 'hubungi', 'kolaborasi', 'telepon', 'whatsapp'] }
 ];
 
 const ROLE_META: Record<UserRole, { full: string; short: string; initials: string; badge: string }> = {
@@ -240,9 +240,9 @@ export default function AppHeader({
             className="flex lg:hidden items-center gap-1.5 min-h-[44px] flex-shrink-0"
           >
             <img
-              src="/brand/reefsight-icon.svg"
+              src="/brand/logo.jpg"
               alt="REEFSIGHT"
-              className="w-7 h-7 rounded-lg object-contain shadow-xs"
+              className="w-7 h-7 rounded-lg object-cover shadow-xs border border-slate-700/20"
             />
             <span className="font-extrabold text-xs sm:text-sm text-slate-900 tracking-tight">
               REEF<span className="text-[#F05A28]">SIGHT</span>

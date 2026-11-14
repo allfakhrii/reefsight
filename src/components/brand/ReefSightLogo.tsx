@@ -3,7 +3,7 @@
 import React from 'react';
 
 interface ReefSightLogoProps {
-  variant?: 'icon' | 'horizontal' | 'stacked';
+  variant?: 'icon' | 'horizontal' | 'stacked' | 'banner' | 'badge';
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   theme?: 'light' | 'dark';
   className?: string;
@@ -27,26 +27,55 @@ export default function ReefSightLogo({
   };
 
   const textSizes = {
-    xs: { title: 'text-sm', sub: 'text-[8px]' },
-    sm: { title: 'text-base', sub: 'text-[9px]' },
-    md: { title: 'text-lg', sub: 'text-[10px]' },
-    lg: { title: 'text-xl', sub: 'text-[11px]' },
-    xl: { title: 'text-2xl', sub: 'text-xs' }
+    xs: { title: 'text-sm font-black', sub: 'text-[8px]' },
+    sm: { title: 'text-base font-black', sub: 'text-[9px]' },
+    md: { title: 'text-lg font-black', sub: 'text-[10px]' },
+    lg: { title: 'text-xl font-black', sub: 'text-[11px]' },
+    xl: { title: 'text-2xl font-black', sub: 'text-xs' }
   };
 
   const isDark = theme === 'dark';
+
+  // Banner graphic variant (using Data/logo3.jpeg horizontal artwork)
+  if (variant === 'banner') {
+    return (
+      <div className={`inline-flex items-center select-none ${className}`}>
+        <img
+          src="/brand/logo-horizontal.jpg"
+          alt="REEFSIGHT Platform"
+          className="h-9 sm:h-11 w-auto object-contain rounded-xl shadow-xs"
+        />
+      </div>
+    );
+  }
+
+  // Circular Badge variant (using Data/logo2.jpeg badge artwork)
+  if (variant === 'badge') {
+    return (
+      <div
+        className={`relative inline-flex items-center justify-center rounded-2xl overflow-hidden shadow-xs select-none transition-transform hover:scale-105 border border-slate-700/20 bg-slate-900 ${iconSizes[size]} ${className}`}
+        title="REEFSIGHT Official Badge"
+      >
+        <img
+          src="/brand/logo-badge.jpg"
+          alt="REEFSIGHT Badge"
+          className="w-full h-full object-cover"
+        />
+      </div>
+    );
+  }
 
   // Icon only
   if (variant === 'icon') {
     return (
       <div
-        className={`relative inline-flex items-center justify-center rounded-2xl overflow-hidden shadow-xs select-none transition-transform hover:scale-105 ${iconSizes[size]} ${className}`}
-        title="REEFSIGHT Coral Emblem"
+        className={`relative inline-flex items-center justify-center rounded-2xl overflow-hidden shadow-xs select-none transition-transform hover:scale-105 border border-slate-700/20 bg-slate-900 ${iconSizes[size]} ${className}`}
+        title="REEFSIGHT Official Emblem"
       >
         <img
-          src="/brand/reefsight-icon.svg"
-          alt="REEFSIGHT"
-          className="w-full h-full object-contain"
+          src="/brand/logo.jpg"
+          alt="REEFSIGHT Emblem"
+          className="w-full h-full object-cover"
         />
       </div>
     );
@@ -57,12 +86,12 @@ export default function ReefSightLogo({
     return (
       <div className={`inline-flex items-center gap-3 select-none ${className}`}>
         <div
-          className={`relative flex-shrink-0 rounded-2xl overflow-hidden shadow-xs transition-transform hover:scale-105 ${iconSizes[size]}`}
+          className={`relative flex-shrink-0 rounded-2xl overflow-hidden shadow-xs transition-transform hover:scale-105 border border-slate-700/20 bg-slate-900 ${iconSizes[size]}`}
         >
           <img
-            src="/brand/reefsight-icon.svg"
+            src="/brand/logo.jpg"
             alt="REEFSIGHT Logo"
-            className="w-full h-full object-contain"
+            className="w-full h-full object-cover"
           />
         </div>
         <div className="flex flex-col">
@@ -79,7 +108,7 @@ export default function ReefSightLogo({
                 isDark ? 'text-slate-400' : 'text-slate-500'
               }`}
             >
-              Ecological Intelligence
+              Ecological Intelligence · Pulau Tunda
             </div>
           )}
         </div>
@@ -91,12 +120,12 @@ export default function ReefSightLogo({
   return (
     <div className={`flex flex-col items-center text-center gap-2 select-none ${className}`}>
       <div
-        className={`relative rounded-3xl overflow-hidden shadow-sm transition-transform hover:scale-105 ${iconSizes[size]}`}
+        className={`relative rounded-3xl overflow-hidden shadow-sm transition-transform hover:scale-105 border border-slate-700/20 bg-slate-900 ${iconSizes[size]}`}
       >
         <img
-          src="/brand/reefsight-icon.svg"
+          src="/brand/logo.jpg"
           alt="REEFSIGHT Logo"
-          className="w-full h-full object-contain"
+          className="w-full h-full object-cover"
         />
       </div>
       <div className="flex flex-col items-center">

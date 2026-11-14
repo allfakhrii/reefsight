@@ -230,69 +230,69 @@ export const PULAU_TUNDA_STATIONS: StationData[] = [
 export const CORAL_LIFE_FORMS: CoralLifeForm[] = [
   {
     name: 'Acropora Branching',
-    scientific_name: 'Acropora formosa / Acropora sp.',
+    scientific_name: 'Acropora formosa / Acropora nobilis',
     growth_form: 'Branching (Bercabang)',
-    description: 'Koloni bercabang tegak menyerupai tanduk rusa dengan pertumbuhan cepat. Menjadi habitat utama perlindungan bagi juvenile ikan karang.',
-    optimal_temp_c: '25°C – 28.5°C',
-    tolerance_notes: 'Rentan terhadap tekanan panas (thermal stress); merupakan jenis yang pertama kali memutih saat kenaikan suhu.',
-    tunda_status: 'Ditemukan melimpah di lereng terumbu (reef slope) bagian utara dan barat Pulau Tunda.',
-    image_url: 'https://images.unsplash.com/photo-1546026423-cc4642628d2b?auto=format&fit=crop&w=600&q=80',
-    associated_fish: ['Chromis viridis (Damselfish)', 'Dascyllus aruanus', 'Chaetodon trifascialis']
+    description: 'Koloni bercabang tegak menyerupai tanduk rusa dengan cabang memanjang dan pertumbuhan relatif cepat. Menyediakan celah perlindungan bagi ikan kecil dan juvenile.',
+    optimal_temp_c: '26.0°C – 29.0°C',
+    tolerance_notes: 'Acropora nobilis tercatat dominan di lereng karang Pulau Tunda. Rentan terhadap kenaikan anomali termal laut.',
+    tunda_status: 'Tercatat dalam kajian ekologi Pulau Tunda dengan sebaran luas di lereng utara dan barat.',
+    image_url: '/images/biodiversity/branching.jpg',
+    associated_fish: ['Chromis viridis (Damselfish)', 'Dascyllus trimaculatus', 'Chaetodon trifascialis']
   },
   {
     name: 'Acropora Tabulate',
     scientific_name: 'Acropora hyacinthus / Acropora clathrata',
     growth_form: 'Tabulate (Meja)',
     description: 'Koloni melebar horizontal membentuk struktur menyerupai meja datar bertingkat dengan kanopi luas penangkap sinar matahari.',
-    optimal_temp_c: '25°C – 28.8°C',
-    tolerance_notes: 'Toleransi sedang terhadap arus kuat; rentan terhadap sedimentasi dan patahan mekanik.',
-    tunda_status: 'Dominan di perairan dangkal rataan terumbu (reef flat) utara Pulau Tunda.',
-    image_url: 'https://images.unsplash.com/photo-1583212292454-1fe6229603b7?auto=format&fit=crop&w=600&q=80',
-    associated_fish: ['Chaetodon lunula', 'Pomacanthus semicirculatus', 'Lethrinus harak']
+    optimal_temp_c: '26.0°C – 28.5°C',
+    tolerance_notes: 'Toleransi sedang terhadap arus; rentan terhadap sedimentasi dan patahan gelombang badai.',
+    tunda_status: 'Kategori terumbu meja penting dalam pemetaan bentik rataan terumbu Pulau Tunda.',
+    image_url: '/images/biodiversity/branching.jpg',
+    associated_fish: ['Chaetodon trifascialis', 'Pomacanthus sexstriatus', 'Chromis viridis']
   },
   {
     name: 'Coral Massive',
-    scientific_name: 'Porites lutea / Favia speciosa',
+    scientific_name: 'Porites lutea / Goniastrea sp.',
     growth_form: 'Massive (Gumpalan Bongkah)',
-    description: 'Koloni menggumpal membulat menyerupai kubah besar batu karang keras. Berumur panjang (ratusan tahun) dan laju pertumbuhan lambat (~1 cm/tahun).',
-    optimal_temp_c: '24°C – 29.5°C',
+    description: 'Koloni menggumpal membulat menyerupai kubah dengan struktur kapur kokoh. Goniastrea sp. merupakan takson dominan terumbu Pulau Tunda.',
+    optimal_temp_c: '26.0°C – 29.5°C',
     tolerance_notes: 'Resistensi tinggi terhadap fluktuasi suhu dan kekeruhan air berkat jaringan epitel yang tebal.',
-    tunda_status: 'Banyak ditemukan di daerah laguna dan perairan dekat pelabuhan Pulau Tunda.',
-    image_url: 'https://images.unsplash.com/photo-1682687220063-4742bd7fd538?auto=format&fit=crop&w=600&q=80',
-    associated_fish: ['Scarus rivulatus (Parrotfish)', 'Acanthurus triostegus', 'Cephalopholis boenak']
+    tunda_status: 'Goniastrea sp. terkonfirmasi dan dilaporkan dominan pada lokasi penelitian Pulau Tunda.',
+    image_url: '/images/biodiversity/massive.jpg',
+    associated_fish: ['Scarus rivulatus (Ikan Kakatua)', 'Cephalopholis boenak (Kerapu)', 'Acanthurus sp.']
   },
   {
     name: 'Coral Foliose',
-    scientific_name: 'Montipora foliosa / Turbinaria reniformis',
+    scientific_name: 'Montipora foliosa / Montipora capricornis',
     growth_form: 'Foliose (Lembaran / Daun)',
-    description: 'Koloni berupa lempengan berlipat menyerupai kelopak bunga atau dedaunan bertingkat, memaksimalkan absorpsi cahaya di air keruh.',
-    optimal_temp_c: '25°C – 29.0°C',
-    tolerance_notes: 'Cenderung dapat hidup pada kedalaman 6–12 meter dengan intensitas cahaya lebih rendah.',
-    tunda_status: 'Tercatat di perairan lereng timur dan tenggara Pulau Tunda.',
-    image_url: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80',
-    associated_fish: ['Abudefduf sexfasciatus', 'Amphiprion ocellaris', 'Siganus virgatus']
+    description: 'Koloni membentuk lembaran berlipat menyerupai daun atau kelopak bertingkat, memaksimalkan absorpsi cahaya pada perairan lereng.',
+    optimal_temp_c: '26.0°C – 29.0°C',
+    tolerance_notes: 'Montipora capricornis tercatat dalam penelitian Pulau Tunda dan termasuk taksa dengan sebaran luas.',
+    tunda_status: 'Tercatat di perairan lereng timur dan tenggara Pulau Tunda (kedalaman 3–18 m).',
+    image_url: '/images/biodiversity/foliose.jpg',
+    associated_fish: ['Siganus virgatus (Baronang)', 'Chromis viridis', 'Pomacanthus sexstriatus']
   },
   {
     name: 'Coral Encrusting',
     scientific_name: 'Montipora tuberculosa / Leptastrea purpurea',
     growth_form: 'Encrusting (Kerak Melapisi)',
-    description: 'Bentuk pertumbuhan yang menempel dan melapisi batuan dasar atau pecahan karang mati, memperkuat struktur substrat bawah laut.',
-    optimal_temp_c: '24°C – 30.0°C',
+    description: 'Koloni menempel dan melapisi batuan dasar atau pecahan karang keras, memperkuat substrat dan menahan erosi dasar laut.',
+    optimal_temp_c: '26.0°C – 30.0°C',
     tolerance_notes: 'Sangat tangguh terhadap hempasan gelombang kencang di perairan dangkal terbuka.',
-    tunda_status: 'Pionir rekrutmen anakan karang pada zona transisi barat daya Pulau Tunda.',
-    image_url: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=600&q=80',
-    associated_fish: ['Ecsenius yaeyamaensis (Blenny)', 'Cirrhitichthys falco', 'Gobiodon citrinus']
+    tunda_status: 'Pionir rekrutmen koloni karang pada zona transisi barat daya Pulau Tunda.',
+    image_url: '/images/biodiversity/encrusting.jpg',
+    associated_fish: ['Ecsenius sp. (Blenny)', 'Cirrhitichthys falco', 'Gobiodon sp.']
   },
   {
     name: 'Coral Submassive',
     scientific_name: 'Pocillopora verrucosa / Stylophora pistillata',
-    growth_form: 'Submassive (Semi-Bongkah Bertonjolan)',
-    description: 'Koloni semi-gumpalan dengan pilar-pilar cabang pendek berujung tumpul yang kokoh menahan arus laut sedang.',
-    optimal_temp_c: '25°C – 29.2°C',
-    tolerance_notes: 'Kemampuan adaptasi baik pada arus pasang surut dinamis Selat Sunda.',
-    tunda_status: 'Tersebar di rataan terumbu dangkal selatan Pulau Tunda.',
-    image_url: 'https://images.unsplash.com/photo-1582967788606-a171c1080cb0?auto=format&fit=crop&w=600&q=80',
-    associated_fish: ['Paracanthurus hepatus', 'Labroides dimidiatus', 'Pseudanthias squamipinnis']
+    growth_form: 'Submassive (Semi-Gumpalan Percabangan Pendek)',
+    description: 'Koloni berbentuk semi-gumpalan dengan percabangan pendek dan rapat, membentuk mikrohabitat bagi ikan kecil dan invertebrata.',
+    optimal_temp_c: '27.0°C – 29.5°C',
+    tolerance_notes: 'Struktur cabang kokoh menahan dinamika arus pasang surut Selat Sunda.',
+    tunda_status: 'Tersebar di rataan terumbu dangkal selatan dan barat Pulau Tunda (2–15 m).',
+    image_url: '/images/biodiversity/branching.jpg',
+    associated_fish: ['Cephalopholis boenak', 'Pomacanthus sexstriatus', 'Siganus virgatus']
   }
 ];
 
@@ -303,10 +303,11 @@ export const REEF_FISH_CATALOG: FishSpecies[] = [
     scientific_name: 'Chaetodon trifascialis',
     family: 'Chaetodontidae',
     trophic_group: 'Koralivora',
-    associated_coral_form: 'Acropora Tabulate & Branching',
-    depth_range_m: '2 – 8 m',
+    associated_coral_form: 'Acropora Tabulate & Acropora Branching',
+    depth_range_m: '2 – 15 m',
     abundance_per_100m2: 14,
-    ecological_role: 'Indikator bio-indikator kesehatan karang hidup; memakan polip karang aktif.'
+    image_url: '/images/biodiversity/kepe-kepe.jpg',
+    ecological_role: 'Koralivora obligat pemakan polip Acropora hidup; bio-indikator utama kesehatan terumbu karang.'
   },
   {
     id: 'FISH-02',
@@ -315,9 +316,10 @@ export const REEF_FISH_CATALOG: FishSpecies[] = [
     family: 'Scaridae',
     trophic_group: 'Herbivora',
     associated_coral_form: 'Coral Massive & Dead Coral with Algae',
-    depth_range_m: '3 – 12 m',
+    depth_range_m: '1 – 30 m',
     abundance_per_100m2: 28,
-    ecological_role: 'Mengontrol pertumbuhan alga (macroalgae) pada karang mati agar larva anakan karang dapat menempel.'
+    image_url: '/images/biodiversity/ikan-kakatua.jpg',
+    ecological_role: 'Mengikis alga dan material organik substrat untuk membuka ruang penempelan larva anakan karang baru.'
   },
   {
     id: 'FISH-03',
@@ -325,10 +327,11 @@ export const REEF_FISH_CATALOG: FishSpecies[] = [
     scientific_name: 'Cephalopholis boenak',
     family: 'Serranidae',
     trophic_group: 'Karnivora',
-    associated_coral_form: 'Coral Massive & Submassive',
-    depth_range_m: '4 – 15 m',
+    associated_coral_form: 'Coral Massive & Coral Submassive',
+    depth_range_m: '4 – 30 m',
     abundance_per_100m2: 6,
-    ecological_role: 'Predator puncak menjaga keseimbangan populasi krustasea dan ikan-ikan kecil di terumbu.'
+    image_url: '/images/biodiversity/kerapu-karang.jpg',
+    ecological_role: 'Predator terumbu pemangsa krustasea dan ikan kecil; menjaga keseimbangan rantai trofik terumbu.'
   },
   {
     id: 'FISH-04',
@@ -336,10 +339,11 @@ export const REEF_FISH_CATALOG: FishSpecies[] = [
     scientific_name: 'Chromis viridis',
     family: 'Pomacentridae',
     trophic_group: 'Planktivora',
-    associated_coral_form: 'Acropora Branching',
-    depth_range_m: '1 – 6 m',
+    associated_coral_form: 'Acropora Branching & Tabulate',
+    depth_range_m: '1 – 15 m',
     abundance_per_100m2: 85,
-    ecological_role: 'Menyaring zooplankton perairan dan menyuplai nutrien amonium ke polip karang inang.'
+    image_url: '/images/biodiversity/damselfish.jpg',
+    ecological_role: 'Hidup berkelompok di atas koloni karang bercabang; memangsa zooplankton dan menyuplai nutrien amonium.'
   },
   {
     id: 'FISH-05',
@@ -348,9 +352,10 @@ export const REEF_FISH_CATALOG: FishSpecies[] = [
     family: 'Siganidae',
     trophic_group: 'Herbivora',
     associated_coral_form: 'Coral Foliose & Submassive',
-    depth_range_m: '2 – 10 m',
+    depth_range_m: '0 – 12 m',
     abundance_per_100m2: 22,
-    ecological_role: 'Pemakan alga bentik dan rumput laut penutup permukaan karang.'
+    image_url: '/images/biodiversity/baronang.jpg',
+    ecological_role: 'Mengendalikan tutupan alga bentik pada substrat karang berbatu dan rataan terumbu Pulau Tunda.'
   },
   {
     id: 'FISH-06',
@@ -359,10 +364,49 @@ export const REEF_FISH_CATALOG: FishSpecies[] = [
     family: 'Pomacanthidae',
     trophic_group: 'Omnivora',
     associated_coral_form: 'Acropora Tabulate & Massive',
-    depth_range_m: '5 – 18 m',
+    depth_range_m: '3 – 30 m',
     abundance_per_100m2: 8,
-    ecological_role: 'Memakan spons laut (sponge) dan alga, mencegah spons menutupi koloni karang hidup.'
+    image_url: '/images/biodiversity/ikan-bidadari.jpg',
+    ecological_role: 'Memakan spons laut (sponge) dan invertebrata bentik agar tidak menginvasi koloni karang hidup.'
   }
+];
+
+export const MACROBENTHOS_CATALOG = [
+  {
+    id: 'BENTH-01',
+    name: 'Echinodermata Terumbu Karang',
+    taxa: 'Linckia laevigata, Diadema setosum, Culcita novaeguineae',
+    role: 'Bintang laut biru pemakan biofilm, bulu babi pengontrol alga bentik, dan bintang bantal.',
+    depth: '1 – 18 m',
+    image_url: '/images/biodiversity/echinodermata.jpg',
+  },
+  {
+    id: 'BENTH-02',
+    name: 'Moluska & Kima Raksasa',
+    taxa: 'Tridacna gigas / Tridacna squamosa, Gastropoda',
+    role: 'Bio-filter air laut dengan simbiosis alga zooxanthellae dan pembentuk deposit kalsium karbonat.',
+    depth: '2 – 15 m',
+    image_url: '/images/biodiversity/moluska.jpg',
+  }
+];
+
+export const PULAU_TUNDA_TRANSECT_PHOTOS = [
+  { id: 'TR-01', file: '/images/coral-surveys/tunda_transect_01.jpg', station: 'ASIK-01 (Barat)', title: 'Survei Transek Karang Cabang Pulau Tunda #1', condition: 'Sehat (HC > 55%)' },
+  { id: 'TR-02', file: '/images/coral-surveys/tunda_transect_02.jpg', station: 'ASIK-02 (Barat Laut)', title: 'Monitoring Substrat Karang Massive #2', condition: 'Sedang (HC 42%)' },
+  { id: 'TR-03', file: '/images/coral-surveys/tunda_transect_03.jpg', station: 'ASIK-03 (Utara-Barat)', title: 'Inspeksi Tutupan Karang Daun (Foliose) #3', condition: 'Sehat (HC 58%)' },
+  { id: 'TR-04', file: '/images/coral-surveys/tunda_transect_04.jpg', station: 'ASIK-04 (Utara)', title: 'Dokumentasi Underwater Transek #4', condition: 'Sehat (HC 62%)' },
+  { id: 'TR-05', file: '/images/coral-surveys/tunda_transect_05.jpg', station: 'ASIK-05 (Utara-Timur)', title: 'Survei Rekrutmen Karang Encrusting #5', condition: 'Sehat (HC 54%)' },
+  { id: 'TR-06', file: '/images/coral-surveys/tunda_transect_06.jpg', station: 'ASIK-06 (Timur Laut)', title: 'Pengamatan Komunitas Terumbu Karang #6', condition: 'Sedang (HC 48%)' },
+  { id: 'TR-07', file: '/images/coral-surveys/tunda_transect_07.jpg', station: 'ASIK-07 (Timur)', title: 'Kondisi Koloni Karang Massive Goniastrea #7', condition: 'Sedang (HC 38%)' },
+  { id: 'TR-08', file: '/images/coral-surveys/tunda_transect_08.jpg', station: 'ASIK-08 (Tenggara)', title: 'Survei Bawah Air Mooring Buoy #8', condition: 'Sehat (HC 51%)' },
+  { id: 'TR-09', file: '/images/coral-surveys/tunda_transect_09.jpg', station: 'ASIK-09 (Selatan-Tenggara)', title: 'Transek Kuadrat 1x1m Substrat Terumbu #9', condition: 'Sedang (HC 40%)' },
+  { id: 'TR-10', file: '/images/coral-surveys/tunda_transect_10.jpg', station: 'ASIK-10 (Selatan)', title: 'Inspeksi Kerusakan Mekanik Karang #10', condition: 'Bleaching / Sedang' },
+  { id: 'TR-11', file: '/images/coral-surveys/tunda_transect_11.jpg', station: 'ASIK-11 (Selatan-Barat)', title: 'Pengambilan Sampel Sensor Bawah Air #11', condition: 'Degradasi (HC 24%)' },
+  { id: 'TR-12', file: '/images/coral-surveys/tunda_transect_12.jpg', station: 'ASIK-12 (Barat Daya)', title: 'Monitoring Pemulihan Karang Pionir #12', condition: 'Pemulihan (HC 35%)' },
+  { id: 'TR-13', file: '/images/coral-surveys/tunda_transect_13.jpg', station: 'ASIK-01 (Barat)', title: 'Dokumentasi Makrobentos & Biota Asosiasi #13', condition: 'Sehat' },
+  { id: 'TR-14', file: '/images/coral-surveys/tunda_transect_14.jpg', station: 'ASIK-04 (Utara)', title: 'Tutupan Karang Acropora Nobilis #14', condition: 'Sehat (HC > 65%)' },
+  { id: 'TR-15', file: '/images/coral-surveys/tunda_transect_15.jpg', station: 'ASIK-06 (Timur Laut)', title: 'Kerapatan Koloni Karang Otak Favites #15', condition: 'Sedang' },
+  { id: 'TR-16', file: '/images/coral-surveys/tunda_transect_16.jpg', station: 'ASIK-08 (Tenggara)', title: 'Zona Pemulihan Terumbu Karang Buatan #16', condition: 'Sehat' },
 ];
 
 export const MOCK_FIELD_OBSERVATIONS: FieldObservation[] = [
@@ -545,7 +589,7 @@ export const USER_DIRECTORY = [
     accountStatus: 'Active' as const,
     lastActivity: '14 Nov 2025, 10:24 WIB',
     createdAt: '02 Jun 2025',
-    avatarUrl: '/images/image18.png'
+    avatarUrl: ''
   },
   {
     id: 'USR-002',
@@ -559,7 +603,7 @@ export const USER_DIRECTORY = [
     accountStatus: 'Active' as const,
     lastActivity: '14 Nov 2025, 09:17 WIB',
     createdAt: '05 Jun 2025',
-    avatarUrl: '/images/image18.png'
+    avatarUrl: ''
   },
   {
     id: 'USR-003',
@@ -573,7 +617,7 @@ export const USER_DIRECTORY = [
     accountStatus: 'Active' as const,
     lastActivity: '13 Nov 2025, 17:40 WIB',
     createdAt: '07 Jun 2025',
-    avatarUrl: '/images/image18.png'
+    avatarUrl: ''
   },
   {
     id: 'USR-004',
@@ -587,7 +631,7 @@ export const USER_DIRECTORY = [
     accountStatus: 'Pending' as const,
     lastActivity: '12 Nov 2025, 14:05 WIB',
     createdAt: '10 Jun 2025',
-    avatarUrl: '/images/image18.png'
+    avatarUrl: ''
   },
   {
     id: 'USR-005',
@@ -601,7 +645,7 @@ export const USER_DIRECTORY = [
     accountStatus: 'Inactive' as const,
     lastActivity: '08 Nov 2025, 11:22 WIB',
     createdAt: '03 Jun 2025',
-    avatarUrl: '/images/image18.png'
+    avatarUrl: ''
   }
 ];
 

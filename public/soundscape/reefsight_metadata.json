@@ -1,0 +1,106 @@
+{
+  "very_low": {
+    "file": "reef_activity_very_low.wav",
+    "category": "Very Low Fish Activity",
+    "duration_s": 45.0,
+    "sample_rate_hz": 48000,
+    "bit_depth": 24,
+    "channels": "stereo (amplitude panning + interaural delay up to 0.6 ms)",
+    "sound_sources": {
+      "ambient_underwater": "synthetic low-frequency hydrodynamic noise + faint hiss (identical in all 4 files)",
+      "pistol_shrimp_snaps": "7 discrete snaps",
+      "generic_reef_fish_sounds (pops/knocks/grunts/stridulation)": {
+        "pop": 2
+      },
+      "benthic_organism_sounds (generic clicks / grazing-like crunch)": {
+        "click": 3
+      }
+    },
+    "species_specific_sounds": "none; all fish sounds are labelled generic reef fish sounds",
+    "status": "SIMULATION",
+    "note": "Audio simulasi sintetis, BUKAN rekaman aktual Pulau Tunda, Kabupaten Serang, Banten.",
+    "measured_rms_dbfs": -28.4,
+    "measured_peak_dbfs": -1.0
+  },
+  "low_moderate": {
+    "file": "reef_activity_low_moderate.wav",
+    "category": "Low to Moderate Fish Activity",
+    "duration_s": 45.0,
+    "sample_rate_hz": 48000,
+    "bit_depth": 24,
+    "channels": "stereo (amplitude panning + interaural delay up to 0.6 ms)",
+    "sound_sources": {
+      "ambient_underwater": "synthetic low-frequency hydrodynamic noise + faint hiss (identical in all 4 files)",
+      "pistol_shrimp_snaps": "28 discrete snaps",
+      "generic_reef_fish_sounds (pops/knocks/grunts/stridulation)": {
+        "pop": 10,
+        "knock": 5,
+        "grunt": 3,
+        "scrape": 2
+      },
+      "benthic_organism_sounds (generic clicks / grazing-like crunch)": {
+        "click": 14,
+        "crunch": 2
+      }
+    },
+    "species_specific_sounds": "none; all fish sounds are labelled generic reef fish sounds",
+    "status": "SIMULATION",
+    "note": "Audio simulasi sintetis, BUKAN rekaman aktual Pulau Tunda, Kabupaten Serang, Banten.",
+    "measured_rms_dbfs": -27.8,
+    "measured_peak_dbfs": -1.0
+  },
+  "high": {
+    "file": "reef_activity_high.wav",
+    "category": "High Fish Activity",
+    "duration_s": 45.0,
+    "sample_rate_hz": 48000,
+    "bit_depth": 24,
+    "channels": "stereo (amplitude panning + interaural delay up to 0.6 ms)",
+    "sound_sources": {
+      "ambient_underwater": "synthetic low-frequency hydrodynamic noise + faint hiss (identical in all 4 files)",
+      "pistol_shrimp_snaps": "85 discrete snaps + far-field snapping-shrimp crackle bed",
+      "generic_reef_fish_sounds (pops/knocks/grunts/stridulation)": {
+        "pop": 38,
+        "knock": 24,
+        "grunt": 20,
+        "scrape": 12
+      },
+      "benthic_organism_sounds (generic clicks / grazing-like crunch)": {
+        "click": 45,
+        "crunch": 12
+      }
+    },
+    "species_specific_sounds": "none; all fish sounds are labelled generic reef fish sounds",
+    "status": "SIMULATION",
+    "note": "Audio simulasi sintetis, BUKAN rekaman aktual Pulau Tunda, Kabupaten Serang, Banten.",
+    "measured_rms_dbfs": -26.9,
+    "measured_peak_dbfs": -1.7
+  },
+  "very_high": {
+    "file": "reef_activity_very_high.wav",
+    "category": "Very High Fish Activity",
+    "duration_s": 45.0,
+    "sample_rate_hz": 48000,
+    "bit_depth": 24,
+    "channels": "stereo (amplitude panning + interaural delay up to 0.6 ms)",
+    "sound_sources": {
+      "ambient_underwater": "synthetic low-frequency hydrodynamic noise + faint hiss (identical in all 4 files)",
+      "pistol_shrimp_snaps": "170 discrete snaps + far-field snapping-shrimp crackle bed",
+      "generic_reef_fish_sounds (pops/knocks/grunts/stridulation)": {
+        "pop": 90,
+        "knock": 60,
+        "grunt": 50,
+        "scrape": 28
+      },
+      "benthic_organism_sounds (generic clicks / grazing-like crunch)": {
+        "click": 100,
+        "crunch": 30
+      }
+    },
+    "species_specific_sounds": "none; all fish sounds are labelled generic reef fish sounds",
+    "status": "SIMULATION",
+    "note": "Audio simulasi sintetis, BUKAN rekaman aktual Pulau Tunda, Kabupaten Serang, Banten.",
+    "measured_rms_dbfs": -27.0,
+    "measured_peak_dbfs": -1.0
+  }
+}
