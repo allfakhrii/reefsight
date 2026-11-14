@@ -41,7 +41,7 @@ interface SearchEntry {
 const SEARCH_INDEX: SearchEntry[] = [
   { id: 'home', title: 'Home & Ecological Encyclopedia', subtitle: 'Profil Pulau Tunda & Taksonomi Karang', targetWorkspace: 'public', tabId: 'home', keywords: ['home', 'beranda', 'pulau tunda', 'acropora', 'karang', 'fish'] },
   { id: 'webgis', title: 'WebGIS & Deployment Map', subtitle: '12 Stasiun Buoy ASIK-01 hingga ASIK-12 (TUN-01 - TUN-04)', targetWorkspace: 'public', tabId: 'webgis', keywords: ['webgis', 'peta', 'map', 'stasiun', 'buoy', 'asik', 'tun', 'deployment'] },
-  { id: 'coral-dist', title: 'Coral Distribution (ArcGIS)', subtitle: 'Peta Distribusi Terumbu Karang 2020 vs 2023', targetWorkspace: 'public', tabId: 'coral-distribution', keywords: ['coral', 'distribusi', 'arcgis', 'tutupan', 'geojson', '2023', '2020'] },
+  { id: 'coral-dist', title: 'Coral Distribution (ArcGIS)', subtitle: 'Peta Distribusi Terumbu Karang Deret 2022–2026 (ArcGIS)', targetWorkspace: 'public', tabId: 'coral-distribution', keywords: ['coral', 'distribusi', 'arcgis', 'tutupan', 'geojson', '2026', '2022'] },
   { id: 'coral-proj', title: 'Coral Projection Modeling', subtitle: 'Simulasi Pertumbuhan & Pemulihan Karang', targetWorkspace: 'public', tabId: 'coral-projection', keywords: ['projection', 'proyeksi', 'simulasi', 'masa depan'] },
   { id: 'bio', title: 'Biodiversity Explorer', subtitle: 'Life Forms Karang & Katalog Ikan Terumbu', targetWorkspace: 'public', tabId: 'biodiversity', keywords: ['biodiversity', 'ikan', 'biota', 'species', 'growth form'] },
   { id: 'rhi', title: 'Reef Health Index (RHI)', subtitle: 'Skor Kesehatan Ekosistem (76.4 Good)', targetWorkspace: 'public', tabId: 'ecological-assessment', keywords: ['rhi', 'kesehatan', 'assessment', 'indikator'] },

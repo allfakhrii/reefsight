@@ -535,6 +535,7 @@ export default function EchoVisionCanvas({
       window.removeEventListener('pointerup', onPointerUp);
       dom.removeEventListener('wheel', onWheel);
       renderer.dispose();
+      if (dom) dom.innerHTML = '';
     };
   }, [viewMode, components, isExploded, simScenario]);
 

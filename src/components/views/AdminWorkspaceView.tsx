@@ -958,8 +958,8 @@ export default function AdminWorkspaceView({
         activeTab === 'activity-logs' ||
         activeTab === 'settings') && (
         <div className="p-8 rounded-3xl bg-white border border-slate-200 shadow-sm text-center space-y-3">
-          <div className="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center mx-auto text-xl">
-            🛡️
+          <div className="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center mx-auto">
+            <Shield size={24} />
           </div>
           <h3 className="text-lg font-bold text-slate-900 capitalize">
             {activeTab.replace('-', ' ')}

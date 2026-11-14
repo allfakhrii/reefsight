@@ -1,7 +1,38 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase/client';
+import { MOCK_FIELD_OBSERVATIONS } from '@/data/mockData';
 
 export const dynamic = 'force-dynamic';
+
+export async function GET() {
+  try {
+    const { data, error } = await supabase
+      .from('field_observations')
+      .select('*')
+      .not('validation_status', 'is', null)
+      .order('validated_at', { ascending: false });
+
+    if (error || !data || data.length === 0) {
+      return NextResponse.json({
+        success: true,
+        source: 'mock_fallback',
+        data: MOCK_FIELD_OBSERVATIONS.filter((obs) => obs.validation_status)
+      });
+    }
+
+    return NextResponse.json({
+      success: true,
+      source: 'supabase',
+      data
+    });
+  } catch (err: any) {
+    return NextResponse.json({
+      success: true,
+      source: 'mock_fallback',
+      data: MOCK_FIELD_OBSERVATIONS.filter((obs) => obs.validation_status)
+    });
+  }
+}
 
 export async function POST(req: NextRequest) {
   try {

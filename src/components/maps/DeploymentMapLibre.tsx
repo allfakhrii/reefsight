@@ -183,8 +183,8 @@ export default function DeploymentMapLibre({
             </div>
             <div class="relative flex items-center justify-center">
               <span class="absolute w-7 h-7 rounded-full bg-amber-400/40 animate-ping"></span>
-              <div class="w-7 h-7 rounded-full bg-gradient-to-b from-amber-300 to-amber-500 border-2 border-white shadow-lg flex items-center justify-center text-xs font-black text-slate-950">
-                ⚡
+              <div class="w-7 h-7 rounded-full bg-gradient-to-b from-amber-300 to-amber-500 border-2 border-white shadow-lg flex items-center justify-center text-slate-950">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
               </div>
             </div>
           </div>
@@ -287,7 +287,7 @@ export default function DeploymentMapLibre({
                   : 'bg-white/10 text-white border-white/20 hover:bg-white/20'
               }`}
             >
-              <span>🪸</span>
+              <Layers size={14} className="text-emerald-400 shrink-0" />
               {showReefContour ? 'Overlay Kontur Karang 2026: ON' : 'Overlay Kontur Karang 2026: OFF'}
             </button>
           </div>

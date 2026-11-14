@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { Flame, Calculator, Sparkles, Info } from 'lucide-react';
+import { Flame, Calculator, Sparkles, Info, X } from 'lucide-react';
 
 interface MonthlyDataItem {
   month: string;
@@ -563,10 +563,10 @@ export default function EnvironmentalCharts() {
                     <button
                       type="button"
                       onClick={() => setSelectedPointIdx(null)}
-                      className="text-slate-400 hover:text-white font-bold px-1"
+                      className="text-slate-400 hover:text-white p-0.5 rounded transition-colors"
                       aria-label="Tutup tooltip"
                     >
-                      ✕
+                      <X size={14} />
                     </button>
                   </div>
                   <div className="space-y-0.5 font-mono">

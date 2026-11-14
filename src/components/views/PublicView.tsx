@@ -63,7 +63,18 @@ import {
   Clock,
   Radio,
   FileSpreadsheet,
-  AlertTriangle
+  AlertTriangle,
+  Droplets,
+  Anchor,
+  HardDrive,
+  Flame,
+  Wind,
+  Leaf,
+  Map,
+  Microscope,
+  Check,
+  X,
+  Lock
 } from 'lucide-react';
 
 interface Props {
@@ -174,25 +185,28 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
             </div>
           </div>
 
-          {/* Quick Sub-Navigation Bar matching image2.jpeg */}
+          {/* Quick Sub-Navigation Bar */}
           <div className="p-2 rounded-2xl bg-white border border-slate-200 shadow-xs flex items-center justify-between overflow-x-auto gap-2 text-xs font-semibold text-slate-700">
             {[
-              { id: 'bio-ecosystem', label: 'Coral Reef Ecosystem', icon: '🪸', tab: 'home' },
-              { id: 'bio-growth', label: 'Coral Growth Forms', icon: '🌿', tab: 'biodiversity' },
-              { id: 'bio-diversity', label: 'Marine Biodiversity', icon: '🐟', tab: 'biodiversity' },
-              { id: 'bio-assessment', label: 'Habitat Characteristics', icon: '📊', tab: 'ecological-assessment' },
-              { id: 'bio-profile', label: 'Pulau Tunda Profile', icon: '📍', tab: 'research-logbook' },
-              { id: 'bio-research', label: 'Research Approach', icon: '🔬', tab: 'prototype-3d' }
-            ].map((sub) => (
-              <button
-                key={sub.id}
-                onClick={() => onSelectTab(sub.tab)}
-                className="px-4 py-2 rounded-xl hover:bg-slate-100 flex items-center gap-2 whitespace-nowrap transition-colors"
-              >
-                <span>{sub.icon}</span>
-                <span>{sub.label}</span>
-              </button>
-            ))}
+              { id: 'bio-ecosystem', label: 'Coral Reef Ecosystem', icon: Waves, tab: 'home' },
+              { id: 'bio-growth', label: 'Coral Growth Forms', icon: Palmtree, tab: 'biodiversity' },
+              { id: 'bio-diversity', label: 'Marine Biodiversity', icon: Fish, tab: 'biodiversity' },
+              { id: 'bio-assessment', label: 'Habitat Characteristics', icon: Activity, tab: 'ecological-assessment' },
+              { id: 'bio-profile', label: 'Pulau Tunda Profile', icon: MapPin, tab: 'research-logbook' },
+              { id: 'bio-research', label: 'Research Approach', icon: Microscope, tab: 'prototype-3d' }
+            ].map((sub) => {
+              const SubIcon = sub.icon;
+              return (
+                <button
+                  key={sub.id}
+                  onClick={() => onSelectTab(sub.tab)}
+                  className="px-4 py-2 rounded-xl hover:bg-slate-100 flex items-center gap-2 whitespace-nowrap transition-colors"
+                >
+                  <SubIcon size={14} className="text-cyan-600 shrink-0" />
+                  <span>{sub.label}</span>
+                </button>
+              );
+            })}
           </div>
 
           {/* Cards Grid matching image2.jpeg */}
@@ -466,27 +480,27 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
 
             <div className="w-full lg:w-3/4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 text-xs text-slate-300">
               <div className="flex items-center gap-2">
-                <span className="text-lg">🐟</span>
+                <Fish size={15} className="text-cyan-400 shrink-0" />
                 <span>Habitat dan tempat berlindung biota laut</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-lg">⚓</span>
+                <Anchor size={15} className="text-cyan-400 shrink-0" />
                 <span>Menjaga rantai makanan laut</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-lg">🌊</span>
+                <Waves size={15} className="text-cyan-400 shrink-0" />
                 <span>Melindungi pesisir dari gelombang & abrasi</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-lg">💧</span>
+                <Droplets size={15} className="text-cyan-400 shrink-0" />
                 <span>Menjaga kualitas & kejernihan perairan</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-lg">🎣</span>
+                <Layers size={15} className="text-cyan-400 shrink-0" />
                 <span>Mendukung produktivitas perikanan</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-lg">🩺</span>
+                <Activity size={15} className="text-cyan-400 shrink-0" />
                 <span>Menjadi indikator kesehatan ekosistem</span>
               </div>
             </div>
@@ -600,22 +614,22 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center pt-2">
                 <div className="p-2 rounded-2xl bg-slate-50/70">
-                  <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto mb-1 text-xs">
-                    🌊
+                  <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto mb-1">
+                    <Waves size={16} />
                   </div>
                   <div className="text-[10px] font-bold text-slate-800">Akuisisi Data</div>
                   <div className="text-[9px] text-slate-500">Sensor Akustik/Optik</div>
                 </div>
                 <div className="p-2 rounded-2xl bg-slate-50/70">
-                  <div className="w-9 h-9 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mx-auto mb-1 text-xs">
-                    💾
+                  <div className="w-9 h-9 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mx-auto mb-1">
+                    <HardDrive size={16} />
                   </div>
                   <div className="text-[10px] font-bold text-slate-800">Data Logger</div>
                   <div className="text-[9px] text-slate-500">Penyimpanan Lokal</div>
                 </div>
                 <div className="p-2 rounded-2xl bg-slate-50/70">
-                  <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-1 text-xs">
-                    📡
+                  <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-1">
+                    <Radio size={16} />
                   </div>
                   <div className="text-[10px] font-bold text-slate-800">Transmisi LoRa</div>
                   <div className="text-[9px] text-slate-500">868 MHz Gateway</div>
@@ -637,13 +651,13 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
                 <button
                   type="button"
                   onClick={() => setActiveScenario('normal')}
-                  className={`min-h-[44px] p-2.5 rounded-2xl border text-xs font-semibold transition-all ${
+                  className={`min-h-[44px] p-2.5 rounded-2xl border text-xs font-semibold transition-all flex flex-col items-center justify-center ${
                     activeScenario === 'normal'
                       ? 'border-emerald-500 bg-emerald-50 text-emerald-800'
                       : 'border-slate-100 hover:bg-slate-50 text-slate-600'
                   }`}
                 >
-                  <div className="text-base mb-0.5">🌿</div>
+                  <Leaf size={16} className="mb-1 text-emerald-600" />
                   <div className="text-[11px] font-bold">Normal</div>
                   <div className="text-[9px] text-slate-500">Ekosistem Stabil</div>
                 </button>
@@ -651,13 +665,13 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
                 <button
                   type="button"
                   onClick={() => setActiveScenario('thermal_stress')}
-                  className={`min-h-[44px] p-2.5 rounded-2xl border text-xs font-semibold transition-all ${
+                  className={`min-h-[44px] p-2.5 rounded-2xl border text-xs font-semibold transition-all flex flex-col items-center justify-center ${
                     activeScenario === 'thermal_stress'
                       ? 'border-rose-500 bg-rose-50 text-rose-800'
                       : 'border-slate-100 hover:bg-slate-50 text-slate-600'
                   }`}
                 >
-                  <div className="text-base mb-0.5">🔥</div>
+                  <Flame size={16} className="mb-1 text-rose-600" />
                   <div className="text-[11px] font-bold">Suhu Naik</div>
                   <div className="text-[9px] text-slate-500">Thermal Stress</div>
                 </button>
@@ -665,13 +679,13 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
                 <button
                   type="button"
                   onClick={() => setActiveScenario('turbidity')}
-                  className={`min-h-[44px] p-2.5 rounded-2xl border text-xs font-semibold transition-all ${
+                  className={`min-h-[44px] p-2.5 rounded-2xl border text-xs font-semibold transition-all flex flex-col items-center justify-center ${
                     activeScenario === 'turbidity'
                       ? 'border-amber-500 bg-amber-50 text-amber-800'
                       : 'border-slate-100 hover:bg-slate-50 text-slate-600'
                   }`}
                 >
-                  <div className="text-base mb-0.5">🌪️</div>
+                  <Wind size={16} className="mb-1 text-amber-600" />
                   <div className="text-[11px] font-bold">Keruh</div>
                   <div className="text-[9px] text-slate-500">Turbiditas Tinggi</div>
                 </button>
@@ -765,7 +779,7 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
                   <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                    <span>🗺️</span>
+                    <Layers size={16} className="text-cyan-600" />
                     <span>Peta Proyeksi Sebaran Spasial Karang (+{projPeriod} Tahun)</span>
                   </h3>
                   <p className="text-[11px] text-slate-500 mt-0.5">
@@ -1120,8 +1134,9 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
                   {CORAL_LIFE_FORMS.find((c) => c.name === selectedGrowthForm)?.associated_fish.map((fish, idx) => (
-                    <div key={idx} className="p-3 rounded-xl bg-white border border-slate-200 text-xs font-medium text-slate-800 shadow-xs">
-                      🐟 {fish}
+                    <div key={idx} className="p-3 rounded-xl bg-white border border-slate-200 text-xs font-medium text-slate-800 shadow-xs flex items-center gap-1.5">
+                      <Fish size={14} className="text-cyan-600 shrink-0" />
+                      <span>{fish}</span>
                     </div>
                   ))}
                 </div>
@@ -1441,24 +1456,27 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
           {/* Subtabs Switcher */}
           <div className="flex flex-wrap items-center gap-2 p-1.5 bg-slate-100 rounded-2xl w-fit">
             {[
-              { id: 'profile' as const, label: 'Visi & Profil Ekologis', icon: '🪸' },
-              { id: 'logbook' as const, label: 'Logbook Lapangan Kronologis', icon: '📝' },
-              { id: 'publications' as const, label: 'Publikasi Ilmiah Open Access', icon: '📄' }
-            ].map((sub) => (
-              <button
-                key={sub.id}
-                type="button"
-                onClick={() => setLogbookTab(sub.id)}
-                className={`min-h-[40px] px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all ${
-                  logbookTab === sub.id
-                    ? 'bg-white text-orange-600 shadow-sm'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
-                }`}
-              >
-                <span>{sub.icon}</span>
-                <span>{sub.label}</span>
-              </button>
-            ))}
+              { id: 'profile' as const, label: 'Visi & Profil Ekologis', icon: Compass },
+              { id: 'logbook' as const, label: 'Logbook Lapangan Kronologis', icon: BookOpen },
+              { id: 'publications' as const, label: 'Publikasi Ilmiah Open Access', icon: FileText }
+            ].map((sub) => {
+              const SubIcon = sub.icon;
+              return (
+                <button
+                  key={sub.id}
+                  type="button"
+                  onClick={() => setLogbookTab(sub.id)}
+                  className={`min-h-[40px] px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all ${
+                    logbookTab === sub.id
+                      ? 'bg-white text-orange-600 shadow-sm'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+                  }`}
+                >
+                  <SubIcon size={14} />
+                  <span>{sub.label}</span>
+                </button>
+              );
+            })}
           </div>
 
           {/* Subtab 1: Visi, Latar Belakang & Profil Ekologis (About Content) */}
@@ -1547,7 +1565,7 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
               {/* Metodologi Sains REEFSIGHT */}
               <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
                 <h4 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                  <span>🔬</span>
+                  <Microscope size={18} className="text-cyan-600" />
                   <span>4 Pilar Metodologi Sains Ekologis REEFSIGHT</span>
                 </h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -1555,30 +1573,35 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
                     {
                       pilar: '01. Bioakustik Hydrophone',
                       desc: 'Perekaman audio bawah air 24/7 untuk menghitung Acoustic Complexity Index (ACI) dan mendeteksi aktivitas snaps udang pistol serta vokal ikan karang.',
-                      icon: '🎙️'
+                      icon: Mic2
                     },
                     {
                       pilar: '02. UPT Citra Optik',
                       desc: 'Underwater Photo Transect (UPT) kuadrat 1×1m untuk verifikasi bentuk pertumbuhan karang, rekrutmen koloni, dan deteksi dini pemutihan (bleaching).',
-                      icon: '📷'
+                      icon: Camera
                     },
                     {
                       pilar: '03. WebGIS Multi-Temporal',
                       desc: 'Integrasi citra satelit resolusi tinggi dengan algoritma Lyzenga, Sea Surface Temperature (SST), dan Chlorophyll-a (CHL) deret 2022–2026.',
-                      icon: '🗺️'
+                      icon: Map
                     },
                     {
                       pilar: '04. Verifikasi QA/QC Terpisah',
                       desc: 'Pemisahan tugas (Separation of Duties): Operator pengumpul data tidak dapat memvalidasi datanya sendiri demi menjamin integritas saintifik.',
-                      icon: '🛡️'
+                      icon: ShieldCheck
                     }
-                  ].map((p, i) => (
-                    <div key={i} className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
-                      <div className="text-xl">{p.icon}</div>
-                      <div className="text-xs font-bold text-slate-900">{p.pilar}</div>
-                      <p className="text-[11px] text-slate-500 leading-relaxed">{p.desc}</p>
-                    </div>
-                  ))}
+                  ].map((p, i) => {
+                    const PIcon = p.icon;
+                    return (
+                      <div key={i} className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                        <div className="w-8 h-8 rounded-xl bg-cyan-50 text-cyan-700 flex items-center justify-center">
+                          <PIcon size={18} />
+                        </div>
+                        <div className="text-xs font-bold text-slate-900">{p.pilar}</div>
+                        <p className="text-[11px] text-slate-500 leading-relaxed">{p.desc}</p>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -1982,8 +2005,9 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
                   </div>
 
                   <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
-                    <p className="text-[11px] text-slate-400">
-                      🔒 Informasi Anda dilindungi dan hanya digunakan untuk keperluan koordinasi ilmiah.
+                    <p className="text-[11px] text-slate-400 flex items-center gap-1.5">
+                      <Lock size={12} className="text-slate-400 shrink-0" />
+                      <span>Informasi Anda dilindungi dan hanya digunakan untuk keperluan koordinasi ilmiah.</span>
                     </p>
                     <button
                       type="submit"
@@ -2000,7 +2024,7 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
           {/* Panduan Rute & Aksesibilitas Menuju Pulau Tunda */}
           <div className="p-6 sm:p-7 rounded-3xl bg-slate-900 text-white space-y-4">
             <div className="flex items-center gap-2 text-xs font-bold text-orange-400 uppercase tracking-wider">
-              <span>⛵</span>
+              <Compass size={14} className="shrink-0" />
               <span>Panduan Aksesibilitas & Rute Penyeberangan Pulau Tunda</span>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
@@ -2055,7 +2079,7 @@ export default function PublicView({ activeTab, onSelectTab, onOpenLogin }: Prop
                 aria-label="Tutup preview"
                 className="w-10 h-10 min-w-[40px] min-h-[40px] rounded-full flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 transition-colors"
               >
-                ✕
+                <X size={18} />
               </button>
             </div>
 

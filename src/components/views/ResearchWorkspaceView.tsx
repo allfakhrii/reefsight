@@ -42,7 +42,9 @@ import {
   Sparkles,
   ChevronRight,
   ShieldAlert,
-  ArrowRight
+  ArrowRight,
+  Inbox,
+  Microscope
 } from 'lucide-react';
 
 type ResearchTabId =
@@ -326,7 +328,7 @@ export default function ResearchWorkspaceView({
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 text-center [&>div]:w-full sm:[&>div]:w-auto">
               <div className="sm:flex-1 p-4 rounded-2xl bg-blue-50/60 border border-blue-100">
                 <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center mx-auto mb-2 font-bold shadow-xs">
-                  📥
+                  <Inbox size={18} />
                 </div>
                 <div className="text-xs font-bold text-slate-900">Collected</div>
                 <div className="text-lg font-black text-blue-600">1,567</div>
@@ -334,7 +336,7 @@ export default function ResearchWorkspaceView({
               <div className="text-slate-300 font-bold hidden sm:block text-xl">→</div>
               <div className="flex-1 p-4 rounded-2xl bg-purple-50/60 border border-purple-100">
                 <div className="w-10 h-10 rounded-xl bg-purple-600 text-white flex items-center justify-center mx-auto mb-2 font-bold shadow-xs">
-                  ⚙️
+                  <Cpu size={18} />
                 </div>
                 <div className="text-xs font-bold text-slate-900">Processing</div>
                 <div className="text-lg font-black text-purple-600">684</div>
@@ -342,7 +344,7 @@ export default function ResearchWorkspaceView({
               <div className="text-slate-300 font-bold hidden sm:block text-xl">→</div>
               <div className="flex-1 p-4 rounded-2xl bg-amber-50/60 border border-amber-100">
                 <div className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center mx-auto mb-2 font-bold shadow-xs">
-                  🔍
+                  <Search size={18} />
                 </div>
                 <div className="text-xs font-bold text-slate-900">Validation</div>
                 <div className="text-lg font-black text-amber-600">317</div>
@@ -350,7 +352,7 @@ export default function ResearchWorkspaceView({
               <div className="text-slate-300 font-bold hidden sm:block text-xl">→</div>
               <div className="flex-1 p-4 rounded-2xl bg-emerald-50/60 border border-emerald-100">
                 <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center mx-auto mb-2 font-bold shadow-xs">
-                  ✅
+                  <CheckCircle2 size={18} />
                 </div>
                 <div className="text-xs font-bold text-slate-900">Validated</div>
                 <div className="text-lg font-black text-emerald-600">2,312</div>
@@ -850,23 +852,26 @@ export default function ResearchWorkspaceView({
                 <button
                   type="button"
                   onClick={() => handleValidate('Rejected')}
-                  className="min-h-[44px] px-3 py-2.5 rounded-xl border border-rose-300 text-rose-700 hover:bg-rose-50 font-bold text-xs transition-colors"
+                  className="min-h-[44px] px-3 py-2.5 rounded-xl border border-rose-300 text-rose-700 hover:bg-rose-50 font-bold text-xs transition-colors flex items-center gap-1.5"
                 >
-                  ✕ Tolak
+                  <X size={14} />
+                  <span>Tolak</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => handleValidate('Needs Revision')}
-                  className="min-h-[44px] px-3 py-2.5 rounded-xl border border-amber-300 text-amber-700 hover:bg-amber-50 font-bold text-xs transition-colors"
+                  className="min-h-[44px] px-3 py-2.5 rounded-xl border border-amber-300 text-amber-700 hover:bg-amber-50 font-bold text-xs transition-colors flex items-center gap-1.5"
                 >
-                  ↻ Revisi
+                  <RotateCcw size={14} />
+                  <span>Revisi</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => handleValidate('Validated')}
-                  className="min-h-[44px] px-3 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition-colors"
+                  className="min-h-[44px] px-3 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition-colors flex items-center gap-1.5"
                 >
-                  ✓ Validasi
+                  <Check size={14} />
+                  <span>Validasi</span>
                 </button>
               </div>
               {researchNotice?.type === 'error' && activeRole === 'operator_lapangan' && (
@@ -947,8 +952,8 @@ export default function ResearchWorkspaceView({
         activeTab === 'ecological-dynamics' ||
         activeTab === 'scientific-reports') && (
         <div className="p-8 rounded-3xl bg-white border border-slate-200 shadow-sm text-center space-y-3">
-          <div className="w-12 h-12 rounded-2xl bg-orange-50 text-orange-600 flex items-center justify-center mx-auto text-xl">
-            🔬
+          <div className="w-12 h-12 rounded-2xl bg-orange-50 text-orange-600 flex items-center justify-center mx-auto">
+            <Microscope size={24} />
           </div>
           <h3 className="text-lg font-bold text-slate-900 capitalize">
             {activeTab.replace('-', ' ')}
